@@ -1,0 +1,29 @@
+:root{
+    --color-dark:rgb(31, 30, 30);   
+    --color-white:#7e7e7e;
+    --fuente-chica:12px;
+}
+
+
+.color-dark{
+    background-color: var(--color-dark);
+}
+
+.border-dark{
+    border:2px solid #7e7e7e;
+}
+
+.texto-dark{
+    color:var(--color-white);
+}
+
+.texto-pequeño{
+    font-size: 12px;
+}
+
+
+.i{
+    color:white;
+    height: 20px;
+    width: 50px;
+}

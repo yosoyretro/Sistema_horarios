@@ -1,0 +1,25 @@
+.font-lg {
+    font-size: 13px;
+}
+
+.fondo-istg {
+    background-color: #3f4bb9;
+}
+
+.texto-istg-1 {
+    color: rgba(0, 0, 214, 0.782);
+}
+
+.texto-istg-2 {
+    color: rgb(107, 255, 240);
+}
+
+.img-icons-p {
+    height: 25px;
+    width: 25px;
+}
+
+.img-icons-m {
+    height: 50px;
+    width: 50px;
+}
