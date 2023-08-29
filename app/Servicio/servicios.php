@@ -2,8 +2,13 @@
 
 namespace App\Servicio;
 
-class serviciosServicio
-{
+class serviciosServicio{
+    protected $obj_usuario;
+    protected $obj_respuesta;
+    public function __construct()
+    {
+        
+    }
     
         public function Create($data)
         {

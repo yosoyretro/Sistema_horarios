@@ -42,16 +42,71 @@ class UsuarioServicio{
         return $this->obj_tipo_respuesta->getdata();
     }
     
-    public function createuser(){
-        
+    public function createuser($userData){
+        try {
+            //Crear nuevo usuario
+            $nuevoUsuario = new UsuarioModel();
+            $nuevoUsuario->cedula = $userData['cedula'];
+            $nuevoUsuario->nombres = $userData['nombres'];
+            $nuevoUsuario->usuario = $userData['usuario'];
+            $nuevoUsuario->clave = $userData['clave'];
+            $nuevoUsuario->id_rol = $userData['id_rol']; // asignar el ID del rol
+            $nuevoUsuario->id_titulo_academico = $userData['id_titulo_academico']; // asignar el id del título académico
+
+            $nuevoUsuario->save();
+
+            $this->obj_tipo_respuesta->setok(true);
+            $this->obj_tipo_respuesta->setdata($nuevoUsuario);
+        } catch (Exception $e){
+                    // configurar la respuesta de error en el objeto TypeResponse
+        $this->obj_tipo_respuesta->setok(false);
+        $this->obj_tipo_respuesta->seterror('Error al crear el usuario', false);
+        }
+
+        return $this->obj_tipo_respuesta->getdata();
     }
 
-    public function editUser(){
-        
+    public function editUser($userData){
+        try {
+            // se busca el usuario a editar utilizando el modelo UsuarioModel
+            $usuario = UsuarioModel::findOrFail($userData['id_usuario']);
+
+            
+            $usuario->cedula = $userData['cedula'];
+            $usuario->nombres = $userData['nombres'];
+            $usuario->usuario = $userData['usuario'];
+            $usuario->clave = $userData['clave'];
+            $usuario->id_rol = $userData['id_rol'];
+            $usuario->id_titulo_academico = $userData['id_titulo_academico'];
+
+            $usuario->save();
+
+            $this->obj_tipo_respuesta->setok(true);
+            $this->obj_tipo_respuesta->setdata($usuario);
+        } catch (Exception $e) {
+            $this->obj_tipo_respuesta->setok(false);
+            $this->obj_tipo_respuesta->seterror('Error al editar el usuario', false);
+        }
+
+        return $this->obj_tipo_respuesta->getdata();
     }
 
-    public function deleteUser(){
-        
+    public function deleteUser($userId){
+        try {
+            //se busca el usuario a eliminar
+            $usuario = UsuarioModel::findOrFail($userId);
+
+            //eliminar usuario
+            $usuario->delete();
+
+            $this->obj_tipo_respuesta->setok(true);
+            $this->obj_tipo_respuesta->setdata(null);// No hay datos para devolver después de eliminar
+        } catch (Exception $e) {
+            $this->obj_tipo_respuesta->setok(false);
+            $this->obj_tipo_respuesta->seterror('Error al eliminar el usuario', false);
+        }
+
+        return $this->obj_tipo_respuesta->getdata();
     }
 
 }
