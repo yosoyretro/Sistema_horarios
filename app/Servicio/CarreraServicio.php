@@ -56,17 +56,17 @@ class CarreraServicio
             return $this->obj_tipo_respuesta->getdata();
         }
 
-        public function Delete($carreraData)
+        public function DeleteCarrera($carreraData)
         {
             try {
                 //se busca la carrera a eliminar
                 $carrera = CarreraModel::findOrFail($carreraData);
                 
                 $carrera->estado = 'I';
-                $carrera->delete();
+                $carrera->save();
                 
                 $this->obj_tipo_respuesta->setok(true);
-                $this->obj_tipo_respuesta->setdata(null);// no hay datos para devolver después de eliminar
+                $this->obj_tipo_respuesta->setdata(null);// no hay datos para devolver después de pasar a inactivo
             }catch (Exception $e) {
                 $this->obj_tipo_respuesta->setok(false);
                 $this->obj_tipo_respuesta->seterror('Error al eliminar la carrera', false);
