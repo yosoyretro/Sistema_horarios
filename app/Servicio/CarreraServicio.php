@@ -62,6 +62,7 @@ class CarreraServicio
                 //se busca la carrera a eliminar
                 $carrera = CarreraModel::findOrFail($carreraData);
                 
+                $carrera->estado = 'I';
                 $carrera->delete();
                 
                 $this->obj_tipo_respuesta->setok(true);

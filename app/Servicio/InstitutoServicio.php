@@ -64,7 +64,8 @@ class InstitutoServicio
                 $instituto = InstitutoModel::findOrFail($institutoData);
 
                 //eliminar instituto
-                $instituto->delete();
+                $instituto->estado = 'I';
+                $instituto->save();
 
                 $this->obj_tipo_respuesta->setok(true);
                 $this->obj_tipo_respuesta->setdata(null);// no hay datos para devolver después de eliminar

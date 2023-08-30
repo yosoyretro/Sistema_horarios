@@ -96,8 +96,9 @@ class UsuarioServicio{
             //se busca el usuario a eliminar
             $usuario = UsuarioModel::findOrFail($userId);
 
-            //eliminar usuario
-            $usuario->delete();
+            //pasamos el estado activo a inactivo
+            $usuario->estado = 'I';
+            $usuario->save();
 
             $this->obj_tipo_respuesta->setok(true);
             $this->obj_tipo_respuesta->setdata(null);// No hay datos para devolver después de eliminar
