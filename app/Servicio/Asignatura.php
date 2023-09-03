@@ -16,7 +16,7 @@ class AsignaturaServicio
         $this->obj_tipo_respuesta = new TypeResponse();
     }
     
-        public function Create($asignaturaData)
+        public function CreateAsignatura($asignaturaData)
         {
             try {
                 //crear nueva asignatura
@@ -35,7 +35,7 @@ class AsignaturaServicio
             return $this->obj_tipo_respuesta->getdata();
         }
 
-        public function Update($asignaturaData)
+        public function UpdateAsignatura($asignaturaData)
         {
             try{
                 $asignatura = AsignaturaModel::findOrFail($asignaturaData['id_asignatura']);
@@ -54,7 +54,7 @@ class AsignaturaServicio
             return $this->obj_tipo_respuesta->getdata();
         }
 
-        public function Delete($asignaturaData)
+        public function DeleteAsignatura($asignaturaData)
         {
             try {
                 $asignatura = AsignaturaModel::findOrFail($asignaturaData);
