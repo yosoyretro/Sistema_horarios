@@ -12,18 +12,18 @@ use Mockery\Matcher\Type;
 
 class UsuarioController extends Controller
 {
-    //VISTA DEL USUARIO.
+    //VISTA DEL USUARIO
     public function showUsuarioForm(){
 
         $mensajes_usuario = session('data');
         return view('usuario', compact('mensajes_usuario'));
     }
 
-    //CONTROLADOR DEL USUARIO.
+    //CONTROLADOR DEL USUARIO
     public function usuario_controller(Request $request){
-        $cedula = $request->input('cedula');
-        $nombres = $request->input('nombres');
-        $usuario = $request->input('usuario');
+        $cedula = strtoupper($request->input('cedula'));
+        $nombres = ucfirst(strtolower($request->input('nombres')));
+        $usuario = strtolower($request->input('usuario'));
         $clave = $request->input('clave');
         $id_rol = $request->input('id_rol');
         $id_titulo_academico = $request->input('id_titulo_academico');
