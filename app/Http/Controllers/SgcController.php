@@ -50,14 +50,22 @@ class SgcController extends Controller
     
 
     public function inicio(){
+        
         return view('inicio');
+
+    }
+    public function usuario(){
+        $servicioUsuario = new UsuarioServicio();
+        
+        $data = new Collection([
+            'tipo_consulta'=>4
+        ]);
+        $usuarios_datos = [$servicioUsuario->getdatausuario($data)["data"]];
+        
+        return view('Usuario',compact('usuarios_datos'));
     }
 
-    public function crear(){
-        return view('crear');
-    }
-
-    public function lista(){
-        return view('lista');
+    public function eliminarRegistro(Request $request){
+        log::alert("HOLA ");
     }
 }

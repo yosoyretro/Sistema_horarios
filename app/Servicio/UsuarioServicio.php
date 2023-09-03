@@ -32,6 +32,9 @@ class UsuarioServicio{
                 case 3:
                     //consulta por usuario
                     $datos = UsuarioModel::where('usuario',$data["data"])->get();
+                case 4:
+                    //consulta por toddo los usuarios activo
+                    $datos = UsuarioModel::Where('estado','A')->get();
             }
             $this->obj_tipo_respuesta->setdata($datos[0]);
             
@@ -69,9 +72,7 @@ class UsuarioServicio{
     public function editUser($userData){
         try {
             // se busca el usuario a editar utilizando el modelo UsuarioModel
-            $usuario = UsuarioModel::findOrFail($userData['id_usuario']);
-
-            
+            $usuario = UsuarioModel::findOrFail($userData['id_usuario']);            
             $usuario->cedula = $userData['cedula'];
             $usuario->nombres = $userData['nombres'];
             $usuario->usuario = $userData['usuario'];
