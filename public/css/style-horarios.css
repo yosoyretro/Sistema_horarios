@@ -23,3 +23,15 @@
     height: 50px;
     width: 50px;
 }
+
+
+.swal2-cancel {
+    background-color: #520ce8c7; /* Color de fondo rojo */
+    color: #ffffff; /* Color de texto blanco */
+    transition: 1s;
+}
+
+/* Cambia el color de fondo cuando el botón "Cancelar" está activo (cuando el mouse está sobre él) */
+.swal2-cancel:hover {
+    background-color: #520ce8c7; /* Color de fondo rojo más oscuro cuando el mouse está sobre él */
+}

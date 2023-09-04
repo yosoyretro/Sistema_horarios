@@ -31,7 +31,7 @@
             <li><a class="font-lg" href="#">
                     <span class="span-inicio material-icons">home</span>Inicio</a></li>
             <img src="{{ asset('icons/pre-lg-istg.png') }}" height="30px" style="width: 30px;">
-            <li><a class="font-lg">
+            <li><a class="font-lg text-white">
                     <span class="span-inicio material-icons">
                         schedule
                     </span>Horarios</a></li>

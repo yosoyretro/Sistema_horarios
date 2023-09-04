@@ -19,5 +19,5 @@ Route::get('inicio',[SgcController::class,'inicio'])->name('inicio');
 Route::get('usuario',[SgcController::class,'usuario'])->name('usuario');
 Route::get('lista',[SgcController::class,'lista'])->name('lista');
 
-Route::post('eliminarRegistro',[SgcController::class,'eliminarRegistro']);
+
 Route::post('login-controlador',[SgcController::class,'login_controlador'])->name('login_controlador');

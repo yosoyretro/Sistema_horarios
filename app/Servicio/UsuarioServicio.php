@@ -25,19 +25,42 @@ class UsuarioServicio{
                 case 1:
                     //consulta por cedula
                     $datos = UsuarioModel::where('cedula',$data["data"])->get();
+                    break;    
                 case 2:
                     //consulta por nombres
                     $datos = UsuarioModel::where('nombres','LIKE','%',$data["data"],'%')->get();
-    
+                    break;    
                 case 3:
                     //consulta por usuario
                     $datos = UsuarioModel::where('usuario',$data["data"])->get();
+                    break;
                 case 4:
                     //consulta por toddo los usuarios activo
-                    $datos = UsuarioModel::Where('estado','A')->get();
-            }
-            $this->obj_tipo_respuesta->setdata($datos[0]);
-            
+                    $datos = UsuarioModel::select(
+                        'usuario.cedula',
+                        'usuario.nombres',
+                        'usuario.usuario',
+                        'rol.descripcion AS Rol',
+                        'titulo_academico.descripcion AS TITULO_ACADEMICO',
+                        'usuario.create_at AS FECHA_CREACION',
+                        'usuario.id_usuario',
+                        'usuario.id_rol',
+                        'usuario.id_titulo_academico'
+                    )
+                    ->join('rol', 'usuario.id_rol', '=', 'rol.id_rol')
+                    ->join('titulo_academico', 'usuario.id_titulo_academico', '=', 'titulo_academico.id_titulo_academico')
+                    ->where('usuario.estado', 'LIKE', 'A')
+                    ->where('rol.estado', 'LIKE', 'A')
+                    ->where('titulo_academico.estado', 'LIKE', 'A')
+                    ->get();
+                    
+                    $this->obj_tipo_respuesta->setdata($datos);
+                    return $this->obj_tipo_respuesta->getdata();            
+                    break;
+                }
+            log::alert($datos);
+            $this->obj_tipo_respuesta->setdata($datos);
+
         }catch(Exception $e){
             $this->obj_tipo_respuesta->setok(false);
             $this->obj_tipo_respuesta->seterror('Lo sentimos error en el servicio',false);
@@ -95,12 +118,13 @@ class UsuarioServicio{
     public function deleteUser($userId){
         try {
             //se busca el usuario a eliminar
-            $usuario = UsuarioModel::findOrFail($userId);
-
+            $usuario = new UsuarioModel();
+            $usuario = UsuarioModel::find($userId);
+            log::alert(collect($usuario));
             //pasamos el estado activo a inactivo
             $usuario->estado = 'I';
             $usuario->save();
-
+            log::alert("ESTO EN EL SERVICIO ");
             $this->obj_tipo_respuesta->setok(true);
             $this->obj_tipo_respuesta->setdata(null);// No hay datos para devolver después de eliminar
         } catch (Exception $e) {

@@ -15,7 +15,7 @@ class UsuarioModel extends Model
     const UPDATE_AT = 'fecha_actualizacion';
     
     protected $fillable = [
-        'cedula','nombres','usuario','clave','id_rol','id_titulo_academico'
+        'cedula','nombres','usuario','clave','id_rol','id_titulo_academico','estado'
     ];
     
     public function rol(){
