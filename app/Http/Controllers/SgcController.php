@@ -89,4 +89,14 @@ class SgcController extends Controller
         }
         return Response()->json($response->getdata());
     }
+
+    public function crear_usuario (Request $request){
+        $numero_cedula = $request->input('numero');
+        $nombres = $request->input('nombres');
+        $rol = $request->input('rol');
+        
+        log::alert($numero_cedula . $nombres . $rol);
+
+        return redirect(route('usuario'));
+    }
 }

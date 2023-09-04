@@ -21,3 +21,4 @@ Route::get('lista',[SgcController::class,'lista'])->name('lista');
 
 
 Route::post('login-controlador',[SgcController::class,'login_controlador'])->name('login_controlador');
+Route::post('crear-usuario',[SgcController::class,'crear_usuario'])->name('crear_usuario');

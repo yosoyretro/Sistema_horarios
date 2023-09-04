@@ -73,30 +73,36 @@
                 <h5 class="modal-title text-white" id="exampleModalLabel"><i class="fas fa-user-plus text-white pr-3"></i>Añadir un usuario</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body font-lg">
-                <div class="form-group">
-                    <label class="form-label ">Ingrese el numero de cedula </label>
-                    <input type="number" style="font-size: 12px;" name="numero" class="form-control font-lg">
+            <form action="{{ route('crear_usuario') }}" method="POST" id="datos-formulario" >
+                @csrf
+                <div class="modal-body font-lg">
+                    <div class="form-group">
+                        <label class="form-label ">Ingrese el numero de cedula </label>
+                        <input type="number" style="font-size: 12px;" id="numero" name="numero" class="form-control font-lg">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ingrese sus nombres y apellidos</label>
+                        <input type="text" class="form-control" style="font-size: 12px;" rows="2" id="nombres" name="nombres"></input>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="form-label">Seleccione el rol</label>
+                        <select class="form-control"  style="font-size: 12px;" name="rol">
+                            <option selected hidden>Escoja el rol que va a desempeñar el usuario</option>
+                            @foreach($rol_datos as $rol)
+                                <option value="{{$rol->id_rol}}">{{$rol->descripcion}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Ingrese sus nombres y apellidos</label>
-                    <input type="text" class="form-control" style="font-size: 12px;" rows="2" name="nombre"></input>
+                <div class="modal-footer">
+                    <button name="adjuntar" type="submit" class="btn w-100 border-white text-white" style="background:#3f4bb9;"><i class="fas fa-save pr-2"></i>Crear Usuario</button>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Seleccione el rol</label>
-                    <select class="form-control" style="font-size: 12px;" name="asignatura">
-                        <option selected hidden>Escoja el rol que va a desempeñar el usuario</option>
-                        @foreach($rol_datos as $rol)
-                            <option>{{$rol->descripcion}}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button name="adjuntar" type="submit" class="btn w-100 border-white text-white" style="background:#3f4bb9;"><i class="fas fa-save pr-2"></i>Crear Usuario</button>
-            </div>
+            </form>
+            
         </div>
     </div>
 </div>
