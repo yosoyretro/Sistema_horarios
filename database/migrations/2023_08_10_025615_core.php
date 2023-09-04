@@ -150,14 +150,16 @@ return new class extends Migration
             $table->string('usuario',150);
             $table->string('clave',50);
             $table->unsignedBigInteger('id_rol');
-            $table->unsignedBigInteger('id_titulo_academico');
+            $table->jsonb('id_titulos_academicos')->nullable();
+            
             //CAMPOS OBLIGATORIOS
             $table->string('estado',2)->default('A');
             $table->date('create_at');
             $table->date('updated_at');
+            
             //RELACIONES
             $table->foreign('id_rol')->references('id_rol')->on('rol');
-            $table->foreign('id_titulo_academico')->references('id_titulo_academico')->on('titulo_academico');
+            
         });
 
         Schema::create('planificacion_horarios',function(Blueprint $table){

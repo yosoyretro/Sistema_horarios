@@ -21,9 +21,6 @@ class UsuarioModel extends Model
     public function rol(){
         return $this->belongsTo(RolModel::class,'id_rol');
     }
-
-    public function tituloAcademico(){
-        return $this->belongsTo(TituloAcademicoModel::class,'id_titutlo_academico');
-    }
+    
 
 }
