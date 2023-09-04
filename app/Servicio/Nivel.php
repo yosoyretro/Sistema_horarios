@@ -73,7 +73,28 @@ class NivelServicio
 
         public function Consultar($data)
         {
-            //
+            $datos = null;
+            try {
+                switch ($data["tipo_consulta"]) {
+                    case 1:
+                        // Consulta por ID de nivel
+                        $datos = NivelModel::where('id_nivel', $data["data"])->get();
+                        break;
+                    case 2:
+                        // Consulta por número de nivel
+                        $datos = NivelModel::where('numero', $data["data"])->get();
+                        break;
+                    case 3:
+                        // Consulta por descripción de nivel
+                        $datos = NivelModel::where('descripcion', 'LIKE', '%' . $data["data"] . '%')->get();
+                        break;
+                }
+                $this->obj_tipo_respuesta->setdata($datos->first());
+            } catch (Exception $e) {
+                $this->obj_tipo_respuesta->setok(false);
+                $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
+            }
+            return $this->obj_tipo_respuesta->getdata();
         }
 
 

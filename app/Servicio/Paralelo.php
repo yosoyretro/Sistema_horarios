@@ -71,7 +71,24 @@ class ParaleloServicio
 
         public function Consultar($data)
         {
-            //
+            $datos = null;
+            try {
+                switch ($data["tipo_consulta"]) {
+                    case 1:
+                        // Consulta por ID de paralelo
+                        $datos = ParaleloModel::where('id_paralelo', $data["data"])->get();
+                        break;
+                    case 2:
+                        // Consulta por paralelo
+                        $datos = ParaleloModel::where('paralelo', $data["data"])->get();
+                        break;
+                }
+                $this->obj_tipo_respuesta->setdata($datos->first());
+            } catch (Exception $e) {
+                $this->obj_tipo_respuesta->setok(false);
+                $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
+            }
+            return $this->obj_tipo_respuesta->getdata();
         }
 
 

@@ -73,12 +73,28 @@ class PeriodoElectivoServicio
 
         public function ConsultarPeriodo($data)
         {
+            $datos = null;
             try {
-
-            }catch(Exception $e) {
-
+                switch ($data["tipo_consulta"]) {
+                    case 1:
+                        // Consulta por ID de periodo electivo
+                        $datos = PeriodoElectivoModel::where('id_periodo_electivo', $data["data"])->get();
+                        break;
+                    case 2:
+                        // Consulta por fecha de inicio
+                        $datos = PeriodoElectivoModel::where('fecha_inicio', $data["data"])->get();
+                        break;
+                    case 3:
+                        // Consulta por fecha de terminación
+                        $datos = PeriodoElectivoModel::where('fecha_termina', $data["data"])->get();
+                        break;
+                }
+                $this->obj_tipo_respuesta->setdata($datos->first());
+            } catch (Exception $e) {
+                $this->obj_tipo_respuesta->setok(false);
+                $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
             }
-            return ;
+            return $this->obj_tipo_respuesta->getdata();
         }
 
 

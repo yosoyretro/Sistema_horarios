@@ -90,53 +90,38 @@ class PlanificacionHorariosServicio
                 switch ($data["tipo_consulta"]) {
                     case 1:
                         // Consulta por ID de planificación de horarios
-                        $datos = PlanificacionHorarioModelo::findOrFail($data["data"]);
+                        $datos = PlanificacionHorarioModelo::where('id_planificacion_horarios', $data["data"])->get();
                         break;
                     case 2:
-                        // Consulta por diferentes criterios de búsqueda
-                        $query = PlanificacionHorarioModelo::query();
-                        
-                        if (isset($data["id_asignatura"])) {
-                            $query->where('id_asignatura', $data["id_asignatura"]);
-                        }
-                        
-                        if (isset($data["id_nivel"])) {
-                            $query->where('id_nivel', $data["id_nivel"]);
-                        }
-                        
-                        if (isset($data["id_paralelo"])) {
-                            $query->where('id_paralelo', $data["id_paralelo"]);
-                        }
-                        
-                        if (isset($data["id_dia"])) {
-                            $query->where('id_dia', $data["id_dia"]);
-                        }
-                        
-                        if (isset($data["id_periodo_electivo"])) {
-                            $query->where('id_periodo_electivo', $data["id_periodo_electivo"]);
-                        }
-                        
-                        if (isset($data["id_administracion_academica"])) {
-                            $query->where('id_administracion_academica', $data["id_administracion_academica"]);
-                        }
-                        
-                        $datos = $query->get();
+                        // Consulta por ID de asignatura
+                        $datos = PlanificacionHorarioModelo::where('id_asignatura', $data["data"])->get();
                         break;
-                    default:
-                        $this->obj_tipo_respuesta->setok(false);
-                        $this->obj_tipo_respuesta->seterror('Tipo de consulta inválido', false);
-                        return $this->obj_tipo_respuesta->getdata();
+                    case 3:
+                        // Consulta por ID de nivel
+                        $datos = PlanificacionHorarioModelo::where('id_nivel', $data["data"])->get();
+                        break;
+                    case 4:
+                        // Consulta por ID de paralelo
+                        $datos = PlanificacionHorarioModelo::where('id_paralelo', $data["data"])->get();
+                        break;
+                    case 5:
+                        // Consulta por ID de día
+                        $datos = PlanificacionHorarioModelo::where('id_dia', $data["data"])->get();
+                        break;
+                    case 6:
+                        // Consulta por ID de período electivo
+                        $datos = PlanificacionHorarioModelo::where('id_periodo_electivo', $data["data"])->get();
+                        break;
+                    case 7:
+                        // Consulta por ID de administración académica
+                        $datos = PlanificacionHorarioModelo::where('id_administracion_academica', $data["data"])->get();
+                        break;
                 }
-        
-                // Configurar la respuesta exitosa en el objeto TypeResponse
-                $this->obj_tipo_respuesta->setok(true);
-                $this->obj_tipo_respuesta->setdata($datos);
+                $this->obj_tipo_respuesta->setdata($datos->first());
             } catch (Exception $e) {
-                // Configurar la respuesta de error en el objeto TypeResponse
                 $this->obj_tipo_respuesta->setok(false);
-                $this->obj_tipo_respuesta->seterror('Error en el servicio de consulta', false);
+                $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
             }
-        
             return $this->obj_tipo_respuesta->getdata();
         }
 

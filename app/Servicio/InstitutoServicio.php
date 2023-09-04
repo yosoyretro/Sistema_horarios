@@ -81,19 +81,24 @@ class InstitutoServicio
         {
             $datos = null;
             try {
-                switch($data["tipo_consulta"]){
+                switch ($data["tipo_consulta"]) {
                     case 1:
-                        //consulta por código
-                        $datos = InstitutoModel::where('codigo', $data["data"])->get();
-                    
+                        // Consulta por ID de instituto
+                        $datos = InstitutoModel::where('id_instituto', $data["data"])->get();
+                        break;
                     case 2:
-                        $datos = InstitutoModel::where('nombre', 'LIKE', '%' . $data["data"] . '%')->get();   
+                        // Consulta por nombre de instituto
+                        $datos = InstitutoModel::where('nombre', 'LIKE', '%' . $data["data"] . '%')->get();
+                        break;
+                    case 3:
+                        // Consulta por código de instituto
+                        $datos = InstitutoModel::where('codigo', $data["data"])->get();
+                        break;
                 }
-                $this->obj_tipo_respuesta->setdata($datos[0]);
-
-            }catch (Exception $e) {
+                $this->obj_tipo_respuesta->setdata($datos->first());
+            } catch (Exception $e) {
                 $this->obj_tipo_respuesta->setok(false);
-                $this->obj_tipo_respuesta->seterror('Lo sentimos error en la consulta', false);
+                $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
             }
             return $this->obj_tipo_respuesta->getdata();
         }

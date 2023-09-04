@@ -73,41 +73,27 @@ class Control_PermisosServicio
 
         public function ConsultarControl($data)
         {
+            $datos = null;
             try {
                 switch ($data["tipo_consulta"]) {
                     case 1:
                         // Consulta por ID de control de permisos
-                        $datos = ContolPermisoModel::findOrFail($data["data"]);
+                        $datos = ContolPermisoModel::where('id_control_permisos', $data["data"])->get();
                         break;
                     case 2:
-                        // Consulta por ID de rol y/o ID de permiso
-                        $query = ContolPermisoModel::query();
-                        
-                        if (isset($data["id_rol"])) {
-                            $query->where('id_rol', $data["id_rol"]);
-                        }
-                        
-                        if (isset($data["id_permiso"])) {
-                            $query->where('id_permiso', $data["id_permiso"]);
-                        }
-                        
-                        $datos = $query->get();
+                        // Consulta por ID de rol
+                        $datos = ContolPermisoModel::where('id_rol', $data["data"])->get();
                         break;
-                    default:
-                        $this->obj_tipo_respuesta->setok(false);
-                        $this->obj_tipo_respuesta->seterror('Tipo de consulta inválido', false);
-                        return $this->obj_tipo_respuesta->getdata();
+                    case 3:
+                        // Consulta por ID de permiso
+                        $datos = ContolPermisoModel::where('id_permiso', $data["data"])->get();
+                        break;
                 }
-        
-                // Configurar la respuesta exitosa en el objeto TypeResponse
-                $this->obj_tipo_respuesta->setok(true);
-                $this->obj_tipo_respuesta->setdata($datos);
+                $this->obj_tipo_respuesta->setdata($datos->first());
             } catch (Exception $e) {
-                // Configurar la respuesta de error en el objeto TypeResponse
                 $this->obj_tipo_respuesta->setok(false);
-                $this->obj_tipo_respuesta->seterror('Error en el servicio de consulta', false);
+                $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
             }
-        
             return $this->obj_tipo_respuesta->getdata();
         }
 

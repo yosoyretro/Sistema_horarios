@@ -78,37 +78,22 @@ class AsignaturaServicio
                 switch ($data["tipo_consulta"]) {
                     case 1:
                         // Consulta por ID de asignatura
-                        $datos = AsignaturaModel::findOrFail($data["data"]);
+                        $datos = AsignaturaModel::where('id_asignatura', $data["data"])->get();
                         break;
                     case 2:
-                        // Consulta por descripción o código
-                        $query = AsignaturaModel::query();
-                        
-                        if (isset($data["descripcion"])) {
-                            $query->where('descripcion', 'LIKE', '%' . $data["descripcion"] . '%');
-                        }
-                        
-                        if (isset($data["codigo"])) {
-                            $query->where('codigo', $data["codigo"]);
-                        }
-                        
-                        $datos = $query->get();
+                        // Consulta por descripción de asignatura
+                        $datos = AsignaturaModel::where('descripcion', 'LIKE', '%' . $data["data"] . '%')->get();
                         break;
-                    default:
-                        $this->obj_tipo_respuesta->setok(false);
-                        $this->obj_tipo_respuesta->seterror('Tipo de consulta inválido', false);
-                        return $this->obj_tipo_respuesta->getdata();
+                    case 3:
+                        // Consulta por código de asignatura
+                        $datos = AsignaturaModel::where('codigo', $data["data"])->get();
+                        break;
                 }
-        
-                // Configurar la respuesta exitosa en el objeto TypeResponse
-                $this->obj_tipo_respuesta->setok(true);
-                $this->obj_tipo_respuesta->setdata($datos);
+                $this->obj_tipo_respuesta->setdata($datos->first());
             } catch (Exception $e) {
-                // Configurar la respuesta de error en el objeto TypeResponse
                 $this->obj_tipo_respuesta->setok(false);
-                $this->obj_tipo_respuesta->seterror('Error en el servicio de consulta', false);
+                $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
             }
-        
             return $this->obj_tipo_respuesta->getdata();
         }
 

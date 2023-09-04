@@ -78,18 +78,24 @@ class CarreraServicio
         {
             $datos = null;
             try {
-                switch($data["tipo_consulta"]){
+                switch ($data["tipo_consulta"]) {
                     case 1:
-                        //consula por código
-                        $datos = CarreraModel::where('codigo', $data["data"])->get();
+                        // Consulta por ID de carrera
+                        $datos = CarreraModel::where('id_carrera', $data["data"])->get();
+                        break;
                     case 2:
+                        // Consulta por nombre de carrera
                         $datos = CarreraModel::where('nombre', 'LIKE', '%' . $data["data"] . '%')->get();
+                        break;
+                    case 3:
+                        // Consulta por código de carrera
+                        $datos = CarreraModel::where('codigo', $data["data"])->get();
+                        break;
                 }
-                $this->obj_tipo_respuesta->setdata($datos[0]);
-
-            }catch (Exception $e) {
-                $this-> obj_tipo_respuesta->setok(false);
-                $this->obj_tipo_respuesta->seterror('Lo sentimos error en la consulta', false);
+                $this->obj_tipo_respuesta->setdata($datos->first());
+            } catch (Exception $e) {
+                $this->obj_tipo_respuesta->setok(false);
+                $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
             }
             return $this->obj_tipo_respuesta->getdata();
         }

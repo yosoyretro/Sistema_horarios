@@ -71,7 +71,24 @@ class RolServicio
 
         public function Consultar($data)
         {
-            //
+            $datos = null;
+            try {
+                switch ($data["tipo_consulta"]) {
+                    case 1:
+                        // Consulta por ID de rol
+                        $datos = RolModel::where('id_rol', $data["data"])->get();
+                        break;
+                    case 2:
+                        // Consulta por descripción de rol
+                        $datos = RolModel::where('descripcion', 'LIKE', '%' . $data["data"] . '%')->get();
+                        break;
+                }
+                $this->obj_tipo_respuesta->setdata($datos->first());
+            } catch (Exception $e) {
+                $this->obj_tipo_respuesta->setok(false);
+                $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
+            }
+            return $this->obj_tipo_respuesta->getdata();
         }
 
 
