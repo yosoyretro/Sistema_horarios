@@ -18,7 +18,7 @@
     <link href="{{ asset('css/style-horarios.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
 </head>
 
 <body>
@@ -31,14 +31,14 @@
                             <div class="card-body">
                                 <h1>Acceso</h1>
                                 <p class="text-medium-emphasis">Iniciar sesión en su cuenta</p>
-                                
+
                                 @if($mensajes_temporales)
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                        <strong>Error : </strong>{{ $mensajes_temporales["msg"] }}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>Error : </strong>{{ $mensajes_temporales["msg"] }}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
+                                </div>
                                 @endif
-                                
+
 
                                 <form method="POST" action="{{ route('login_controlador') }}">
                                     @csrf
@@ -46,7 +46,7 @@
                                         <span class="input-group-text fondo-istg">
                                             <i class="text-white fas fa-user"></i>
                                         </span>
-                                        <input class="form-control font-lg" name="user"  type="text" placeholder="Usuario" required>
+                                        <input class="form-control font-lg" name="user" type="text" placeholder="Usuario" required>
                                     </div>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text fondo-istg">
@@ -88,8 +88,9 @@
             </div>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
+    </script>
 
 </body>
 
