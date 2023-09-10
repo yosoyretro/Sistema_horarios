@@ -2,7 +2,7 @@
 
 namespace App\Servicio;
 
-class pruebaServicio
+class PruebaServicio
 {
     
         public function Create($data)
