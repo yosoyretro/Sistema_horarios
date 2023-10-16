@@ -1,70 +1,70 @@
 <?php
 
-namespace App\Servicio;
+namespace App\service;
 
 use App\Http\Responses\TypeResponse;
-use App\Models\RolModel;
+use App\Models\DiasModel;
 use Exception;
 
-class RolServicio
+class DiasServicio
 {
-    protected $obj_rol_modelo;
+    protected $obj_dias_modelo;
     protected $obj_tipo_respuesta;
     public function __construct()
     {
-        $this->obj_rol_modelo = new RolModel();
+        $this->obj_dias_modelo = new DiasModel();
         $this->obj_tipo_respuesta = new TypeResponse();
     }
     
-        public function Create($rolData)
+        public function CreateDias($diasData)
         {
             try {
-                //crear nuevo rol
-                $nuevoRol = new RolModel();
-                $nuevoRol->descripcion = $rolData['descripcion'];
+                //crear nuevo dias
+                $nuevoDia = new DiasModel();
+                $nuevoDia->dia = $diasData['dia'];
 
-                $nuevoRol->save();
+                $nuevoDia->save();
 
                 $this->obj_tipo_respuesta->setok(true);
-                $this->obj_tipo_respuesta->setdata($nuevoRol);
+                $this->obj_tipo_respuesta->setdata($nuevoDia);
             }catch(Exception $e) {
                 $this->obj_tipo_respuesta->setok(false);
-                $this->obj_tipo_respuesta->seterror("Error al crear el Rol", false);
+                $this->obj_tipo_respuesta->seterror("Error al crear el dia", false);
             }
             return $this->obj_tipo_respuesta->getdata();
         }
 
-        public function Update($rolData)
+        public function UpdateDias($diasData)
         {
             try{
-                $rol = RolModel::findOrFail($rolData['id_rol']);
+                $dias = DiasModel::findOrFail($diasData['id_dias']);
 
-                $rol->descripcion= $rolData['descripcion'];
+                $dias->dia= $diasData['dia'];
 
-                $rol->save();
+                $dias->save();
 
                 $this->obj_tipo_respuesta->setok(true);
-                $this->obj_tipo_respuesta->setdata($rol);
+                $this->obj_tipo_respuesta->setdata($dias);
             }catch(Exception $e) {
                 $this->obj_tipo_respuesta->setok(false);
-                $this->obj_tipo_respuesta->seterror('Error al editar el rol', false);
+                $this->obj_tipo_respuesta->seterror('Error al editar el dia', false);
             }
             return $this->obj_tipo_respuesta->getdata();
         }
 
-        public function Delete($rolData)
+        public function DeleteDias($diasData)
         {
             try {
-                $rol = RolModel::findOrFail($rolData);
+                $dias = DiasModel::findOrFail($diasData);
 
-                $rol->estado = 'I';
-                $rol->save();
+                $dias->estado = 'I';
+                $dias->save();
 
                 $this->obj_tipo_respuesta->setok(true);
-                $this->obj_tipo_respuesta->setdata($rol);
+                $this->obj_tipo_respuesta->setdata($dias);
             }catch(Exception $e) {
                 $this->obj_tipo_respuesta->setok(false);
-                $this->obj_tipo_respuesta->seterror('Error al eliminar el rol', false);
+                $this->obj_tipo_respuesta->seterror('Error al eliminar el dia', false);
             }
             return $this->obj_tipo_respuesta->getdata();
         }
@@ -75,12 +75,12 @@ class RolServicio
             try {
                 switch ($data["tipo_consulta"]) {
                     case 1:
-                        // Consulta por ID de rol
-                        $datos = RolModel::where('id_rol', $data["data"])->get();
+                        // Consulta por ID de días
+                        $datos = DiasModel::where('id_dias', $data["data"])->get();
                         break;
                     case 2:
-                        // Consulta por descripción de rol
-                        $datos = RolModel::where('descripcion', 'LIKE', '%' . $data["data"] . '%')->get();
+                        // Consulta por nombre de día
+                        $datos = DiasModel::where('dia', 'LIKE', '%' . $data["data"] . '%')->get();
                         break;
                 }
                 $this->obj_tipo_respuesta->setdata($datos->first());

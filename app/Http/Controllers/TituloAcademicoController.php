@@ -2,163 +2,101 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TituloAcademicoModel;
 use Illuminate\Http\Request;
 use App\Http\Responses\TypeResponse;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Collection;
-use App\Servicio\TituloAcademicoServicio;
-use Illuminate\Auth\Events\Validated;
+use App\Services\TituloAcademicoServicio;
+use App\Services\Validaciones;
+use Exception;
 use Illuminate\Support\Facades\Log;
-use PhpParser\Builder\Function_;
 
 class TituloAcademicoController extends Controller
 {
-    protected $tituloacademicoServicio;
- 
-    public function __construct(TituloAcademicoServicio $tituloAcademicoServicio)
-    {
-        $this->tituloacademicoServicio = $tituloAcademicoServicio;
-    }
- 
+    
     //VISTA DEL TITULO ACADEMICO
-    public function showTituloAcademicoForm(){
-        $mensajes_titulo = session('data');
-        return view('titulo', compact('mensajes_titulo'));
-
+    private $validaciones_clase,$servicio_titulos_academico_clase;
+    public function __construct()
+    {
+        $this->validaciones_clase = new Validaciones();
+        $this->servicio_titulos_academico_clase = new TituloAcademicoServicio();
     }
-
-    //CONTROLADOR TITULO-ACADEMICO
-    public function TituloAcademicoController(Request $request){
-        $descripcion = $request->input('descripcion');
-        $codigo = $request->input('codigo');
-
-        //VALIDACION DE DATOS DEL FORMULARIO DE TITULO ACADEMICO
-        $request->validate([
-            'descripcion' => 'required|string',
-            'codigo' => 'required|string'
-        ]);
-        
-         // Crear título académico
-         $data = [
-            'descripcion' => $descripcion,
-            'codigo' => $codigo
-         ];
-        
-        $obj_tipo_respuesta = new TypeResponse();
-
-        $tituloacademicoServicio = new TituloAcademicoServicio();
-        $respuesta = $this->tituloacademicoServicio->CreateTitulo($data);
-
-        if ($respuesta['ok'] && $respuesta['data']->descripcion === $descripcion && $respuesta['data']->codigo === $codigo){
-            
-            return redirect(route('tituloacademico')); 
-        }else {
-            $obj_tipo_respuesta->setok(false);
-            $obj_tipo_respuesta->setmensagge('Datos de Titulo Academico invalidos');
+    public function showTituloAcademico(Request $request){
+        try{
+            $response = new TypeResponse();
+            $servicio_titulos_academico = $this->servicio_titulos_academico_clase->consultarTitulo(6);
+            $response->setdata($servicio_titulos_academico["data"]);
+        }catch(Exception $e){
+            $response->setok(false);
+            $response->seterror($e->getMessage(),$e->getLine());
         }
-
-        return redirect(route('tituloacademico'))->with('data', $obj_tipo_respuesta->getdata());
-    }   
-
+        return json_encode($response->getdata());
+    }
     // Crear TITULO ACADEMICO
     public function createTituloAcademico(Request $request){
-     
-        $descripcion = $request->input('descripcion');
-        $codigo = $request->input('codigo');
-
-        //VALIDACION DE DATOS DEL FORMULARIO DE TITULO ACADEMMICO
-        $request->validate([
-            'descripcion' => 'required|string',
-            'codigo' => 'required|string'
-        ]);
-
-        //CREAR TITULO ACADEMICO
-        $data = [
-            'descripcion' => $descripcion,
-            'codigo' => $codigo
-        ];
-
-        $respuesta = $this->tituloacademicoServicio->CreateTitulo($data);
-
-        if ($respuesta['ok'] && $respuesta['data']->descripcion === $descripcion && $respuesta['data']->codigo === $codigo) {
-            return redirect(route('tituloacademico'));
-        }else {
-            $obj_tipo_respuesta = new TypeResponse();
-            $obj_tipo_respuesta->setok(false);
-            $obj_tipo_respuesta->setmensagge('Datos de Titulo Academico Invalidos');
-
-            return redirect(route('tituloacademico'))->with('data', $obj_tipo_respuesta->getdata());
+        
+        try{
+            $response = new TypeResponse();
+            $datos = [
+                'descripcion' => $request->input('descripcion'),
+                'codigo' => $request->input('codigo')
+            ];
+            
+            $validacion_titulo_academico = $this->validaciones_clase->validarRegistroForTituloAcademico(2,array_merge($datos,["tipo_validacion_existencia" => true]));
+            if(!$validacion_titulo_academico["ok"])throw new Exception($validacion_titulo_academico["msg_error"]);
+            $request_servicio = $this->servicio_titulos_academico_clase->CreateTitulo($datos);
+            if(!$request_servicio["ok"])throw new Exception($request_servicio["msg_error"]) ;
+            $response->setmensagge("Titutlo Academico Guardado con exito !");
+        }catch(Exception $e){
+            $response->setok(false);
+            $response->seterror($e->getMessage(),$e);
         }
-    }
+
+        return json_decode($response->getdata());
+    }  
 
     // ACTUALIZAR TITULO ACADEMICO
-    public function updateTituloAcademico(Request $request){
-        $idTituloAcademico = $request->input('id_titulo_academico');
-        $descripcion = $request->input('descripcion');
-        $codigo = $request->input('codigo');
+    public function updateTituloAcademico(Request $request){    
 
-        //VALIDACION DE DATOS DEL FORMULARIO  DE ACTUALIZACION DE TITULO ACADEMICO
-        $request->validate([
-            'id_titulo_academico' => 'required|string',
-            'descripcion' => 'required|string',
-            'codigo' => 'required|string'
-        ]);
-
-        //ACTUALIZAR TITULO ACADEMICO 
-        $data = [
-            'id_titulo_academico' => $idTituloAcademico,
-            'descripcion' => $descripcion,
-            'codigo' => $codigo
-        ];
-
-        $respuesta = $this->tituloacademicoServicio->UpdateTitulo($data);
-
-        if ($respuesta['ok'] && $respuesta['data']->descripcion === $descripcion && $respuesta['data']->codigo === $codigo) {
-            return redirect(route('tituloacademico'));
-        }else {
-            $obj_tipo_respuesta = new TypeResponse();
-            $obj_tipo_respuesta->setok('false');
-            $obj_tipo_respuesta->setmensagge('Error al actulizar el Titulo Academico');
-
-            return redirect(route('tituloacademico'))->with('data', $obj_tipo_respuesta->getdata());
+        try{
+            $response = new TypeResponse();
+            // foreach($request->all() as $key => $values){
+                
+            //     if (!in_array($key,["id_titulo_academico","codigo","descripcion"]))throw new Exception("Los campos son requeridos");
+            // }
+            $validacion_titulo_academico = $this->validaciones_clase->validarRegistroForTituloAcademico(1,$request->all());
+            if(!$validacion_titulo_academico["ok"])throw new Exception($validacion_titulo_academico["msg_error"]);
+            if(!$validacion_titulo_academico["ok"] && !$validacion_titulo_academico["data"])throw new Exception($validacion_titulo_academico["exception"]);
+    
+            $servicio_titulos_academico = $this->servicio_titulos_academico_clase->updateTituloAcademico($request);
+            if(!$servicio_titulos_academico["ok"])throw new Exception($servicio_titulos_academico["msg_error"]);
+            $response->setmensagge("Titulo actualizado con exito");
+        }catch(Exception $e){
+            $response->setok(false);
+            $response->seterror($e->getMessage(),$e->getLine());
         }
-        
+        return json_encode($response->getdata());
     }
     
-    //ELIMINAR TITULO ACADEMICO
-    public function deleteTituloAcademico(Request $request){
-        $idTituloAcademico = $request->input('id_titulo_academico');
+    // //ELIMINAR TITULO ACADEMICO
+    public function deleteTituloAcademico(Request $request)
+    {
+        try{
+            $response = new TypeResponse();
+            
+            $validacion_titulo_academico = $this->validaciones_clase->validarRegistroForTituloAcademico(1,["id_titulo_academico"=>$request->input('id_titulo_academico')]);
+            
+            if(!$validacion_titulo_academico["ok"])throw new Exception($validacion_titulo_academico["msg_error"]);
+            if(!$validacion_titulo_academico["ok"] && !$validacion_titulo_academico["data"])throw new Exception($validacion_titulo_academico["exception"]);
 
-        // VALIDACION DE DATOS PARA EL FORMMULARIO DE ELIMINACION DE TITULO ACADEMICO
-        $request -> validate([
-            'id_titulo_academico' => 'required|integer',
-        ]);
+            $servicio_titulos_academico = $this->servicio_titulos_academico_clase->deleteTituloAcademico($request->input('id_titulo_academico'));
+            if(!$servicio_titulos_academico["ok"])throw new Exception($servicio_titulos_academico["msg_error"]);
+
+            $response->setmensagge("Registro eliminado con exito");
+        }catch(Exception $e){
+            $response->setok(false);
+            $response->setmensagge("A ocurrido un error en eliminar el titulo academico");
+            $response->seterror($e->getMessage(),$e->getLine());
+        }   
         
-        //ELIMINAR TITULO ACADEMICO
-        $respuesta =$this->tituloacademicoServicio->DeleteTitulo($idTituloAcademico);
-        
-        if ($respuesta['ok']) {
-            return redirect(route('tituloacademico'));
-        }else {
-            $obj_tipo_respuesta = new TypeResponse();
-            $obj_tipo_respuesta->setok(false);
-            $obj_tipo_respuesta->setmensagge('Error al eliminar el titulo academico');
-
-            return redirect(route('tituloacademico'))->with('data', $obj_tipo_respuesta->getdata());
-        }
-    }
-
-    //CONSULTAR TITULO ACADEMICO 
-    public function consultarTituloAcademico(Request $request){
-
-        $tipo_Consulta = $request->input('tipo_consulta');
-        $data = $request->input('data');
-
-        //VALIDACION DE DATOS DEL FORMULARIO DE CONSULTA DE TITULO ACADEMICO 
-        $request->validate([
-            'tipo_consulta'=> 'required|integer',
-            'data' => 'required'
-        ]);
+        return json_encode($response->getdata());
     }
 }

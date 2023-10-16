@@ -12,11 +12,9 @@ class TituloAcademicoModel extends Model
     protected $primaryKey = 'id_titulo_academico';
     
     const CREATED_AT = 'fecha_creacion';
-    const UPDATE_AT = 'fecha_actualizacion';
+    const UPDATED_AT = 'fecha_actualizacion';
 
     protected $fillable = [
-        'descripcion','codigo'
+        'descripcion','codigo','fecha_creacion','fecha_actualizacion','estado'
     ];
-    
-    
 }

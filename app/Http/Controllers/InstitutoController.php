@@ -7,6 +7,7 @@ use App\Models\InstitutoModel;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Collection;
 use App\Servicio\InstitutoServicio;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -18,12 +19,11 @@ class InstitutoController extends Controller
         $mensajes_instituto = session('data');
         return view('instituto', compact('mensajes_instituto'));
     }
-
+    
     //CONTROLADOR DEL INSTITUTO
     public function instituto_controller(Request $request){
         $nombre = $request->input('nombre');
         $codigo = $request->input('codigo');
-
         //VALIDACION DEL INSTITUTO
         $request->validate([
             'nombre' => 'required|string',
@@ -37,7 +37,6 @@ class InstitutoController extends Controller
             'data' => $nombre
         ]);
 
-        
         $institutoServicio = new InstitutoServicio();
         $respuesta = $institutoServicio->CreateInstituto($data);
 
@@ -56,4 +55,23 @@ class InstitutoController extends Controller
 
         return redirect(route('instituto'))->with('data', $obj_tipo_respuesta->getdata());
     }
+    public function createInstituto(Request $request){
+        
+        try{
+            $codigo = $request->input("codigo");
+            $nombre = $request->input("nombre");
+        }catch(Exception $e){
+            
+        }
+    }
+
+    public function updateInstituto(Request $request){
+        
+    }
+    public function deleteInstituto(Request $request){
+        
+    }
+
+    
+
 }
