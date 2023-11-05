@@ -46,6 +46,9 @@ class TituloAcademicoController extends Controller
             if(!$request_servicio["ok"])throw new Exception($request_servicio["msg_error"]) ;
             $response->setmensagge("Titutlo Academico Guardado con exito !");
         }catch(Exception $e){
+            log::alert("Funcion de createTituloAcademico");
+            log::alert("Linea del error :" . $e->getLine());
+
             $response->setok(false);
             $response->seterror($e->getMessage(),$e);
         }

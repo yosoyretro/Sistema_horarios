@@ -16,10 +16,9 @@ return new class extends Migration
             $table->bigIncrements('id_instituto');
             $table->string('nombre');
             $table->string('codigo');
-            //CAMPOS OBLIGATIORIOS           ¡
             $table->string('estado', 2)->default('A');
-            $table->timestamp('created_at')->useCurrent(); // Nombre corregido a 'created_at'
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('fecha_creacion')->useCurrent(); // Nombre corregido a 'created_at'
+            $table->timestamp('fecha_actualizacion')->useCurrent();
         });
 
         Schema::create('carrera', function (Blueprint $table) {
