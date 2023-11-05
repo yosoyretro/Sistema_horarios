@@ -83,21 +83,42 @@ class Validaciones
                         "id_instituto" => $array_asociativo["id_instituto"]
                     ]);
                     break;
+                case 2:
+                    //validar registro por el nombre y codigo
+                    
+                    if (!$array_asociativo["codigo"] && !$array_asociativo["nombre"]) throw new Exception("Error la clave del id_titulo_academico no existe");
+                    if (!is_numeric($array_asociativo["codigo"])) throw new Exception("El dato no debe de ser string");
+                    $response_instituto_academico = $servicio_insituto->Consultar([
+                        "tipo_consulta" => 5,
+                        "codigo" => $array_asociativo["codigo"],
+                        "nombre" => $array_asociativo["nombre"]
+                    ]);
+                    log::alert("ESTO ES LO QUE ME RETORNI ");
+                    log::alert($response_instituto_academico);
+
+                    break;
             }
+
+            log::alert("ESTO ES LO QUE RETORNA EL ISNTITUTLO RESPONSE");
+            log::alert($response_instituto_academico);
 
             if ((isset($array_asociativo["tipo_validacion_existencia"])) && ($array_asociativo["tipo_validacion_existencia"] == false)) {
                 if (empty($response_instituto_academico["data"][0])) throw new Exception(($array_asociativo["descripcion"] ?? "Registro") . " no existe");
             } else {
                 if (!empty($response_instituto_academico["data"][0])) throw new Exception(($array_asociativo["descripcion"] ?? "Registro") . " si existe");
             }
-
             if (!$response_instituto_academico["ok"]) throw new Exception($response_instituto_academico["msg_error"]);
-            $response->setdata($response_instituto_academico["data"][0]);
+
+            $response->setdata($response_instituto_academico);
         } catch (Exception $e) {
+
             log::alert("El error esta en las validaciones");
+            log::alert("Linea del error : " . $e->getLine());
+            log::alert($e->getMessage());
             $response->setok(false);
             $response->seterror($e->getMessage(), $e->getLine());
         }
+        log::alert("ESTO ES LO QUE VOY A RETORBAR");
         log::alert($response->getdata());
         return $response->getdata();
     }
@@ -127,18 +148,21 @@ class Validaciones
                     break;
                 case 2:
                     //validar por codigo o por descripcion
-                    if (!isset($array_asociativo["codigo"]) || !isset($array_asociativo["descripcion"])) throw new Exception("Debes de enviar correctamente los datos");
+
+                    if (!isset($array_asociativo["codigo"]) && !isset($array_asociativo["descripcion"])) throw new Exception("Debes de enviar correctamente los datos");
+
                     $response_asignatura = $servicio_asignatura->Consultar([
                         "tipo_consulta" => 5,
                         "codigo" => $array_asociativo["codigo"],
                         "descripcion" => $array_asociativo["descripcion"],
                     ]);
+
                     $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
                         "codigo" => "40402"
                     ]);
 
                     if (!$response_mensaje["ok"]) throw new Exception("Error interno en el servidor");
-
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
                     break;
                 case 3:
                     //validar por codigo por descripcion y por id 
@@ -149,21 +173,16 @@ class Validaciones
                         "codigo" => $array_asociativo["codigo"],
                         "descripcion" => $array_asociativo["descripcion"],
                     ]);
-                    
+
                     $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
                         "codigo" => "40402"
                     ]);
-                    
+
                     $mensaje = $response_mensaje["data"][0]["mensaje"];
                     break;
             }
-            log::alert("soy el mensaje");
-            log::alert($mensaje);
-            log::alert("SOY EL ARRAY");
-            log::alert($array_asociativo);
 
             if ((isset($array_asociativo["tipo_validacion_existencia"])) && ($array_asociativo["tipo_validacion_existencia"] == false)) {
-                log::alert("SOY EL IF");
                 if (empty($response_asignatura["data"][0])) throw new Exception($mensaje);
             } else {
                 log::alert("SOY EL ELSE");
@@ -174,6 +193,7 @@ class Validaciones
             $response->setdata($response_asignatura["data"]);
         } catch (Exception $e) {
             log::alert("El error esta en las validaciones");
+            log::alert("LINEA DEL ERROR : " . $e->getLine());
             log::alert($e->getMessage());
             $response->setok(false);
             $response->seterror($e->getMessage(), $e->getLine());

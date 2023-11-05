@@ -20,25 +20,29 @@ class InstitutoServicio
 
     public function CreateInstituto($datos_array)
     {
+        $response = new TypeResponse();
+
         try {
-            log::alert($datos_array);
             $nuevoInstituto = InstitutoModel::create(
                 [
-                    "codigo"=>$datos_array["codigo"],
-                    "nombre"=>$datos_array["nombre"],
-                    "estado"=>"A",
+                    "codigo" => $datos_array["codigo"],
+                    "nombre" => $datos_array["nombre"],
+                    "estado" => "A",
                     "fecha_creacion" => now(),
                     "fecha_actualizacion" => now(),
                 ]
             );
-            
-            $this->obj_tipo_respuesta->setok(true);
-            $this->obj_tipo_respuesta->setdata($nuevoInstituto);
+
+            $response->setok(true);
+            $response->setdata($nuevoInstituto);
         } catch (Exception $e) {
-            $this->obj_tipo_respuesta->setok(false);
-            $this->obj_tipo_respuesta->seterror($e->getMessage(),false);
+            log::alert("SOY EL MENSAJE");
+            log::alert($e->getMessage());
+            $response->setok(false);
+            $response->seterror($e->getMessage(), false);
         }
-        return $this->obj_tipo_respuesta->getdata();
+
+        return $response->getdata();
     }
 
     public function UpdateInstituto($institutoData)
@@ -46,10 +50,10 @@ class InstitutoServicio
         $response = new TypeResponse();
         try {
 
-            $instituto = InstitutoModel::where("id_instituto",$institutoData['id_instituto'])->update(
+            $instituto = InstitutoModel::where("id_instituto", $institutoData['id_instituto'])->update(
                 [
-                    "codigo"=>$institutoData['codigo'],
-                    "nombre"=>$institutoData['nombre'],
+                    "codigo" => $institutoData['codigo'],
+                    "nombre" => $institutoData['nombre'],
                     "fecha_actualizacion" => now()
                 ]
             );
@@ -69,9 +73,9 @@ class InstitutoServicio
 
         try {
 
-            $instituto = InstitutoModel::where("id_instituto",$institutoData)->update(
+            $instituto = InstitutoModel::where("id_instituto", $institutoData)->update(
                 [
-                    "estado"=>"I",
+                    "estado" => "I",
                     "fecha_actualizacion" => now()
                 ]
             );
@@ -86,31 +90,44 @@ class InstitutoServicio
 
     public function Consultar($data)
     {
+        $response = new TypeResponse();
         $datos = null;
         try {
             switch ($data["tipo_consulta"]) {
                 case 1:
                     // Consulta por ID de instituto
-                    $datos = InstitutoModel::where('id_instituto', $data["id_instituto"])->where('estado','A')->get();
+                    $datos = InstitutoModel::where('id_instituto', $data["id_instituto"])->where('estado', 'A')->get();
                     break;
                 case 2:
                     // Consulta por nombre de instituto
-                    $datos = InstitutoModel::where('nombre', 'LIKE', '%' . $data["nombre"] . '%')->where('estado','A')->get();
+                    $datos = InstitutoModel::where('nombre', 'LIKE', '%' . $data["nombre"] . '%')->where('estado', 'A')->get();
                     break;
                 case 3:
                     // Consulta por código de instituto
-                    $datos = InstitutoModel::where('codigo', $data["codigo"])->where('estado','A')->get();
+                    $datos = InstitutoModel::where('codigo', $data["codigo"])->where('estado', 'A')->get();
                     break;
                 case 4:
-                    $datos = InstitutoModel::where('estado','A')->get();
+                    $datos = InstitutoModel::where('estado', 'A')->get();
+                    break;
+                case 5:
+                    $datos = InstitutoModel::where('estado', '=', 'A')
+                        ->where(function ($query) use ($data) {
+                            $query->where('codigo', $data["codigo"])
+                                ->orWhere('nombre', $data["nombre"]);
+                        })
+                        ->get();
+
                     break;
             }
-            $this->obj_tipo_respuesta->setdata($datos);
-            log::alert(collect($datos));
+
+            $response->setdata($datos);
+            log::alert("HASTA AQUI VOYU BIEN ");
+            log::alert(collect($response->getdata()));
         } catch (Exception $e) {
-            $this->obj_tipo_respuesta->setok(false);
-            $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
+            $response->setok(false);
+            $response->seterror('Lo sentimos, error en el servicio', false);
         }
-        return $this->obj_tipo_respuesta->getdata();
+
+        return $response->getdata();
     }
 }

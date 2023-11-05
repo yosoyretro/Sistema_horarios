@@ -11,15 +11,17 @@ class InstitutoModel extends Model
     protected $table = 'instituto';
     protected $primaryKey = 'id_instituto';
     
+    protected $fillable = ['codigo','nombre'];
+
     const CREATED_AT = 'fecha_creacion';
     const UPDATED_AT = 'fecha_actualizacion';
-
-    protected $fillable = [
-        'codigo',
-        'nombre',
-        'estado',
-        'fecha_creacion',
-        'fecha_actualizacion'
-    ];
+    
+    //use HasFactory;
+    // protected $table = 'asignatura';
+    // protected $primaryKey = 'id_asignatura';
+    // protected $fillable = ['descripcion','codigo'];
+    // const CREATE_AT = 'fecha_creacion';
+    // const UPDATE_AT = 'fecha_actualizacion';
+    
     
 }

@@ -28,10 +28,10 @@ class AsignaturaController extends Controller
 
             $validaciones = $this->validaciones->validarRegistroForAsignatura(2, [
                 "codigo" => $request->input('codigo'),
-                "nombre" => $request->input('descripcion'),
-                "tipo_validacion_existencia" => false
+                "descripcion" => $request->input('descripcion'),
+                "tipo_validacion_existencia" => true
             ]);
-
+            
             if (!$validaciones["ok"]) throw new Exception($validaciones["msg_error"]);
             $servicioAsignatura = $this->servicio_asignatura->createAsignatura(
                 [

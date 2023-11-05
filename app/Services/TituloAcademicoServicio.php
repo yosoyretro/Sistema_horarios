@@ -24,7 +24,6 @@ class TituloAcademicoServicio
             $response->setmensagge("Titulo Creado con existo");
 
             $response->setdata($nuevoTitulo->id_titulo_academico);
-            
         } catch (Exception $e) {
             log::alert("Error: " . $e->getMessage());
             $response->setok(false);
@@ -47,50 +46,53 @@ class TituloAcademicoServicio
             $response->setdata($titulo_academico);
         } catch (Exception $e) {
             $response->setok(false);
-            $response->seterror($e->getMessage(),$e->getLine());
+            $response->seterror($e->getMessage(), $e->getLine());
             log::alert("ERROR : " . $e->getMessage());
         }
         return $response->getdata();
     }
 
-    public function consultarTitulo($opcion,$data=null)
+    public function consultarTitulo($opcion, $data = null)
     {
         $datos = null;
-        
+
         try {
             $response = new TypeResponse();
             switch ($opcion) {
                 case 1:
                     // Consulta por ID de título académico
-                    $datos = TituloAcademicoModel::where('id_titulo_academico', $data["id_titulo_academico"])->where("estado","A")->get();
+                    $datos = TituloAcademicoModel::where('id_titulo_academico', $data["id_titulo_academico"])->where("estado", "A")->get();
                     break;
                 case 2:
                     // Consulta por descripción de título académico
-                    $datos = TituloAcademicoModel::where('descripcion', 'LIKE', '%' . $data["descripcion"] . '%')->where("estado","A")->get();
+                    $datos = TituloAcademicoModel::where('descripcion', 'LIKE', '%' . $data["descripcion"] . '%')->where("estado", "A")->get();
                     break;
                 case 3:
                     // Consulta por código de título académico
-                    $datos = TituloAcademicoModel::where('codigo', $data["codigo"])->where("estado","A")->get();
+                    $datos = TituloAcademicoModel::where('codigo', $data["codigo"])->where("estado", "A")->get();
                     break;
                 case 4:
                     //Consulta por todo todos los datos 
-                    break; 
+                    break;
                 case 5:
                     //consultar por codigo o por descripcion
-                    $datos =  TituloAcademicoModel::orWhere('codigo', $data["codigo"])
-                    ->orWhere('descripcion',$data["descripcion"])
-                    ->where("estado","A")->get();
-                    break;     
+                    $datos =  TituloAcademicoModel::where("estado", "A")
+                        ->where(function ($query) use ($data) {
+                            $query->where('codigo', $data["codigo"])
+                                ->orWhere('descripcion', $data["descripcion"]);
+                        })
+                        ->get();
+                    break;
                 case 6:
                     //consultar por estado 
-                    $datos = TituloAcademicoModel::where("estado","A")->get();
+                    $datos = TituloAcademicoModel::where("estado", "A")->get();
                     break;
             }
-            
+
             $response->setdata($datos);
         } catch (Exception $e) {
             $response->setok(false);
-            $response->seterror("A ocurrido un error en la consulta el Titulo Academico",$e->getMessage());
+            $response->seterror("A ocurrido un error en la consulta el Titulo Academico", $e->getMessage());
         }
         return $response->getdata();
     }
@@ -105,10 +107,9 @@ class TituloAcademicoServicio
                     "fecha_actualizacion" => now()
                 ]
             );
-        
         } catch (Exception $e) {
             $response->setok(false);
-            $response->seterror($e->getMessage(),$e->getLine());
+            $response->seterror($e->getMessage(), $e->getLine());
             log::alert("ERROR : " . $e->getMessage());
         }
         return $response->getdata();

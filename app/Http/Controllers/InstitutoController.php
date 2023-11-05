@@ -26,22 +26,25 @@ class InstitutoController extends Controller
         try {
             $servicio_validar = $this->validaciones->validarRegistroForInstituto(2,[
                 "codigo"=> $request->input('codigo'), 
-                "nombre"=>$request->input('nombre')
+                "nombre"=>$request->input('nombre'),
+                "tipo_validacion_existencia" => true
             ]);
 
-            if(!$servicio_validar)throw new Exception($servicio_validar["msg_error"]);
-
+            if(!$servicio_validar["ok"])throw new Exception($servicio_validar["msg_error"]);
+            
             $servicio_instituto = $this->servicio_instituto_clase->createInstituto(
                 [
                     "codigo" => $request->input("codigo"),
-                    "nombre" => $request->input("nombre"),
+                    "nombre" => $request->input("nombre")
                 ]
             );
-
+         
             if(!$servicio_instituto["ok"])throw new Exception($servicio_instituto["msg_error"]);
-            
+            $response->setmensagge("Instituto creado con exito");
         } catch (Exception $e) {
+
             log::alert("A ocurrido un error en la funcion de createInsituto\nLinea del error :". $e->getLine());
+            $response->setok(false);
             $response->seterror($e->getMessage(),$e->getLine());
 
         }
