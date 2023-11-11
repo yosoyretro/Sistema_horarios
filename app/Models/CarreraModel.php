@@ -11,14 +11,10 @@ class CarreraModel extends Model
     protected $table = "carrera";
     protected $primaryKey = "id_carrera";
     
-    const CREATED_AT = 'fecha_creacion';
-    const UPDATE_AT = 'fecha_actualizacion';
 
-    
     protected $fillable = [
         'nombre',
-        'codigo',
+        'codigo'
     ];
-
-
+    
 }

@@ -18,7 +18,7 @@ class MakeService extends Command
     public function handle()
     {
         $name = $this->argument('name');
-        $path = app_path("Servicio/{$name}.php");
+        $path = app_path("Service/{$name}.php");
 
         if (File::exists($path)) {
             $this->error("Service {$name} already exists!");

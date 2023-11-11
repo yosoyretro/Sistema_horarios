@@ -43,11 +43,10 @@ Route::group(
         Route::post("delete_asignatura/",[AsignaturaController::class,'deleteAsignatura']);
         Route::get("show_data_asignatura/",[AsignaturaController::class,'showAsignatura']);
         //CARRERA
-        Route::post("create_carrera",[CarreraController::class,'createCarrera']);
-        Route::post("update_carrera",[CarreraController::class,'updateCarrera']);
-        Route::post("delete_carrera",[CarreraController::class,'deleteCarrera']);
-        Route::get("show_carrera",[CarreraController::class,'showCarrera']);
-        
+        Route::post("create_carrera/",[CarreraController::class,'createCarrera']);
+        Route::post("update_carrera/",[CarreraController::class,'updateCarrera']);
+        Route::post("delete_carrera/",[CarreraController::class,'deleteCarrera']);
+        Route::get("show_carrera/",[CarreraController::class,'showCarrera']);
 
     }   
 );

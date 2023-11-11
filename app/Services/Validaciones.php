@@ -206,33 +206,47 @@ class Validaciones
     public function validarRegistroForCarrera($opcion, $array_asociativo)
     {
         $response = new TypeResponse();
-
+        log::alert("Soy el validar registro carrera");
+        log::alert(collect($array_asociativo));
+        
         try {
             $servicio_carrera = new CarreraServicio();
             switch ($opcion) {
                 case 1:
                     if (!isset($array_asociativo["id_carrera"])) throw new Exception("Hace falta lo que el es el id_carrera");
-                    if (is_numeric($array_asociativo["id_carrera"])) throw new Exception("El dato debe de ser un numero");
-                    $servicio_carrera = $servicio_carrera->Consultar(array_merge(["tipo_consulta" => 1], $array_asociativo));
-                    if (!$servicio_carrera["ok"]) throw new Exception($servicio_carrera["msg_error"]);
+                    //if (is_numeric($array_asociativo["id_carrera"])) throw new Exception("El dato debe de ser un numero");
+                    $response_asignatura = $servicio_carrera->Consultar(array_merge(["tipo_consulta" => 1], $array_asociativo));
+                    $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40401"
+                    ]);
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
                     break;
                 case 2:
-                    if(!isset($array_asociativo["codigo"]) && !isset($array_asociativo["nombre"]))throw new Exception("Hace falta el codigo o nombre como clave");
-                    $servicio_carrera = $servicio_carrera->Consultar(array_merge(["tipo_consulta" => 5], $array_asociativo));
+                    if (!isset($array_asociativo["codigo"]) && !isset($array_asociativo["nombre"])) throw new Exception("Hace falta el codigo o nombre como clave");
+                    $response_asignatura = $servicio_carrera->Consultar(array_merge(["tipo_consulta" => 5], $array_asociativo));
+                    $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40401"
+                    ]);
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
                     break;
-                    
             }
 
-            $mensaje = "Todo bien ";
+            if (!$response_asignatura["ok"]) throw new Exception($servicio_carrera["msg_error"]);
+
             if ((isset($array_asociativo["tipo_validacion_existencia"])) && ($array_asociativo["tipo_validacion_existencia"] == false)) {
                 if (empty($response_asignatura["data"][0])) throw new Exception($mensaje);
             } else {
-                log::alert("SOY EL ELSE");
+                log::alert("Soy el else");
                 if (!empty($response_asignatura["data"][0])) throw new Exception(($array_asociativo["descripcion"] ?? "Registro") . " ya existe");
             }
         } catch (Exception $e) {
+            log::alert("SOy el error de la funcion validacion");
+            log::alert($e->getMessage());
+            log::alert("SOy la linea del error" . $e->getCode());
             $response->setok(false);
+            $response->seterror($e->getMessage(), $e->getLine());
         }
+
         return $response->getdata();
     }
 }
