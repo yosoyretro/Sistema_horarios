@@ -7,6 +7,8 @@ use App\Services\MensajeAlertasServicio;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use  App\Services\AsignaturaServicio;
+use App\services\CarreraServicio;
+use PhpParser\Node\Stmt\Switch_;
 
 class Validaciones
 {
@@ -85,7 +87,7 @@ class Validaciones
                     break;
                 case 2:
                     //validar registro por el nombre y codigo
-                    
+
                     if (!$array_asociativo["codigo"] && !$array_asociativo["nombre"]) throw new Exception("Error la clave del id_titulo_academico no existe");
                     if (!is_numeric($array_asociativo["codigo"])) throw new Exception("El dato no debe de ser string");
                     $response_instituto_academico = $servicio_insituto->Consultar([
@@ -197,6 +199,39 @@ class Validaciones
             log::alert($e->getMessage());
             $response->setok(false);
             $response->seterror($e->getMessage(), $e->getLine());
+        }
+        return $response->getdata();
+    }
+
+    public function validarRegistroForCarrera($opcion, $array_asociativo)
+    {
+        $response = new TypeResponse();
+
+        try {
+            $servicio_carrera = new CarreraServicio();
+            switch ($opcion) {
+                case 1:
+                    if (!isset($array_asociativo["id_carrera"])) throw new Exception("Hace falta lo que el es el id_carrera");
+                    if (is_numeric($array_asociativo["id_carrera"])) throw new Exception("El dato debe de ser un numero");
+                    $servicio_carrera = $servicio_carrera->Consultar(array_merge(["tipo_consulta" => 1], $array_asociativo));
+                    if (!$servicio_carrera["ok"]) throw new Exception($servicio_carrera["msg_error"]);
+                    break;
+                case 2:
+                    if(!isset($array_asociativo["codigo"]) && !isset($array_asociativo["nombre"]))throw new Exception("Hace falta el codigo o nombre como clave");
+                    $servicio_carrera = $servicio_carrera->Consultar(array_merge(["tipo_consulta" => 5], $array_asociativo));
+                    break;
+                    
+            }
+
+            $mensaje = "Todo bien ";
+            if ((isset($array_asociativo["tipo_validacion_existencia"])) && ($array_asociativo["tipo_validacion_existencia"] == false)) {
+                if (empty($response_asignatura["data"][0])) throw new Exception($mensaje);
+            } else {
+                log::alert("SOY EL ELSE");
+                if (!empty($response_asignatura["data"][0])) throw new Exception(($array_asociativo["descripcion"] ?? "Registro") . " ya existe");
+            }
+        } catch (Exception $e) {
+            $response->setok(false);
         }
         return $response->getdata();
     }

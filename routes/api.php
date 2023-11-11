@@ -47,6 +47,7 @@ Route::group(
         Route::post("update_carrera",[CarreraController::class,'updateCarrera']);
         Route::post("delete_carrera",[CarreraController::class,'deleteCarrera']);
         Route::get("show_carrera",[CarreraController::class,'showCarrera']);
+        
 
     }   
 );

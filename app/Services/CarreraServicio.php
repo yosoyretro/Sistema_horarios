@@ -103,13 +103,18 @@ class CarreraServicio
                     break;
                 case 3:
                     // Consulta por código de carrera
-                    $datos = CarreraModel::where('codigo', $data["data"])->get();
+                    $datos = CarreraModel::where('codigo', 'LIKE' , '%' .$data["data"] . '%')->get();
                     break;
                 case 4:
                     $datos = CarreraModel::where('estado',"A")->get();
                     break;
+                case 5:
+                    //consulta por el nombre y codigo
+                    $datos = CarreraModel::where('codigo','LIKE',$data["codigo"])->where('nombre','LIKE',$data["nombre"])->get();
+                    break;
+               
             }
-            $this->obj_tipo_respuesta->setdata($datos->first());
+            $this->obj_tipo_respuesta->setdata($datos);
         } catch (Exception $e) {
             $this->obj_tipo_respuesta->setok(false);
             $this->obj_tipo_respuesta->seterror('Lo sentimos, error en el servicio', false);
