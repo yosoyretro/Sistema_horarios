@@ -15,8 +15,8 @@ class TituloAcademicoServicio
         try {
             $response = new TypeResponse();
             $nuevoTitulo = TituloAcademicoModel::create([
-                'descripcion' => $tituloData['descripcion'],
                 'codigo' => $tituloData['codigo'],
+                'descripcion' => $tituloData['descripcion'],
                 'estado' => 'A',
                 'fecha_creacion' => now(),
                 'fecha_actualizacion' => now(),

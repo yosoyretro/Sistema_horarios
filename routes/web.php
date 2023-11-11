@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('login',[SgcController::class,'login'])->name('login');
 Route::get('inicio',[SgcController::class,'inicio'])->name('inicio');
-Route::get('crear',[SgcController::class,'crear'])->name('crear');
-Route::get('lista',[SgcController::class,'lista'])->name('lista');
+
 
 Route::post('login-controlador',[SgcController::class,'login_controlador'])->name('login_controlador');

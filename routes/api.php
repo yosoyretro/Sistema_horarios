@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AsignaturaController;
+use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\InstitutoController;
 use App\Http\Controllers\TituloAcademicoController;
 use Illuminate\Http\Request;
@@ -17,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 
 Route::group(
@@ -37,10 +38,15 @@ Route::group(
         Route::post("delete_instituto/",[InstitutoController::class,'deleteInstituto']);
         Route::get("show_data_insituto/",[InstitutoController::class,'showData']);
         //ASIGNATURA
-        Route::post("create_asignatura",[AsignaturaController::class,'createAsignatura']);
-        Route::post("update_asignatura",[AsignaturaController::class,'updateAsignatura']);        
-        Route::post("delete_asignatura",[AsignaturaController::class,'deleteAsignatura']);
-        Route::get("show_data_asignatura",[AsignaturaController::class,'showAsignatura']);
-        
+        Route::post("create_asignatura/",[AsignaturaController::class,'createAsignatura']);
+        Route::post("update_asignatura/",[AsignaturaController::class,'updateAsignatura']);        
+        Route::post("delete_asignatura/",[AsignaturaController::class,'deleteAsignatura']);
+        Route::get("show_data_asignatura/",[AsignaturaController::class,'showAsignatura']);
+        //CARRERA
+        Route::post("create_carrera",[CarreraController::class,'createCarrera']);
+        Route::post("update_carrera",[CarreraController::class,'updateCarrera']);
+        Route::post("delete_carrera",[CarreraController::class,'deleteCarrera']);
+        Route::get("show_carrera",[CarreraController::class,'showCarrera']);
+
     }   
 );
