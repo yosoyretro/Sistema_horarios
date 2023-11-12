@@ -11,8 +11,8 @@ class UsuarioModel extends Model
     protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
 
-    const CREATED_AT = 'fecha_creacion';
-    const UPDATE_AT = 'fecha_actualizacion';
+    // const CREATED_AT = 'fecha_creacion';
+    // const UPDATE_AT = 'fecha_actualizacion';
     
     protected $fillable = [
         'cedula','nombres','usuario','clave','id_rol','id_titulo_academico'

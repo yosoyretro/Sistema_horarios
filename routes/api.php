@@ -4,6 +4,7 @@ use App\Http\Controllers\AsignaturaController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\InstitutoController;
 use App\Http\Controllers\TituloAcademicoController;
+use App\Http\Controllers\UsuarioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,8 @@ Route::group(
         Route::post("update_carrera/",[CarreraController::class,'updateCarrera']);
         Route::post("delete_carrera/",[CarreraController::class,'deleteCarrera']);
         Route::get("show_carrera/",[CarreraController::class,'showCarrera']);
-
+        //USUARIO
+        Route::post("create_usuario/",[UsuarioController::class,'createUsuario']);
+        
     }   
 );
