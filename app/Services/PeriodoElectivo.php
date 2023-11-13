@@ -1,6 +1,6 @@
 <?php
 
-namespace App\service;
+namespace App\Services;
 
 use App\Http\Responses\TypeResponse;
 use App\Models\PeriodoElectivoModel;
