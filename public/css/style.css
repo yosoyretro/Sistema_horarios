@@ -4868,7 +4868,7 @@ html:not([dir=rtl]) .navbar-nav {
   margin-right: 0;
   margin-left: 0;
 }
-.card > .list-group {
+.card   > .list-group {
   border-top: inherit;
   border-bottom: inherit;
 }
