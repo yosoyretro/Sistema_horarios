@@ -52,9 +52,13 @@ class SgcController extends Controller
         return view('inicio');
     }
 
-    public function asignatura()
+    public function crear()
+    { return view('crear');
+    }
+
+    public function asignaciones()
     {
-        return view('asignatura');
+        return view('asignaciones');
     }
 
     public function cursos()

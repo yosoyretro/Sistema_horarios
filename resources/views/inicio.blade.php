@@ -1,9 +1,8 @@
 @extends('aside')
 
-@section('titulo', 'Página de ')
+@section('titulo', 'Inicio')
 
-@section('contenido')
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4"><br>
-        <h2>Bienvenido</h2>
+@section('content')
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
     </main>
 @endsection

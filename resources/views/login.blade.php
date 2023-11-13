@@ -11,10 +11,11 @@
     <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
-    <link rel="stylesheet" href="{{ asset('css/simplebar.css')}}">
-    <link rel="stylesheet" href="{{ asset('css/style.css')}}">
-    <link rel="stylesheet" href="{{ asset('css/examples.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/simplebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/examples.css') }}">
     <link href="{{ asset('css/style-horarios.css') }}" rel="stylesheet">
+    <link rel="icon" href="{{ asset('icons/cropped-logo.png') }}" type="image/png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -31,11 +32,12 @@
                                 <h1>Acceso</h1>
                                 <p class="text-medium-emphasis">Iniciar sesión en su cuenta</p>
 
-                                @if($mensajes_temporales)
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <strong>Error : </strong>{{ $mensajes_temporales["msg"] }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
+                                @if ($mensajes_temporales)
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <strong>Error : </strong>{{ $mensajes_temporales['msg'] }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
                                 @endif
 
 
@@ -45,16 +47,20 @@
                                         <span class="input-group-text fondo-istg">
                                             <i class="text-white fas fa-user"></i>
                                         </span>
-                                        <input class="form-control font-lg" name="user" type="text" placeholder="Usuario" required>
+                                        <input class="form-control font-lg" name="user" type="text"
+                                            placeholder="Usuario" required>
                                     </div>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text fondo-istg">
                                             <i class="text-white fas fa-key"></i>
                                         </span>
-                                        <input class="form-control font-lg" name="password" type="password" placeholder="Contraseña" required>
+                                        <input class="form-control font-lg" name="password" type="password"
+                                            placeholder="Contraseña" required>
                                     </div>
                                     <div class="mb-3">
-                                        <select name="" aria-label="Default select example" class="font-lg text-center border-primary text-primary form-select " id="">
+                                        <select name="" aria-label="Default select example"
+                                            class="font-lg text-center border-primary text-primary form-select "
+                                            id="">
                                             <option selected hidden>Escoja el rol que desempeñas</option>
                                             <option>Administrador</option>
                                         </select>
@@ -62,7 +68,8 @@
 
                                     <div class="row">
                                         <div class="col-6">
-                                            <button class="btn btn-primary px-4 font-lg" type="submit">Ingresar</button>
+                                            <button class="btn btn-primary px-4 font-lg"
+                                                type="submit">Ingresar</button>
                                         </div>
                                         <div class="col-6 text-end">
                                             <a class="btn btn-link px-0 font-lg">Olvide mi contraseña</a>
@@ -75,7 +82,8 @@
                         <div class="card col-md-5 text-white py-5 fondo-istg">
                             <div class="card-body text-center">
                                 <div>
-                                    <img class="img-icono-login" src="{{ asset('icons/pre-lg-istg.png')}}" height="125px">
+                                    <img class="img-icono-login" src="{{ asset('icons/pre-lg-istg.png') }}"
+                                        height="125px">
                                     <br>
                                     <label class="texto-istg-2">Instituto Superir Tecnologico</label>
                                     <h1 class="h1">GUAYAQUIL</h1>
@@ -92,7 +100,9 @@
     </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
+    </script>
 
 </body>
 
