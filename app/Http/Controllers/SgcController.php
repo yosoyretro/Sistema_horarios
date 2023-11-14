@@ -69,8 +69,12 @@ class SgcController extends Controller
     {
         return view('carrera');
     }
-    public function docentes()
+    public function usuarios()
     {
-        return view('docentes');
+        return view('usuarios');
+    }
+
+    public function horarios(){
+        return view('horarios');
     }
 }
