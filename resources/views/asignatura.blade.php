@@ -1,9 +1,9 @@
 @extends('aside')
 
 @section('titulo', 'Página de ')
-
+ 
 @section('contenido')
-    <div class="container mt-4">
+<div class="container mt-4">
         <!-- Título de la asignatura -->
         <div class="row">
             <div class="col-12">
@@ -70,13 +70,57 @@
     </div>
 
     <!-- Modals de Edición y Eliminación -->
-    <div class="modal" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel" aria-hidden="true">
-        <!-- ... Contenido del modal de edición ... -->
+<div class="modal" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarModalLabel">Editar Asignatura</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Contenido del modal de edición -->
+                <form>
+                    <div class="form-group">
+                        <label for="editAsignatura">Nueva Asignatura</label>
+                        <input type="text" class="form-control" id="editAsignatura" placeholder="Nombre de la asignatura">
+                    </div>
+                    <div class="form-group">
+                        <label for="editHorario">Nuevo Horario</label>
+                        <input type="text" class="form-control" id="editHorario" placeholder="Horario de la asignatura">
+                    </div>
+                    <div class="form-group">
+                        <label for="editAula">Nueva Aula</label>
+                        <input type="text" class="form-control" id="editAula" placeholder="Aula de la asignatura">
+                    </div>
+                    <button type="button" class="btn btn-primary">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="modal" id="eliminarModal" tabindex="-1" role="dialog" aria-labelledby="eliminarModalLabel" aria-hidden="true">
-        <!-- ... Contenido del modal de eliminación ... -->
+<div class="modal" id="eliminarModal" tabindex="-1" role="dialog" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eliminarModalLabel">Eliminar Asignatura</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Contenido del modal de eliminación -->
+                <p>¿Estás seguro de que deseas eliminar la asignatura seleccionada?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger">Eliminar</button>
+            </div>
+        </div>
     </div>
+</div>
 
     <!-- Scripts de Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
