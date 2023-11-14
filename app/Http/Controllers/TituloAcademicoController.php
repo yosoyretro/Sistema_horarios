@@ -43,7 +43,7 @@ class TituloAcademicoController extends Controller
             $validacion_titulo_academico = $this->validaciones_clase->validarRegistroForTituloAcademico(2,array_merge($datos,["tipo_validacion_existencia" => true]));
             if(!$validacion_titulo_academico["ok"])throw new Exception($validacion_titulo_academico["msg_error"]);
             $request_servicio = $this->servicio_titulos_academico_clase->CreateTitulo($datos);
-            if(!$request_servicio["ok"])throw new Exception($request_servicio["msg_error"]) ;
+            if(!$request_servicio["ok"])throw new Exception($request_servicio["msg_error"]);
             $response->setmensagge("Titutlo Academico Guardado con exito !");
         }catch(Exception $e){
             log::alert("Funcion de createTituloAcademico");

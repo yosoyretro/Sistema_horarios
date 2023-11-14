@@ -3,6 +3,7 @@
 use App\Http\Controllers\AsignaturaController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\InstitutoController;
+use App\Http\Controllers\PeriodoElectivoController;
 use App\Http\Controllers\TituloAcademicoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +48,12 @@ Route::group(
         Route::post("update_carrera/",[CarreraController::class,'updateCarrera']);
         Route::post("delete_carrera/",[CarreraController::class,'deleteCarrera']);
         Route::get("show_carrera/",[CarreraController::class,'showCarrera']);
+
+        Route::post("create_periodo/",[PeriodoElectivoController::class,'createPeriodo']);
+        Route::post("update_periodo/",[PeriodoElectivoController::class,'updatePeriodo']);
+        Route::post("delete_periodo/",[PeriodoElectivoController::class,'deletePeriodo']);
+        Route::get("show_periodo/",[PeriodoElectivoController::class,'showPeriodo']);
+        
 
     }   
 );

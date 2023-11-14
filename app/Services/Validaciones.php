@@ -6,8 +6,9 @@ use App\Http\Responses\TypeResponse;
 use App\Services\MensajeAlertasServicio;
 use Exception;
 use Illuminate\Support\Facades\Log;
-use  App\Services\AsignaturaServicio;
+use App\Services\AsignaturaServicio;
 use App\services\CarreraServicio;
+use App\Services\PeriodoElectivoServicio;
 use PhpParser\Node\Stmt\Switch_;
 
 class Validaciones
@@ -243,6 +244,72 @@ class Validaciones
             log::alert("SOy el error de la funcion validacion");
             log::alert($e->getMessage());
             log::alert("SOy la linea del error" . $e->getCode());
+            $response->setok(false);
+            $response->seterror($e->getMessage(), $e->getLine());
+        }
+
+        return $response->getdata();
+    }
+
+    public function validarRegistroForPeriodoElectivo($opcion, $array_asociativo)
+    {
+        try {
+            $response = new TypeResponse();
+            $obj_service_PeriodoElectivo = new PeriodoElectivoServicio();
+
+            if (!is_array($array_asociativo)) throw new Exception("El dato debe de ser un array asociativo");
+            switch ($opcion) {
+                case 1:
+                    // Validar por ID de PeriodoElectivo
+                    if (!isset($array_asociativo["id_periodo_electivo"])) throw new Exception("Error, la clave del ID del Periodo no existe");
+                    if (!is_numeric($array_asociativo["id_periodo_electivo"])) throw new Exception("El ID del Periodo debe ser numérico");
+
+                    $response_periodo = $obj_service_PeriodoElectivo->ConsultarPeriodo([
+                        "tipo_consulta" => 1,
+                        "data" => $array_asociativo["id_periodo_electivo"]
+                    ]);
+
+                    $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40401", 
+                    ]);
+
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
+                    break;
+
+                case 2:
+                    // Validar por la fecha de inicio
+                    if (!isset($array_asociativo["fecha_inicio"])) throw new Exception("Error, la fecha de inicio no existe");
+                    //if (!is_numeric($array_asociativo["fecha_inicio"])) throw new Exception("La fecha de inicio debe ser numérico");
+
+                    $response_periodo = $obj_service_PeriodoElectivo->ConsultarPeriodo([
+                        "tipo_consulta" => 2,
+                        "data" => $array_asociativo["fecha_inicio"]
+                    ]);
+
+                    /*$response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40405",
+                    ]);*/
+
+                    $mensaje = "Periodo Electivo actualizado con éxito";
+                    break;
+
+                default:
+                    throw new Exception("Opción de validación del Periodo no válida");
+            }
+
+            if ((isset($array_asociativo["tipo_validacion_existencia"])) && ($array_asociativo["tipo_validacion_existencia"] == false)) {
+                if (empty($response_periodo["data"][0])) throw new Exception($mensaje);
+            } else {
+                if (!empty($response_periodo["data"][0])) throw new Exception("El periodo ya existe");
+            }
+
+            if (!$response_periodo["ok"]) throw new Exception($response_periodo["msg_error"]);
+            $response->setdata($response_periodo["data"]);
+
+        } catch (Exception $e) {
+            log::alert("El error está en las validaciones del Periodo");
+            log::alert("LINEA DEL ERROR: " . $e->getLine());
+            log::alert($e->getMessage());
             $response->setok(false);
             $response->seterror($e->getMessage(), $e->getLine());
         }
