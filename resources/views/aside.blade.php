@@ -6,12 +6,22 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nombre+de+la+Fuente">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="icon" href="{{ asset('icons/cropped-logo.png') }}" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ 'css/adminlte.min.css' }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         .bd-placeholder-img {
             font-size: 1.125rem;
@@ -95,7 +105,6 @@
             border-color: none;
         }
     </style>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -105,9 +114,9 @@
 
         <ul class="navbar-nav flex-row d-md-none">
             <li class="nav-item text-nowrap">
-                <button class="nav-link px-3 text-primary bg-light" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false"
-                    aria-label="Toggle search">
+                <button class="nav-link px-3 text-primary bg-light" id="btnsearch" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarSearch" aria-controls="navbarSearch"
+                    aria-expanded="false" aria-label="Toggle search">
                     <i class="material-icons">search</i>
                 </button>
             </li>
@@ -121,7 +130,7 @@
         </ul>
 
         <div id="navbarSearch" class="navbar-search w-100 collapse">
-            <input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search"
+            <input class="form-control w-100 rounded-0 border-0" id="btnsearch" type="text" placeholder="Search"
                 aria-label="Search">
         </div>
     </header>
@@ -156,9 +165,9 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('docentes') }}">
+                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('usuarios') }}">
                                     <i class="material-icons">groups</i>
-                                    Docentes
+                                    Usuarios
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -174,7 +183,8 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('asignaciones') }}">
+                                <a class="nav-link d-flex align-items-center gap-2"
+                                    href="{{ asset('asignaciones') }}">
                                     <i class="material-icons">check</i>
                                     Asignaciones
                                 </a>
@@ -242,9 +252,17 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="
+                            https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js
+                            "></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- jQuery UI -->
+    <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ asset('js/adminlte.min.js') }}"></script>
+    <!-- fullCalendar 2.2.5 -->
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
 
 </body>
 

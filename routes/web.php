@@ -22,5 +22,4 @@ Route::get('carrera',[SgcController::class,'carrera'])->name('carrera');
 Route::get('usuarios',[SgcController::class,'usuarios'])->name('usuarios');
 Route::get('asignaciones',[SgcController::class,'asignaciones'])->name('asignaciones');
 Route::get('horarios',[SgcController::class,'horarios'])->name('horarios');
-
 Route::post('login-controlador',[SgcController::class,'login_controlador'])->name('login_controlador');
