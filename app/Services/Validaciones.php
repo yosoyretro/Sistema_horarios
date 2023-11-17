@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\AsignaturaServicio;
 use App\services\CarreraServicio;
 use App\Services\PeriodoElectivoServicio;
+use App\Services\AdministracionAcademicaServicio;
 use PhpParser\Node\Stmt\Switch_;
 
 class Validaciones
@@ -308,6 +309,75 @@ class Validaciones
 
         } catch (Exception $e) {
             log::alert("El error está en las validaciones del Periodo");
+            log::alert("LINEA DEL ERROR: " . $e->getLine());
+            log::alert($e->getMessage());
+            $response->setok(false);
+            $response->seterror($e->getMessage(), $e->getLine());
+        }
+
+        return $response->getdata();
+    }
+
+
+
+
+    public function validarRegistroForAdministracionAcademica($opcion, $array_asociativo)
+    {
+        try {
+            $response = new TypeResponse();
+            $obj_service_AdministracionAcademica = new AdministracionAcademicaServicio();
+
+            if (!is_array($array_asociativo)) throw new Exception("El dato debe de ser un array asociativo");
+            switch ($opcion) {
+                case 1:
+                    // Validar por ID de AdminstracionAcademica
+                    if (!isset($array_asociativo["id_administracion_academica"])) throw new Exception("Error, la clave del ID de Administracion no existe");
+                    if (!is_numeric($array_asociativo["id_administracion_academica"])) throw new Exception("El ID de Administracion debe ser numérico");
+
+                    $response_administracion = $obj_service_AdministracionAcademica->ConsultarAdministracion([
+                        "tipo_consulta" => 1,
+                        "data" => $array_asociativo["id_administracion_academica"]
+                    ]);
+
+                    $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40405", 
+                    ]);
+
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
+                    break;
+
+                case 2:
+                    // Validar por la fecha de inicio
+                    if (!isset($array_asociativo["id_carrera"])) throw new Exception("Error, el id de carrera no existe");
+                    //if (!is_numeric($array_asociativo["id_carrera"])) throw new Exception("El id de carrera debe ser numérico");
+
+                    $response_administracion = $obj_service_AdministracionAcademica->ConsultarAdministracion([
+                        "tipo_consulta" => 2,
+                        "data" => $array_asociativo["id_carrera"]
+                    ]);
+
+                    /*$response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40405",
+                    ]);*/
+
+                    $mensaje = "Administracion Academica actualizado con éxito";
+                    break;
+
+                default:
+                    throw new Exception("Opción de validación del Administracion no válida");
+            }
+
+            if ((isset($array_asociativo["tipo_validacion_existencia"])) && ($array_asociativo["tipo_validacion_existencia"] == false)) {
+                if (empty($response_administracion["data"][0])) throw new Exception($mensaje);
+            } else {
+                if (!empty($response_administracion["data"][0])) throw new Exception("La administracion ya existe");
+            }
+
+            if (!$response_administracion["ok"]) throw new Exception($response_administracion["msg_error"]);
+            $response->setdata($response_administracion["data"]);
+
+        } catch (Exception $e) {
+            log::alert("El error está en las validaciones de Administracion Academica");
             log::alert("LINEA DEL ERROR: " . $e->getLine());
             log::alert($e->getMessage());
             $response->setok(false);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdministracionAcademicaController;
 use App\Http\Controllers\AsignaturaController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\InstitutoController;
@@ -53,6 +54,11 @@ Route::group(
         Route::post("update_periodo/",[PeriodoElectivoController::class,'updatePeriodo']);
         Route::post("delete_periodo/",[PeriodoElectivoController::class,'deletePeriodo']);
         Route::get("show_periodo/",[PeriodoElectivoController::class,'showPeriodo']);
+
+        Route::post("create_administracion/",[AdministracionAcademicaController::class,'createAdministracion']);
+        Route::post("update_administracion/",[AdministracionAcademicaController::class,'updateAdministracion']);
+        Route::post("delete_administracion/",[AdministracionAcademicaController::class,'deleteAdministracion']);
+        Route::get("show_administracion/",[AdministracionAcademicaController::class,'showAdministracion']);
         
 
     }   

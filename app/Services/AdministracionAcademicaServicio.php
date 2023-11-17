@@ -1,6 +1,6 @@
 <?php
 
-namespace App\service;
+namespace App\Services;
 
 use App\Http\Responses\TypeResponse;
 use App\Models\AdministracionAcademicaModel;
@@ -74,7 +74,7 @@ class AdministracionAcademicaServicio
             return $this->obj_tipo_respuesta->getdata();
         }
 
-        public function Consultar($data)
+        public function ConsultarAdministracion($data)
         {
             $datos = null;
             try {

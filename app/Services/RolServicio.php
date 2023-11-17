@@ -1,6 +1,6 @@
 <?php
 
-namespace App\service;
+namespace App\Services;
 
 use App\Http\Responses\TypeResponse;
 use App\Models\RolModel;
@@ -16,7 +16,7 @@ class RolServicio
         $this->obj_tipo_respuesta = new TypeResponse();
     }
     
-        public function Create($rolData)
+        public function CreateRol($rolData)
         {
             try {
                 //crear nuevo rol
@@ -34,7 +34,7 @@ class RolServicio
             return $this->obj_tipo_respuesta->getdata();
         }
 
-        public function Update($rolData)
+        public function UpdateRol($rolData)
         {
             try{
                 $rol = RolModel::findOrFail($rolData['id_rol']);
