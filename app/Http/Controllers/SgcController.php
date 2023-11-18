@@ -52,9 +52,13 @@ class SgcController extends Controller
         return view('inicio');
     }
 
-    public function asignatura()
+    public function crear()
+    { return view('crear');
+    }
+
+    public function asignaciones()
     {
-        return view('asignatura');
+        return view('asignaciones');
     }
 
     public function cursos()
@@ -65,8 +69,12 @@ class SgcController extends Controller
     {
         return view('carrera');
     }
-    public function docentes()
+    public function usuarios()
     {
-        return view('docentes');
+        return view('usuarios');
+    }
+
+    public function horarios(){
+        return view('horarios');
     }
 }
