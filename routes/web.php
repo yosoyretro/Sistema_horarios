@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('login',[SgcController::class,'login'])->name('login');
-Route::get('inicio',[SgcController::class,'inicio'])->name('inicio');
-Route::get('crear',[SgcController::class,'crear'])->name('crear');
-Route::get('cursos',[SgcController::class,'cursos'])->name('cursos');
-Route::get('carrera',[SgcController::class,'carrera'])->name('carrera');
+Route::view('login',[SgcController::class,'login'])->name('login');
+Route::view('inicio',[SgcController::class,'inicio'])->name('inicio');
+Route::view('crear',[SgcController::class,'crear'])->name('crear');
+Route::view('cursos',[SgcController::class,'cursos'])->name('cursos');
+Route::view('carrera',[SgcController::class,'carrera'])->name('carrera');
 Route::get('usuarios',[SgcController::class,'usuarios'])->name('usuarios');
-Route::get('asignaciones',[SgcController::class,'asignaciones'])->name('asignaciones');
-Route::get('horarios',[SgcController::class,'horarios'])->name('horarios');
+Route::view('asignaciones',[SgcController::class,'asignaciones'])->name('asignaciones');
+Route::view('horarios',[SgcController::class,'horarios'])->name('horarios');
 Route::post('login-controlador',[SgcController::class,'login_controlador'])->name('login_controlador');

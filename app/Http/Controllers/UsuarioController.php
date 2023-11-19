@@ -4,107 +4,71 @@ namespace App\Http\Controllers;
 
 use App\Models\UsuarioModel;
 use App\Http\Responses\TypeResponse;
-use App\Servicio\UsuarioServicio;
+use App\service\UsuarioServicio as ServiceUsuarioServicio;
+use App\Services\UsuarioServicio;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Mockery\Matcher\Type;
 
 class UsuarioController extends Controller
 {
-    //VISTA DEL USUARIO
-    public function showUsuarioForm(){
-
-        $mensajes_usuario = session('data');
-        return view('usuario', compact('mensajes_usuario'));
+    private $servicio_usuario,$servicio_validaciones;
+    public function __construct()
+    {
+        $this->servicio_usuario = new UsuarioServicio();
     }
 
-    //CONTROLADOR DEL USUARIO
-    public function usuario_controller(Request $request){
-        $cedula = strtoupper($request->input('cedula'));
-        $nombres = ucfirst(strtolower($request->input('nombres')));
-        $usuario = strtolower($request->input('usuario'));
-        $clave = $request->input('clave');
-        $id_rol = $request->input('id_rol');
-        $id_titulo_academico = $request->input('id_titulo_academico');
+    public function createUsuario(Request $request)
+    {
+        $response = new TypeResponse();
 
-        //VALIDACION DEL FORMULARIO DEL USUARIO
-        $request->validate([
-            'cedula' => 'required|numeric',
-            'nombres' => 'required|string',
-            'usuario' => 'required|string',
-            'clave' => 'required|string',
-            'id_rol' => 'required|integer',
-            'id_titulo_academico' => 'required|integer'
-        ]);
-
-
-        $obj_tipo_respuesta = new TypeResponse();
-
-        $data = new Collection([
-            'tipo_consulta'=>3,
-            'data'=>$cedula
-        ]);
+        try{
+            $servicio_usuario = $this->servicio_usuario->createuser($request->all());
+            if(!$servicio_usuario["ok"])throw new Exception($servicio_usuario["msg_error"]);
+            $response->setmensagge($servicio_usuario["msg"]); 
+        }catch(Exception $e){
         
-        $usuarioservicio = new UsuarioServicio();
-        $respuesta = $usuarioservicio->createuser($data);
-
-        if ($respuesta["data"]->cedula == $cedula && $respuesta["data"]->nombres == $nombres && $respuesta["data"]->usuario == $usuario && $respuesta["data"]->clave == $clave && $respuesta["data"]->id_rol == $id_rol && $respuesta["data"]->id_titulo_academico == $id_titulo_academico){
-            return redirect(route('usuario'));
-        }else {
-            $obj_tipo_respuesta->setok(false);
-            $obj_tipo_respuesta->setmensagge('Credenciales invalidas');
-        }
-        return redirect(route('usuario'))->with('data',$obj_tipo_respuesta->getdata());
-
-    }
-
-    //EDITAR USUARIO
-    public function editUser(Request $request, $id){
+            log::alert($e->getMessage());
+            $response->setok(false);
             
-        //VALIDACION DEL USUARIO
-        $request->validate([
-            'cedula' => 'required|numeric',
-            'nombres' => 'required|string',
-            'usuario' => 'required|string',
-            'clave' => 'required|string',
-            'id_rol' => 'required|integer',
-            'id_titulo_academico' => 'required|integer'
-        ]);
-
-        $obj_tipo_respuesta = new TypeResponse();
-
-        $data = new Collection([
-            'tipo_consultas' => 1,
-            'data' => $id
-        ]);
-
-        $usuarioservicio = new UsuarioServicio();
-        $respuesta = $usuarioservicio->editUser($data);
-
-        if ($respuesta['data']->id_usuario == $id){
-            return redirect(route('usuario'));
-        }else {
-            $obj_tipo_respuesta->setok(false);
-            $obj_tipo_respuesta->setok('Error al editar el usuario');
+            $response->seterror($e->getMessage(),$e->getCode());
         }
-        return redirect(route('usuario'))->with('data', $obj_tipo_respuesta->getdata());
+
+        return json_encode($response->getdata());
     }
 
-    //ElIMINAR USUARIO
-    public function deleteUser($id){
+    public function showUsuario(){
+        $response = new TypeResponse();
+        try{
 
-        $obj_tipo_respuesta = new TypeResponse();
-        
-        $usuarioservicio = new UsuarioServicio();
-        $respuesta = $usuarioservicio->deleteUser($id);
+            $servicio_usuario = $this->servicio_usuario->getdatausuario(["tipo_consulta" => "4"]);
+            
+            if((empty($servicio_usuario["data"][0]))  ){
+                $response->setmensagge("No hay registro de usuario");
+                $response->setdata([]);
+            }
 
-        if ($respuesta['ok']) {
-            return redirect(route('usuario'));
-        }else {
-            $obj_tipo_respuesta->setok(false);
-            $obj_tipo_respuesta->setok('Error al eliminar el usuario');
+        }catch(Exception $e){
+            log::alert("SOY EL ERROR ");
+            log::alert($e->getMessage());              
         }
-        return redirect(route('usuario'))->with('data', $obj_tipo_respuesta->getdata());
+        return json_encode($response->getdata());
+    }
+
+    public function deleteUsuario(request $request){
+        $response = new TypeResponse();
+        log::alert("SOY EL RESPONSE");
+        log::alert(collect($request->all()["id_usuario"]));
+        try{
+            $response_usuario = $this->servicio_usuario->deleteUser($request->input('id_usuario'));
+            if(!$response_usuario["ok"])throw new Exception($response_usuario["msg_error"]);
+            $response->setmensagge($response_usuario["msg"]);
+        }catch(Exception $e){
+            $response->setok(false);
+            $response->seterror($e->getMessage(),$e->getCode());
+        }
+        
+        return json_encode($response->getdata()); 
     }
 }

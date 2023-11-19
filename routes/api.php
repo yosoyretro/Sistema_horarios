@@ -4,9 +4,13 @@ use App\Http\Controllers\AsignaturaController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\InstitutoController;
 use App\Http\Controllers\TituloAcademicoController;
+<<<<<<< HEAD
 use App\Http\Controllers\NivelController;
 use App\Http\Controllers\DiasController;
 use App\Http\Controllers\ParaleloController;
+=======
+use App\Http\Controllers\UsuarioController;
+>>>>>>> recuperacion1
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -50,6 +54,7 @@ Route::group(
         Route::post("update_carrera/",[CarreraController::class,'updateCarrera']);
         Route::post("delete_carrera/",[CarreraController::class,'deleteCarrera']);
         Route::get("show_carrera/",[CarreraController::class,'showCarrera']);
+<<<<<<< HEAD
         //NIVEL
         Route::post("create_nivel/",[NivelController::class,'createNivel']);
         Route::post("update_nivel/",[NivelController::class,'updateNivel']);
@@ -66,5 +71,12 @@ Route::group(
         Route::post("delete_dias/",[DiasController::class,'deleteDias']);
         Route::get("show_data_dias/",[DiasController::class,'showDias']);
 
+=======
+        //USUARIO
+        Route::post("create_usuario/",[UsuarioController::class,'createUsuario']);
+        Route::post("delete_usuario/",[UsuarioController::class,'deleteUsuario']);
+        Route::get("show_usuario/",[UsuarioController::class,'showUsuario']);
+        
+>>>>>>> recuperacion1
     }   
 );
