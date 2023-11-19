@@ -8,6 +8,9 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use  App\Services\AsignaturaServicio;
 use App\services\CarreraServicio;
+use App\service\DiasServicio;
+use App\service\NivelServicio;
+use App\service\ParaleloServicio;
 use PhpParser\Node\Stmt\Switch_;
 
 class Validaciones
@@ -249,4 +252,215 @@ class Validaciones
 
         return $response->getdata();
     }
+
+    
+    public function validarRegistroForParalelo($opcion, $array_asociativo)
+    {
+        try {
+            $response = new TypeResponse();
+            $servicio_paralelo = new ParaleloServicio();
+
+            if (!is_array($array_asociativo)) throw new Exception("El dato debe de ser un array asociativo");
+            switch ($opcion) {
+                case 1:
+                    // Validar por ID de paralelo
+                    if (!isset($array_asociativo["id_paralelo"])) throw new Exception("Error, la clave del ID de paralelo no existe");
+                    if (!is_numeric($array_asociativo["id_paralelo"])) throw new Exception("El ID de paralelo debe ser numérico");
+
+                    $response_paralelo = $servicio_paralelo->Consultar([
+                        "tipo_consulta" => 1,
+                        "data" => $array_asociativo["id_paralelo"]
+                    ]);
+
+                    $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40404", 
+                    ]);
+
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
+                    break;
+
+                case 2:
+                    // Validar por número de paralelo
+                    if (!isset($array_asociativo["numero"])) throw new Exception("Error, la clave del número de paralelo no existe");
+                    if (!is_numeric($array_asociativo["numero"])) throw new Exception("El número de paralelo debe ser numérico");
+
+                    $response_paralelo = $servicio_paralelo->Consultar([
+                        "tipo_consulta" => 2,
+                        "data" => $array_asociativo["numero"]
+                    ]);
+
+                    $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40405",
+                    ]);
+
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
+                    break;
+
+                default:
+                    throw new Exception("Opción de validación de paralelo no válida");
+            }
+
+            if ((isset($array_asociativo["tipo_validacion_existencia"])) && ($array_asociativo["tipo_validacion_existencia"] == false)) {
+                if (empty($response_paralelo["data"][0])) throw new Exception($mensaje);
+            } else {
+                if (!empty($response_paralelo["data"][0])) throw new Exception("El paralelo ya existe");
+            }
+
+            if (!$response_paralelo["ok"]) throw new Exception($response_paralelo["msg_error"]);
+            $response->setdata($response_paralelo["data"]);
+
+        } catch (Exception $e) {
+            log::alert("El error está en las validaciones de paralelo");
+            log::alert("LINEA DEL ERROR: " . $e->getLine());
+            log::alert($e->getMessage());
+            $response->setok(false);
+            $response->seterror($e->getMessage(), $e->getLine());
+        }
+
+        return $response->getdata();
+    }
+
+    public function validarRegistroForNivel($opcion, $array_asociativo)
+    {
+        try {
+            $response = new TypeResponse();
+            $servicio_nivel = new NivelServicio();
+
+            if (!is_array($array_asociativo)) throw new Exception("El dato debe de ser un array asociativo");
+            switch ($opcion) {
+                case 1:
+                    // Validar por ID de nivel
+                    if (!isset($array_asociativo["id_nivel"])) throw new Exception("Error, la clave del ID de nivel no existe");
+                    if (!is_numeric($array_asociativo["id_nivel"])) throw new Exception("El ID de nivel debe ser numérico");
+
+                    $response_nivel = $servicio_nivel->Consultar([
+                        "tipo_consulta" => 1,
+                        "data" => $array_asociativo["id_nivel"]
+                    ]);
+
+                    $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40406", 
+                    ]);
+
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
+                    break;
+
+                case 2:
+                    // Validar por número de nivel
+                    if (!isset($array_asociativo["numero"])) throw new Exception("Error, la clave del número de nivel no existe");
+                    if (!is_numeric($array_asociativo["numero"])) throw new Exception("El número de nivel debe ser numérico");
+
+                    $response_nivel = $servicio_nivel->Consultar([
+                        "tipo_consulta" => 2,
+                        "data" => $array_asociativo["numero"]
+                    ]);
+
+                    $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40407", 
+                    ]);
+
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
+                    break;
+
+                default:
+                    throw new Exception("Opción de validación de nivel no válida");
+            }
+
+            if ((isset($array_asociativo["tipo_validacion_existencia"])) && ($array_asociativo["tipo_validacion_existencia"] == false)) {
+                if (empty($response_nivel["data"][0])) throw new Exception($mensaje);
+            } else {
+                if (!empty($response_nivel["data"][0])) throw new Exception("El nivel ya existe");
+            }
+
+            if (!$response_nivel["ok"]) throw new Exception($response_nivel["msg_error"]);
+            $response->setdata($response_nivel["data"]);
+
+        } catch (Exception $e) {
+            log::alert("El error está en las validaciones de nivel");
+            log::alert("LINEA DEL ERROR: " . $e->getLine());
+            log::alert($e->getMessage());
+            $response->setok(false);
+            $response->seterror($e->getMessage(), $e->getLine());
+        }
+
+        return $response->getdata();
+    }
+
+    public function validarRegistroForDia($opcion, $array_asociativo)
+    {
+        try {
+            $response = new TypeResponse();
+            $servicio_dias = new DiasServicio();
+
+            if (!is_array($array_asociativo)) throw new Exception("El dato debe de ser un array asociativo");
+            switch ($opcion) {
+                case 1:
+                    // Validar por ID de día
+                    if (!isset($array_asociativo["id_dias"])) {
+                        throw new Exception("Error, la clave del ID de día no existe");
+                    }
+                    if (!is_numeric($array_asociativo["id_dias"])) {
+                        throw new Exception("El ID de día debe ser numérico");
+                    }
+
+                    $response_dia = $servicio_dias->Consultar([
+                        "tipo_consulta" => 1,
+                        "data" => $array_asociativo["id_dias"]
+                    ]);
+
+                    $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40406",
+                    ]);
+
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
+                    break;
+
+                case 2:
+                    // Validar por nombre de día
+                    if (!isset($array_asociativo["dia"])) {
+                        throw new Exception("Error, la clave del nombre de día no existe");
+                    }
+
+                    $response_dia = $servicio_dias->Consultar([
+                        "tipo_consulta" => 2,
+                        "data" => $array_asociativo["dia"]
+                    ]);
+
+                    $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
+                        "codigo" => "40407",
+                    ]);
+
+                    $mensaje = $response_mensaje["data"][0]["mensaje"];
+                    break;
+
+                default:
+                    throw new Exception("Opción de validación de día no válida");
+            }
+
+            if ((isset($array_asociativo["tipo_validacion_existencia"])) && ($array_asociativo["tipo_validacion_existencia"] == false)) {
+                if (empty($response_dia["data"][0])) {
+                    throw new Exception($mensaje);
+                }
+            } else {
+                if (!empty($response_dia["data"][0])) {
+                    throw new Exception("El día ya existe");
+                }
+            }
+
+            if (!$response_dia["ok"]) {
+                throw new Exception($response_dia["msg_error"]);
+            }
+
+            $response->setdata($response_dia["data"]);
+        } catch (Exception $e) {
+            log::alert("El error está en las validaciones de día");
+            log::alert("LINEA DEL ERROR: " . $e->getLine());
+            log::alert($e->getMessage());
+            $response->setok(false);
+            $response->seterror($e->getMessage(), $e->getLine());
+        }
+
+        return $response->getdata();
+    }
+
 }
