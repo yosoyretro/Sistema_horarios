@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\TypeResponse;
+use App\Services\UsuarioServicio as ServicesUsuarioServicio;
+use App\Services\RolServicio;
+use App\Services\TituloAcademicoServicio;
 use App\Servicio\UsuarioServicio;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\ToArray;
 
 class SgcController extends Controller
 {
@@ -49,6 +54,7 @@ class SgcController extends Controller
 
     public function inicio()
     {
+        
         return view('inicio');
     }
 
@@ -71,7 +77,40 @@ class SgcController extends Controller
     }
     public function usuarios()
     {
-        return view('usuarios');
+        $servicio_titulo = new TituloAcademicoServicio();
+        $servicio_rol = new RolServicio();
+        $servicio = new ServicesUsuarioServicio();
+        
+        $data = $servicio->getdatausuario(['tipo_consulta' => 4]);
+        $data_rol = $servicio_rol->Consultar(['tipo_consulta'=>3]);
+        $data_titulo = $servicio_titulo->consultarTitulo(6);
+        
+        if(!$data["ok"]){
+            $datos = [];
+        }else{
+            $datos = $data["data"];
+        }
+        
+        if(!$data_rol["ok"]){
+            $roles = [];
+        }else{
+            $roles = $data_rol["data"];
+        }
+
+        log::alert($data_titulo);
+        if(!$data_titulo["ok"]){
+            $titulos_academico = [];
+        }else{
+            $titulos_academico = $data_titulo["data"];
+            log::alert("SOY EL DE USUARIO");
+            log::alert(collect($titulos_academico));
+            log::alert($datos);
+            if($titulos_academico == null){
+                $titulos_academico = [];
+            }
+        }
+                
+        return view('usuarios')->with('titulos_academico',$titulos_academico)->with('roles',$roles)->with('data',$datos);
     }
 
     public function horarios(){

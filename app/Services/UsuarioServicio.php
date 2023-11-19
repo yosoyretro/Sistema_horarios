@@ -23,20 +23,42 @@ class UsuarioServicio
     {
         $datos = null;
         try {
+            
             switch ($data["tipo_consulta"]) {
                 case 1:
                     //consulta por cedula
                     $datos = UsuarioModel::where('cedula', $data["data"])->get();
+                    break;
                 case 2:
                     //consulta por nombres
                     $datos = UsuarioModel::where('nombres', 'LIKE', '%', $data["data"], '%')->get();
-
+                    break;
                 case 3:
                     //consulta por usuario
                     $datos = UsuarioModel::where('usuario', $data["data"])->get();
+                    break;
+                case 4:
+                    //consulta por el estado 
+                    log::alert("Entro aqui :)");
+                    $datos = UsuarioModel::where('estado', 'A')->get();
+                    break;
             }
-            $this->obj_tipo_respuesta->setdata($datos[0]);
+            
+            $titulo_descripcion = $datos->map(function ($titulos_academico) {
+                $array = [];
+                $servicio_titulo = new TituloAcademicoServicio();
+                $titulos_academico->id_titulo_academico = json_decode($titulos_academico->id_titulo_academico,true);
+                foreach($titulos_academico->id_titulo_academico as $value){
+                    $response_titulo = $servicio_titulo->consultarTitulo(1,['id_titulo_academico'=>$value]);
+                    array_push($array,$response_titulo["data"]->first());
+                }
+                $titulos_academico->id_titulo_academico = $array;
+                return true;
+            });
+
+            $this->obj_tipo_respuesta->setdata($datos);
         } catch (Exception $e) {
+            log::alert($e->getMessage());
             $this->obj_tipo_respuesta->setok(false);
             $this->obj_tipo_respuesta->seterror('Lo sentimos error en el servicio', false);
         }
@@ -49,16 +71,16 @@ class UsuarioServicio
         try {
             $nuevoUsuario = UsuarioModel::create([
                 "cedula" => $userData['cedula'],
-                "nombres" => $userData['nombres'],
+                "nombres" => strtoupper($userData['nombres']),
                 "usuario" => $userData['usuario'],
-                "clave" => $userData['clave'],
+                "clave" => md5($userData['clave']),
                 "id_rol" => $userData["id_rol"],
-                "id_titulo_academico" => json_encode($userData["id_tituto_academico"]),
-                "estado"=>"A",
-                "created_at"=>now(),
+                "id_titulo_academico" => json_encode($userData["id_titulo_academico"]),
+                "estado" => "A",
+                "created_at" => now(),
                 "updated_at" => now()
             ]);
-            log::alert("LLEGO AQUI");
+            $response->setmensagge("Usuario grabado correctamente");
             $response->setdata($nuevoUsuario);
         } catch (Exception $e) {
             log::alert("Error en el servicio de usuario");
@@ -105,8 +127,8 @@ class UsuarioServicio
             //pasamos el estado activo a inactivo
             $usuario->estado = 'I';
             $usuario->save();
-
             $this->obj_tipo_respuesta->setok(true);
+            $this->obj_tipo_respuesta->setmensagge("Usuario eliminado con exito");
             $this->obj_tipo_respuesta->setdata(null); // No hay datos para devolver después de eliminar
         } catch (Exception $e) {
             $this->obj_tipo_respuesta->setok(false);

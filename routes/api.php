@@ -50,6 +50,8 @@ Route::group(
         Route::get("show_carrera/",[CarreraController::class,'showCarrera']);
         //USUARIO
         Route::post("create_usuario/",[UsuarioController::class,'createUsuario']);
+        Route::post("delete_usuario/",[UsuarioController::class,'deleteUsuario']);
+        Route::get("show_usuario/",[UsuarioController::class,'showUsuario']);
         
     }   
 );
