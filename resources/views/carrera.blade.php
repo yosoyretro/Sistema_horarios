@@ -26,9 +26,10 @@
             </div>
 
             <div class="row">
-                <table class="container table-white table-bordered text-center">
+                <table class="container table-white table-bordered text-center" style="width: 
+                98%;">
                     <thead>
-                        <tr class="fondo-istg text-white">
+                        <tr class="bg-primary text-white">
                             <th class="p-2" scope="col">ID</th>
                             <th class="p-2" scope="col">Nombre de carrera</th>
                             <th class="p-2" scope="col">Ubicacion</th>
@@ -110,12 +111,6 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">
-                            <div class="form-label">ID</div>
-                            <input class="form-control" placeholder="carrera" id="input_carrera"></input>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
                             <div class="form-label">Ingrese nombre de carrera</div>
                             <input class="form-control" placeholder="nombre" id="input_nombre"></input>
                         </div>
@@ -139,6 +134,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <div class="form-label">Subir malla curricular</div>
+                            <div class="file">
+                                <button class="btn buton-istg text-white text-center type="submit">
+                                Agregar
+                            </div>
+                            
+                        </div>
+                    </div>
                     <button class="btn buton-istg text-white text-center mb-2 w-100 " onclick="createUser()"
                         data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <i class="bi bi-floppy-fill"></i>
@@ -151,4 +156,15 @@
 
         </div>
     </div>
+
+    <script>
+        const titulos = [];
+        const setTitulo = (e) => {
+            titulos.push(e);
+        }
+        const getTitulo = () => {
+            return titulos;
+        }
+    </script>
+    <script src="{{ asset('js/ServicioApis.js') }}"></script>
 @endsection

@@ -156,12 +156,6 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('crear') }}">
-                                    <i class="material-icons">add</i>
-                                    Crear
-                                </a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('usuarios') }}">
                                     <i class="material-icons">groups</i>
                                     Usuarios
@@ -177,6 +171,12 @@
                                 <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('cursos') }}">
                                     <i class="material-icons">storage</i>
                                     Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('asignatura') }}">
+                                    <i class="material-icons">storage</i>
+                                    Asignatura
                                 </a>
                             </li>
                             <li class="nav-item">

@@ -26,9 +26,10 @@
             </div>
 
             <div class="row">
-                <table class="container table-white table-bordered text-center">
+                <table class="container table-white table-bordered text-center" style="width: 
+                98%;">
                     <thead>
-                        <tr class="fondo-istg text-white">
+                        <tr class="bg-primary text-white">
                             <th class="p-2" scope="col">Cedula</th>
                             <th class="p-2" scope="col">Nombres y apellidos</th>
                             <th class="p-2" scope="col">Usuario</th>
@@ -165,7 +166,7 @@
                         <div class="col">
                             <div class="form-label">Seleccione el rol del usuario</div>
                             <select class="form-select" aria-label="Default select example" id="selector_rol" require>
-                                <option selected>Seleccionar</option>
+                                <option selected>---</option>
                                 @if (!empty($roles))
                                     @foreach ($roles as $rol)
                                         <option value="{{ $rol->id_rol }}">{{ $rol->descripcion }}</option>
