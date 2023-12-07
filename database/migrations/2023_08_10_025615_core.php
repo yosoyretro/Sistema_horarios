@@ -25,6 +25,7 @@ return new class extends Migration
             $table->bigIncrements('id_carrera');
             $table->string('nombre');
             $table->string('codigo');
+            $table->string('especialidad');
             //CAMPOS OBLIGATIORIOS
             $table->string('estado', 2)->default('A');
             $table->timestamp('created_at')->useCurrent(); // Nombre corregido a 'created_at'

@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="{{ 'css/style-horarios.css' }}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11"></link>
     <style>
         .bd-placeholder-img {
             font-size: 1.125rem;
@@ -168,15 +169,9 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('cursos') }}">
+                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('cursoymateria') }}">
                                     <i class="material-icons">storage</i>
-                                    Cursos
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('asignatura') }}">
-                                    <i class="material-icons">storage</i>
-                                    Asignatura
+                                    Cursos y Materias
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -231,6 +226,13 @@
             @yield('content')
         </div>
     </div>
+
+    <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 3.2.0
+    </div>
+    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+  </footer>
 
 
 
