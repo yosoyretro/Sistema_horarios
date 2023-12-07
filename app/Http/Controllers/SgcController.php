@@ -16,23 +16,25 @@ use Maatwebsite\Excel\Concerns\ToArray;
 class SgcController extends Controller
 {
     //VISTA DEL LOGIN 
-    public function login(){    
+    public function login()
+    {
         $mensajes_temporales = session('data');
-        return view('login',compact('mensajes_temporales'));
+        return view('login', compact('mensajes_temporales'));
     }
-    
+
     //CONTROLADOR DEL LOGIN 
-    public function login_controlador(Request $request){
+    public function login_controlador(Request $request)
+    {
         $user = $request->input('user');
         $password = $request->input('password');
-        
+
         $obj_tipo_respuesta = new TypeResponse();
 
         $data = new Collection([
-            'tipo_consulta'=>3,
-            'data'=>$user
+            'tipo_consulta' => 3,
+            'data' => $user
         ]);
-        
+
         // $servicio = new UsuarioServicio();
         // $respuesta = $servicio->getdatausuario($data);
 
@@ -48,13 +50,12 @@ class SgcController extends Controller
         //     $obj_tipo_respuesta->setmensagge('Este usuario no se encuentra registrado en la base de datos');
         // }
 
-        return redirect(route('login'))->with('data',$obj_tipo_respuesta->getdata());
-
+        return redirect(route('login'))->with('data', $obj_tipo_respuesta->getdata());
     }
 
     public function inicio()
     {
-        
+
         return view('inicio');
     }
 
@@ -76,43 +77,41 @@ class SgcController extends Controller
         $servicio_titulo = new TituloAcademicoServicio();
         $servicio_rol = new RolServicio();
         $servicio = new ServicesUsuarioServicio();
-        
+
         $data = $servicio->getdatausuario(['tipo_consulta' => 4]);
-        $data_rol = $servicio_rol->Consultar(['tipo_consulta'=>3]);
+        $data_rol = $servicio_rol->Consultar(['tipo_consulta' => 3]);
         $data_titulo = $servicio_titulo->consultarTitulo(6);
-        
-        if(!$data["ok"]){
+
+        if (!$data["ok"]) {
             $datos = [];
-        }else{
+        } else {
             $datos = $data["data"];
         }
-        
-        if(!$data_rol["ok"]){
+
+        if (!$data_rol["ok"]) {
             $roles = [];
-        }else{
+        } else {
             $roles = $data_rol["data"];
         }
 
         log::alert($data_titulo);
-        if(!$data_titulo["ok"]){
+        if (!$data_titulo["ok"]) {
             $titulos_academico = [];
-        }else{
+        } else {
             $titulos_academico = $data_titulo["data"];
             log::alert("SOY EL DE USUARIO");
             log::alert(collect($titulos_academico));
             log::alert($datos);
-            if($titulos_academico == null){
+            if ($titulos_academico == null) {
                 $titulos_academico = [];
             }
         }
-                
-        return view('usuarios')->with('titulos_academico',$titulos_academico)->with('roles',$roles)->with('data',$datos);
+
+        return view('usuarios')->with('titulos_academico', $titulos_academico)->with('roles', $roles)->with('data', $datos);
     }
 
-    public function horarios(){
+    public function horarios()
+    {
         return view('horarios');
-    }
-    public function asignatura(){
-        return view('asignatura');
     }
 }
