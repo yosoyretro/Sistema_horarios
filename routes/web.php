@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('login',[SgcController::class,'login'])->name('login');
 Route::view('inicio',[SgcController::class,'inicio'])->name('inicio');
-Route::view('cursos',[SgcController::class,'cursos'])->name('cursos');
+Route::view('curso_y_materia',[SgcController::class,'curso_y_materia'])->name('curso_y_materia');
 Route::view('carrera',[SgcController::class,'carrera'])->name('carrera');
 Route::get('usuarios',[SgcController::class,'usuarios'])->name('usuarios');
 Route::view('asignaciones',[SgcController::class,'asignaciones'])->name('asignaciones');

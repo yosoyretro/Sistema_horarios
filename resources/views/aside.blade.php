@@ -169,7 +169,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('cursoymateria') }}">
+                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('curso_y_materia') }}">
                                     <i class="material-icons">storage</i>
                                     Cursos y Materias
                                 </a>

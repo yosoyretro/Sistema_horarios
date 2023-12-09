@@ -64,9 +64,9 @@ class SgcController extends Controller
         return view('asignaciones');
     }
 
-    public function cursos()
+    public function curso_y_materia()
     {
-        return view('cursos');
+        return view('curso_y_materia');
     }
     public function carrera()
     {
