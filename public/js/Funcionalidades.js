@@ -17,6 +17,26 @@ const mensajes = (mensajes, tipo_mensaje = "succes") => {
         window.location.reload();
     });
 }
+const createParalelo = () => {
+    try {
+        console.log("estoy entrando en la funcion de create Paralelo")
+        nemonico = document.getElementById("input_nemonico_paralelo").value;
+        obj = {
+            "nemonico": nemonico
+        }
+        createParaleloApi(obj)
+    } catch (error) {
+        console.log("Soy el error");
+        console.log(error)
+    }
+
+}
+
+const createNivel = () =>{
+    let numero = document.getElementById('input_numero_nivel').value;
+    let descripcion  = document.getElementById('input_descripcion_nivel').value;
+    createNivelApi({numero:numero,descripcion:descripcion})
+}
 const createUser = () => {
     cedula = document.getElementById("input_cedula").value;
     nombres = document.getElementById("input_nombres").value;
@@ -34,7 +54,6 @@ const createUser = () => {
         "id_titulo_academico": titulo,
         "id_rol": rol
     };
-
     createUserApi(obj)
 
 }
@@ -54,6 +73,14 @@ const mensaje_confirmacion = (title, icon, submensaje) => {
 }
 const elimnarUser = (id) => {
     deleteUserApi({ id_usuario: id })
-    
     //mensaje_confirmacion('¿Deseas eliminar este usuario?','question','Si aceptas no volveras a ver a este registro , almenos que te contastes con el administrador ',mensajes())
 }
+
+const elimnarNivel = (id) => {
+    deleteNivelApi({ id_nivel: id })
+}
+
+const elimnarParalelo = (id) => {
+    deleteParaleloApi({ id_paralelo: id })
+}
+

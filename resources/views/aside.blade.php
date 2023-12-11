@@ -13,8 +13,6 @@
     <link rel="icon" href="{{ asset('icons/cropped-logo.png') }}" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome 
--->
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
@@ -113,7 +111,7 @@
 </head>
 
 <body>
-    
+
     <header class="navbar sticky-top bg-light flex-md-nowrap p-0 shadow" data-bs-theme="dark">
         <a href="{{ asset('inicio') }}"><img src="{{ asset('icons/logo-istg-2.png') }}" style="margin:10px; height: 50%; width:30%" alt="logo"></a>
 
@@ -174,9 +172,9 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('cursos') }}">
+                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('cursos_paralelos') }}">
                                     <i class="material-icons">storage</i>
-                                    Cursos
+                                    Cursos y paralelos
                                 </a>
                             </li>
                             <li class="nav-item">

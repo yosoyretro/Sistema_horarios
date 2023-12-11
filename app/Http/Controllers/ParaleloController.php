@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Responses\TypeResponse;
-use App\service\ParaleloServicio;
+use App\Services\ParaleloServicio;
 use App\Services\Validaciones;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -38,11 +38,11 @@ class ParaleloController extends Controller
     public function createParalelo(Request $request)
     {
         try {
+
             $response = new TypeResponse();
             $datos = [
-                'numero' => $request->input('numero'),
+                'nemonico' => $request->input('nemonico'),
             ];
-
             $validacion_paralelo = $this->validaciones_clase->validarRegistroForParalelo(2, array_merge($datos, ["tipo_validacion_existencia" => true]));
             if (!$validacion_paralelo["ok"]) throw new Exception($validacion_paralelo["msg_error"]);
 
@@ -88,9 +88,9 @@ class ParaleloController extends Controller
         try {
             $response = new TypeResponse();
 
-            $validacion_paralelo = $this->validaciones_clase->validarRegistroForParalelo(1, ["id_paralelo" => $request->input('id_paralelo')]);
-            if (!$validacion_paralelo["ok"]) throw new Exception($validacion_paralelo["msg_error"]);
-            if (!$validacion_paralelo["ok"] && !$validacion_paralelo["data"]) throw new Exception($validacion_paralelo["exception"]);
+            // $validacion_paralelo = $this->validaciones_clase->validarRegistroForParalelo(1, ["id_paralelo" => $request->input('id_paralelo')]);
+            // if (!$validacion_paralelo["ok"]) throw new Exception($validacion_paralelo["msg_error"]);
+            // if (!$validacion_paralelo["ok"] && !$validacion_paralelo["data"]) throw new Exception($validacion_paralelo["exception"]);
 
             $servicio_paralelo = $this->servicio_paralelo_clase->DeleteParalelo($request->input('id_paralelo'));
             if (!$servicio_paralelo["ok"]) throw new Exception($servicio_paralelo["msg_error"]);

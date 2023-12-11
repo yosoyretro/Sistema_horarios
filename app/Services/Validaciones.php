@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Log;
 use  App\Services\AsignaturaServicio;
 use App\services\CarreraServicio;
 use App\service\DiasServicio;
-use App\service\NivelServicio;
-use App\service\ParaleloServicio;
+use App\Services\NivelServicio;
+use App\services\ParaleloServicio;
 use PhpParser\Node\Stmt\Switch_;
 
 class Validaciones
@@ -281,16 +281,15 @@ class Validaciones
 
                 case 2:
                     // Validar por número de paralelo
-                    if (!isset($array_asociativo["numero"])) throw new Exception("Error, la clave del número de paralelo no existe");
-                    if (!is_numeric($array_asociativo["numero"])) throw new Exception("El número de paralelo debe ser numérico");
-
+                    if (!isset($array_asociativo["nemonico"])) throw new Exception("Error, la clave del número de paralelo no existe");
+                    
                     $response_paralelo = $servicio_paralelo->Consultar([
                         "tipo_consulta" => 2,
-                        "data" => $array_asociativo["numero"]
+                        "data" => $array_asociativo["nemonico"]
                     ]);
 
                     $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
-                        "codigo" => "40405",
+                        "codigo" => "40404",
                     ]);
 
                     $mensaje = $response_mensaje["data"][0]["mensaje"];
@@ -341,7 +340,8 @@ class Validaciones
                     $response_mensaje = $this->servicio_mensaje_alertas->consultar(1, [
                         "codigo" => "40406", 
                     ]);
-
+                    log::alert("Soy el response del mensaje ");
+                    log::alert($response_mensaje);
                     $mensaje = $response_mensaje["data"][0]["mensaje"];
                     break;
 

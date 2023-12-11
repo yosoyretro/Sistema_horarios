@@ -22,7 +22,6 @@ class UsuarioController extends Controller
     public function createUsuario(Request $request)
     {
         $response = new TypeResponse();
-
         try{
             $servicio_usuario = $this->servicio_usuario->createuser($request->all());
             if(!$servicio_usuario["ok"])throw new Exception($servicio_usuario["msg_error"]);
@@ -31,7 +30,6 @@ class UsuarioController extends Controller
         
             log::alert($e->getMessage());
             $response->setok(false);
-            
             $response->seterror($e->getMessage(),$e->getCode());
         }
 

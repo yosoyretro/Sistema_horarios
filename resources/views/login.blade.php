@@ -32,7 +32,7 @@
                                 <h1>Acceso</h1>
                                 <p class="text-medium-emphasis">Iniciar sesión en su cuenta</p>
 
-                                @if ($mensajes_temporales)
+                                @if (isset($mensajes_temporales))
                                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                         <strong>Error : </strong>{{ $mensajes_temporales['msg'] }}
                                         <button type="button" class="btn-close" data-bs-dismiss="alert"

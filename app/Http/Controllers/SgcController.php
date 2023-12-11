@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\TypeResponse;
+use App\Services\NivelServicio;
+use App\Services\ParaleloServicio;
 use App\Services\UsuarioServicio as ServicesUsuarioServicio;
 use App\Services\RolServicio;
 use App\Services\TituloAcademicoServicio;
@@ -63,9 +65,27 @@ class SgcController extends Controller
         return view('asignaciones');
     }
 
-    public function cursos()
+    public function cursosAndParalelos()
     {
-        return view('cursos');
+        $servicio_nivel = new NivelServicio();
+        $servicio_paralelos = new ParaleloServicio();
+        
+        $response = $servicio_paralelos->Consultar(["tipo_consulta"=>3]);
+        $response_nivel = $servicio_nivel->Consultar(["tipo_consulta"=>4]);
+        
+        if(!$response["ok"]){
+            $data = [];
+        }else{
+            $data = $response["data"];
+        }
+        
+        if(!$response_nivel["ok"]){
+            $data_nivel = [];
+        }else{
+            $data_nivel = $response_nivel["data"];
+        }
+        
+        return view('cursosParalelos')->with('data_paralelo',$data)->with('data_nivel',$data_nivel);
     }
     public function carrera()
     {
@@ -93,14 +113,10 @@ class SgcController extends Controller
             $roles = $data_rol["data"];
         }
 
-        log::alert($data_titulo);
         if(!$data_titulo["ok"]){
             $titulos_academico = [];
         }else{
             $titulos_academico = $data_titulo["data"];
-            log::alert("SOY EL DE USUARIO");
-            log::alert(collect($titulos_academico));
-            log::alert($datos);
             if($titulos_academico == null){
                 $titulos_academico = [];
             }
