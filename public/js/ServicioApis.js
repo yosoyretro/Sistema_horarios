@@ -102,6 +102,7 @@ const createParaleloApi = (obj) => {
 }
 const deleteParaleloApi = (obj) => {
     try {
+        
         mensaje_confirmacion('¿Deseas eliminar este Paralelo?', 'question', 'Si aceptas no volveras a ver a este registro , al menos que te contastes con el administrador').then((result) => {
             if (result.isConfirmed) {
                 const headers = new Headers();
