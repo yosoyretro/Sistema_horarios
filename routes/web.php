@@ -22,5 +22,5 @@ Route::get('cursos_paralelos',[SgcController::class,'cursosAndParalelos'])->name
 Route::view('asignaciones',[SgcController::class,'asignaciones'])->name('asignaciones');
 Route::view('horarios',[SgcController::class,'horarios'])->name('horarios');
 Route::view('asignatura',[SgcController::class,'asignatura'])->name('asignatura');
-
+Route::view('roles_permisos',[SgcController::class,'rolespermisos'])->name('roles_permisos');
 Route::post('login-controlador',[SgcController::class,'login_controlador'])->name('login_controlador');

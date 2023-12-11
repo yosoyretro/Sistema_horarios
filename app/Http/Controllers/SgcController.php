@@ -131,4 +131,7 @@ class SgcController extends Controller
     public function asignatura(){
         return view('asignatura');
     }
+    public function rolespermisos(){
+        return view('rolespermisos');
+    }
 }

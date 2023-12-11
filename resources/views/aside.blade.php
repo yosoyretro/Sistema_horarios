@@ -166,6 +166,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('roles_permisos') }}">
+                                    <i class="material-icons">groups</i>
+                                    roles y permisos
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center gap-2" href="{{ asset('carrera') }}">
                                     <i class="material-icons">school</i>
                                     Carreras
