@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Services;
-
+use App\Services\RolServicio;
 use App\Http\Responses\TypeResponse;
 use App\Models\UsuarioModel;
 use Exception;
@@ -39,7 +39,6 @@ class UsuarioServicio
                     break;
                 case 4:
                     //consulta por el estado 
-                    log::alert("Entro aqui :)");
                     $datos = UsuarioModel::where('estado', 'A')->get();
                     break;
             }
@@ -53,6 +52,13 @@ class UsuarioServicio
                     array_push($array,$response_titulo["data"]->first());
                 }
                 $titulos_academico->id_titulo_academico = $array;
+                return true;
+            });
+
+            $rol = $datos->map(function ($rol) {
+                $servicio_rol = new RolServicio();
+                $servicio_rol = $servicio_rol->Consultar(["tipo_consulta"=>1,"data"=>$rol->id_rol]);
+                $rol->id_rol =  $servicio_rol["data"]->first()["descripcion"];
                 return true;
             });
 
@@ -96,21 +102,26 @@ class UsuarioServicio
     {
         try {
             // se busca el usuario a editar utilizando el modelo UsuarioModel
-            $usuario = UsuarioModel::findOrFail($userData['id_usuario']);
-
-
-            $usuario->cedula = $userData['cedula'];
-            $usuario->nombres = $userData['nombres'];
-            $usuario->usuario = $userData['usuario'];
-            $usuario->clave = $userData['clave'];
-            $usuario->id_rol = $userData['id_rol'];
-            $usuario->id_titulo_academico = $userData['id_titulo_academico'];
-
-            $usuario->save();
+            log::alert("Souy la data del usuer actualizact");
+            log::alert(collect($userData));
+            $usuario = UsuarioModel::where("id_usuario",$userData['id_usuario'])->update(  
+                [
+                    "cedula"=>$userData['cedula'],
+                    "nombres"=>strtoupper($userData['nombres']),
+                    "usuario"=>$userData['usuario'],
+                    "id_rol"=>$userData['id_rol'],
+                    "id_titulo_academico"=>json_encode($userData['id_titulo_academico']),
+                    "updated_at"=>now()
+                ]
+            );
 
             $this->obj_tipo_respuesta->setok(true);
             $this->obj_tipo_respuesta->setdata($usuario);
         } catch (Exception $e) {
+            log::alert("Soy el servicio de usuario");
+            log::alert("El mensaje : " . $e->getMessage());
+            log::alert("Linea : " . $e->getLine());
+
             $this->obj_tipo_respuesta->setok(false);
             $this->obj_tipo_respuesta->seterror('Error al editar el usuario', false);
         }

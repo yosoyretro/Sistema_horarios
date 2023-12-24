@@ -85,13 +85,9 @@ class TituloAcademicoServicio
                     break;
                 case 6:
                     //consultar por estado 
-                    log::alert("SOY LA CONSULTA 6");
                     $datos = TituloAcademicoModel::where("estado","A")->get();
-                    log::alert($datos);
                     break;
             }
-            log::alert("SOY LOS DATOS");
-            log::alert($datos);
             $response->setdata($datos);
         } catch (Exception $e) {
             $response->setok(false);
