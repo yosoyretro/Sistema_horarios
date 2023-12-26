@@ -41,6 +41,13 @@ class UsuarioServicio
                     //consulta por el estado 
                     $datos = UsuarioModel::where('estado', 'A')->get();
                     break;
+                case 5:
+                    //consulta por el id del titulo academico;
+                    $datos = UsuarioModel::join("titulo_academico","usuario.id_usuario","titulo_academico.id_titulo_academico")->where("titulo_academico.id_titulo_academico",$data["id_titulo_academico"])->get();
+                    log::alert("SOY EL DATO");
+                    log::alert(collect($datos));
+                    break;
+
             }
             
             $titulo_descripcion = $datos->map(function ($titulos_academico) {
@@ -58,7 +65,8 @@ class UsuarioServicio
             $rol = $datos->map(function ($rol) {
                 $servicio_rol = new RolServicio();
                 $servicio_rol = $servicio_rol->Consultar(["tipo_consulta"=>1,"data"=>$rol->id_rol]);
-                $rol->id_rol =  $servicio_rol["data"]->first()["descripcion"];
+                $rol->id_rol =  $servicio_rol["data"]->first();
+
                 return true;
             });
 
@@ -102,8 +110,6 @@ class UsuarioServicio
     {
         try {
             // se busca el usuario a editar utilizando el modelo UsuarioModel
-            log::alert("Souy la data del usuer actualizact");
-            log::alert(collect($userData));
             $usuario = UsuarioModel::where("id_usuario",$userData['id_usuario'])->update(  
                 [
                     "cedula"=>$userData['cedula'],
@@ -137,6 +143,7 @@ class UsuarioServicio
 
             //pasamos el estado activo a inactivo
             $usuario->estado = 'I';
+            $usuario->id_titulo_academico = json_encode([]);
             $usuario->save();
             $this->obj_tipo_respuesta->setok(true);
             $this->obj_tipo_respuesta->setmensagge("Usuario eliminado con exito");
