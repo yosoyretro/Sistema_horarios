@@ -119,6 +119,7 @@ class UsuarioServicio
 
     public function editUser($userData)
     {
+        $response = new TypeResponse();
         try {
             // se busca el usuario a editar utilizando el modelo UsuarioModel
             if (!UsuarioModel::where("id_usuario",$userData['id_usuario'])->update(  
