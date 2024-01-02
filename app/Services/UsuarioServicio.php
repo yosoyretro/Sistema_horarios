@@ -121,7 +121,7 @@ class UsuarioServicio
     {
         try {
             // se busca el usuario a editar utilizando el modelo UsuarioModel
-            $usuario = UsuarioModel::where("id_usuario",$userData['id_usuario'])->update(  
+            if (!UsuarioModel::where("id_usuario",$userData['id_usuario'])->update(  
                 [
                     "imagen_perfil" => $userData["imagen"]??null,
                     "cedula"=>$userData['cedula'],
@@ -131,10 +131,9 @@ class UsuarioServicio
                     "id_titulo_academico"=>json_encode($userData['id_titulo_academico']),
                     "updated_at"=>now()
                 ]
-            );
+            ))throw new Exception('A ocurrido un error al actualizar el usuario');
 
             $this->obj_tipo_respuesta->setok(true);
-            $this->obj_tipo_respuesta->setdata($usuario);
         } catch (Exception $e) {
             $mensaje = "";
 
