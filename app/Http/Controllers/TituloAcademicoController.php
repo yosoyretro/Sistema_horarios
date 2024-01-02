@@ -23,9 +23,9 @@ class TituloAcademicoController extends Controller
     }
     public function showTituloAcademico(Request $request){
         try{
-            log::alert("sOY EL SHOW TITULO ACADEMICO ");
+
             $response = new TypeResponse();
-            $servicio_titulos_academico = $this->servicio_titulos_academico_clase->consultarTitulo(6);
+            $servicio_titulos_academico = $this->servicio_titulos_academico_clase->consultarTitulo(7);
             $response->setdata($servicio_titulos_academico["data"]);
         }catch(Exception $e){
             $response->setok(false);
@@ -38,20 +38,14 @@ class TituloAcademicoController extends Controller
         
         try{
             $response = new TypeResponse();
-            $datos = [
-                'descripcion' => $request->input('descripcion'),
-                'codigo' => $request->input('codigo')
-            ];
-            
-            $request_servicio = $this->servicio_titulos_academico_clase->CreateTitulo($datos);
-            if(!$request_servicio["ok"])throw new Exception($request_servicio["msg_error"]) ;
+            $request_servicio = $this->servicio_titulos_academico_clase->CreateTitulo($request->toArray());            
+            if(!$request_servicio["ok"])throw new Exception($request_servicio["msg_error"]);
             $response->setmensagge("El titulo de ".strtoupper($request->input('descripcion'))." se creo con exito ");
         }catch(Exception $e){
             log::alert("Funcion de createTituloAcademico");
             log::alert("Linea del error :" . $e->getLine());
-
             $response->setok(false);
-            $response->seterror($e->getMessage(),$e);
+            $response->setmensagge($e->getMessage());
         }
 
         return json_decode($response->getdata());
@@ -60,8 +54,6 @@ class TituloAcademicoController extends Controller
     // ACTUALIZAR TITULO ACADEMICO
     public function updateTituloAcademico(Request $request){    
         try{
-            log::alert("Soy el request");
-            log::alert(collect($request->all()));
             $response = new TypeResponse();
 
             $servicio_titulos_academico = $this->servicio_titulos_academico_clase->updateTituloAcademico($request->all());

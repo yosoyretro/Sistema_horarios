@@ -25,10 +25,12 @@ class UsuarioController extends Controller
     {
         $response = new TypeResponse();
         try{
-            $servicio_usuario = $this->servicio_usuario->createuser(array_merge(["clave"=>$request->input('cedula')],$request->all()));
+
+            $servicio_usuario = $this->servicio_usuario->createuser($request->toArray());
             if(!$servicio_usuario["ok"])throw new Exception($servicio_usuario["msg_error"]);
             $response->setmensagge($servicio_usuario["msg"]); 
         }catch(Exception $e){
+            
             log::alert($e->getMessage());
             $response->setok(false);
             $response->seterror($e->getMessage(),$e->getCode());

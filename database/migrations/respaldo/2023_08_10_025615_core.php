@@ -89,14 +89,14 @@ return new class extends Migration
 
 
 
-        Schema::create('dias', function (Blueprint $table) {
-            $table->bigIncrements('id_dias');
-            $table->string('dia');
-            //CAMPOS OBLIGATORIOS
-            $table->string('estado', 2)->default('A');
-            $table->timestamp('created_at')->useCurrent(); // Nombre corregido a 'created_at'
-            $table->timestamp('updated_at')->useCurrent();
-        });
+        // Schema::create('dias', function (Blueprint $table) {
+        //     $table->bigIncrements('id_dias');
+        //     $table->string('dia');
+        //     //CAMPOS OBLIGATORIOS
+        //     $table->string('estado', 2)->default('A');
+        //     $table->timestamp('created_at')->useCurrent(); // Nombre corregido a 'created_at'
+        //     $table->timestamp('updated_at')->useCurrent();
+        // });
 
 
         Schema::create('rol', function (Blueprint $table) {

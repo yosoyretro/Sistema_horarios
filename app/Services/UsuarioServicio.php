@@ -27,15 +27,15 @@ class UsuarioServicio
             switch ($data["tipo_consulta"]) {
                 case 1:
                     //consulta por cedula
-                    $datos = UsuarioModel::where('cedula', $data["data"])->get();
+                    $datos = UsuarioModel::where('cedula', $data["cedula"])->get();
                     break;
                 case 2:
                     //consulta por nombres
-                    $datos = UsuarioModel::where('nombres', 'LIKE', '%', $data["data"], '%')->get();
+                    $datos = UsuarioModel::where('nombres', 'LIKE', '%', $data["nombres"], '%')->get();
                     break;
                 case 3:
                     //consulta por usuario
-                    $datos = UsuarioModel::where('usuario', $data["data"])->get();
+                    $datos = UsuarioModel::where('usuario', $data["usuario"])->get();
                     break;
                 case 4:
                     //consulta por el estado 
@@ -79,28 +79,39 @@ class UsuarioServicio
         return $this->obj_tipo_respuesta->getdata();
     }
 
-    public function createuser($userData)
+    public function createuser(array $userData)
     {
         $response = new TypeResponse();
         try {
-            $nuevoUsuario = UsuarioModel::create([
-                "cedula" => $userData['cedula'],
-                "nombres" => strtoupper($userData['nombres']),
-                "usuario" => $userData['usuario'],
-                "clave" => md5($userData['clave']),
-                "id_rol" => $userData["id_rol"],
-                "id_titulo_academico" => json_encode($userData["id_titulo_academico"]),
-                "estado" => "A",
-                "created_at" => now(),
-                "updated_at" => now()
+            $clave = bcrypt($userData["cedula"]);
+            UsuarioModel::insert([
+                "cedula"=>$userData["cedula"],
+                "nombres" => $userData["nombres"],
+                "usuario"=>$userData["usuario"],
+                "clave"=>$clave,
+                "imagen_perfil" => $userData["imagen"]??null,
+                "id_rol"=>$userData["id_rol"],
+                "id_titulo_academico"=>json_encode($userData["id_titulo_academico"])??[],
+                "ip_creacion"=>"192.168.14.13",
             ]);
             $response->setmensagge("Usuario grabado correctamente");
-            $response->setdata($nuevoUsuario);
+            
         } catch (Exception $e) {
-            log::alert("Error en el servicio de usuario");
-            log::alert($e->getMessage());
+            $mensaje = "";
+
+            switch ($e->getCode()) {
+                case 'HY000':
+                    $mensaje = "Hace Falta un campo";
+                    break;
+                case '23000':
+                    $mensaje = "En el registro ya existe un campo que se esta duplicando en otro registro , recuerde que los datos de los registros no se pueden repetir";
+                    break;
+                default:
+                    $mensaje = $e->getMessage();
+                    break;
+            };
+            $response->seterror($mensaje,$e->getCode());
             $response->setok(false);
-            $response->seterror('Error al crear el usuario', false);
         }
 
         return $response->getdata();
@@ -112,6 +123,7 @@ class UsuarioServicio
             // se busca el usuario a editar utilizando el modelo UsuarioModel
             $usuario = UsuarioModel::where("id_usuario",$userData['id_usuario'])->update(  
                 [
+                    "imagen_perfil" => $userData["imagen"]??null,
                     "cedula"=>$userData['cedula'],
                     "nombres"=>strtoupper($userData['nombres']),
                     "usuario"=>$userData['usuario'],
@@ -124,12 +136,21 @@ class UsuarioServicio
             $this->obj_tipo_respuesta->setok(true);
             $this->obj_tipo_respuesta->setdata($usuario);
         } catch (Exception $e) {
-            log::alert("Soy el servicio de usuario");
-            log::alert("El mensaje : " . $e->getMessage());
-            log::alert("Linea : " . $e->getLine());
+            $mensaje = "";
 
-            $this->obj_tipo_respuesta->setok(false);
-            $this->obj_tipo_respuesta->seterror('Error al editar el usuario', false);
+            switch ($e->getCode()) {
+                case 'HY000':
+                    $mensaje = "Hace Falta un campo";
+                    break;
+                case '23000':
+                    $mensaje = "En el registro ya existe un campo que se esta duplicando en otro registro , recuerde que los datos de los registros no se pueden repetir";
+                    break;
+                default:
+                    $mensaje = $e->getMessage();
+                    break;
+            };
+            $response->seterror($mensaje,$e->getCode());
+            $response->setok(false);
         }
 
         return $this->obj_tipo_respuesta->getdata();
