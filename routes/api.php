@@ -51,7 +51,7 @@ Route::group(
         Route::post("create_carrera/",[CarreraController::class,'createCarrera']);
         Route::post("update_carrera/",[CarreraController::class,'updateCarrera']);
         Route::post("delete_carrera/",[CarreraController::class,'deleteCarrera']);
-        Route::get("show_carrera/",[CarreraController::class,'showCarrera']);
+        Route::get("show_data_carrera/",[CarreraController::class,'showCarrera']);
         //NIVEL
         Route::post("create_nivel/",[NivelController::class,'createNivel']);
         Route::post("update_nivel/",[NivelController::class,'updateNivel']);
