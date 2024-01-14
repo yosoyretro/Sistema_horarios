@@ -56,7 +56,7 @@ Route::group(
         Route::post("create_nivel/",[NivelController::class,'createNivel']);
         Route::post("update_nivel/",[NivelController::class,'updateNivel']);
         Route::post("delete_nivel/",[NivelController::class,'deleteNivel']);
-        Route::get("show_nivel/",[NivelController::class,'showNivel']);
+        Route::get("show_data_nivel/",[NivelController::class,'showNivel']);
         //PARALELO
         Route::post("create_paralelo/",[ParaleloController::class,'createParalelo']);
         Route::post("update_paralelo/",[ParaleloController::class,'updateParalelo']);
