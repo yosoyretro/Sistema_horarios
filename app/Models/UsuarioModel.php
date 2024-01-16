@@ -11,19 +11,19 @@ class UsuarioModel extends Model
     protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
 
-    // const CREATED_AT = 'fecha_creacion';
-    // const UPDATE_AT = 'fecha_actualizacion';
+    const CREATED_AT = 'fecha_creacion';
+    const UPDATE_AT = 'fecha_actualizacion';
     
     protected $fillable = [
-        'cedula','nombres','usuario','clave','id_rol','id_titulo_academico'
+        'cedula',
+        'nombres',
+        'usuario',
+        'clave',
+        'id_rol',
+        'id_titulo_academico'
     ];
     
     public function rol(){
         return $this->belongsTo(RolModel::class,'id_rol');
     }
-
-    public function tituloAcademico(){
-        return $this->belongsTo(TituloAcademicoModel::class,'id_titutlo_academico');
-    }
-
 }

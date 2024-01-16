@@ -83,6 +83,7 @@ class RolServicio
                     $datos = RolModel::where('descripcion', 'LIKE', '%' . $data["data"] . '%')->get();
                     break;
                 case 3:
+                    //Consulta todo los roles con estado activos
                     $datos = RolModel::where('estado', 'A')->get();
                     break;
             }

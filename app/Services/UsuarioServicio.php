@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Services;
-
+use App\Services\RolServicio;
 use App\Http\Responses\TypeResponse;
 use App\Models\UsuarioModel;
 use Exception;
@@ -27,21 +27,27 @@ class UsuarioServicio
             switch ($data["tipo_consulta"]) {
                 case 1:
                     //consulta por cedula
-                    $datos = UsuarioModel::where('cedula', $data["data"])->get();
+                    $datos = UsuarioModel::where('cedula', $data["cedula"])->get();
                     break;
                 case 2:
                     //consulta por nombres
-                    $datos = UsuarioModel::where('nombres', 'LIKE', '%', $data["data"], '%')->get();
+                    $datos = UsuarioModel::where('nombres', 'LIKE', '%', $data["nombres"], '%')->get();
                     break;
                 case 3:
                     //consulta por usuario
-                    $datos = UsuarioModel::where('usuario', $data["data"])->get();
+                    $datos = UsuarioModel::where('usuario', $data["usuario"])->get();
                     break;
                 case 4:
                     //consulta por el estado 
-                    log::alert("Entro aqui :)");
                     $datos = UsuarioModel::where('estado', 'A')->get();
                     break;
+                case 5:
+                    //consulta por el id del titulo academico;
+                    $datos = UsuarioModel::join("titulo_academico","usuario.id_usuario","titulo_academico.id_titulo_academico")->where("titulo_academico.id_titulo_academico",$data["id_titulo_academico"])->get();
+                    log::alert("SOY EL DATO");
+                    log::alert(collect($datos));
+                    break;
+
             }
             
             $titulo_descripcion = $datos->map(function ($titulos_academico) {
@@ -56,6 +62,14 @@ class UsuarioServicio
                 return true;
             });
 
+            $rol = $datos->map(function ($rol) {
+                $servicio_rol = new RolServicio();
+                $servicio_rol = $servicio_rol->Consultar(["tipo_consulta"=>1,"data"=>$rol->id_rol]);
+                $rol->id_rol =  $servicio_rol["data"]->first();
+
+                return true;
+            });
+
             $this->obj_tipo_respuesta->setdata($datos);
         } catch (Exception $e) {
             log::alert($e->getMessage());
@@ -65,28 +79,39 @@ class UsuarioServicio
         return $this->obj_tipo_respuesta->getdata();
     }
 
-    public function createuser($userData)
+    public function createuser(array $userData)
     {
         $response = new TypeResponse();
         try {
-            $nuevoUsuario = UsuarioModel::create([
-                "cedula" => $userData['cedula'],
-                "nombres" => strtoupper($userData['nombres']),
-                "usuario" => $userData['usuario'],
-                "clave" => md5($userData['clave']),
-                "id_rol" => $userData["id_rol"],
-                "id_titulo_academico" => json_encode($userData["id_titulo_academico"]),
-                "estado" => "A",
-                "created_at" => now(),
-                "updated_at" => now()
+            $clave = bcrypt($userData["cedula"]);
+            UsuarioModel::insert([
+                "cedula"=>$userData["cedula"],
+                "nombres" => $userData["nombres"],
+                "usuario"=>$userData["usuario"],
+                "clave"=>$clave,
+                "imagen_perfil" => $userData["imagen"]??null,
+                "id_rol"=>$userData["id_rol"],
+                "id_titulo_academico"=>json_encode($userData["id_titulo_academico"])??[],
+                "ip_creacion"=>"192.168.14.13",
             ]);
             $response->setmensagge("Usuario grabado correctamente");
-            $response->setdata($nuevoUsuario);
+            
         } catch (Exception $e) {
-            log::alert("Error en el servicio de usuario");
-            log::alert($e->getMessage());
+            $mensaje = "";
+
+            switch ($e->getCode()) {
+                case 'HY000':
+                    $mensaje = "Hace Falta un campo";
+                    break;
+                case '23000':
+                    $mensaje = "En el registro ya existe un campo que se esta duplicando en otro registro , recuerde que los datos de los registros no se pueden repetir";
+                    break;
+                default:
+                    $mensaje = $e->getMessage();
+                    break;
+            };
+            $response->seterror($mensaje,$e->getCode());
             $response->setok(false);
-            $response->seterror('Error al crear el usuario', false);
         }
 
         return $response->getdata();
@@ -94,25 +119,38 @@ class UsuarioServicio
 
     public function editUser($userData)
     {
+        $response = new TypeResponse();
         try {
             // se busca el usuario a editar utilizando el modelo UsuarioModel
-            $usuario = UsuarioModel::findOrFail($userData['id_usuario']);
-
-
-            $usuario->cedula = $userData['cedula'];
-            $usuario->nombres = $userData['nombres'];
-            $usuario->usuario = $userData['usuario'];
-            $usuario->clave = $userData['clave'];
-            $usuario->id_rol = $userData['id_rol'];
-            $usuario->id_titulo_academico = $userData['id_titulo_academico'];
-
-            $usuario->save();
+            if (!UsuarioModel::where("id_usuario",$userData['id_usuario'])->update(  
+                [
+                    "imagen_perfil" => $userData["imagen"]??null,
+                    "cedula"=>$userData['cedula'],
+                    "nombres"=>strtoupper($userData['nombres']),
+                    "usuario"=>$userData['usuario'],
+                    "id_rol"=>$userData['id_rol'],
+                    "id_titulo_academico"=>json_encode($userData['id_titulo_academico']),
+                    "updated_at"=>now()
+                ]
+            ))throw new Exception('A ocurrido un error al actualizar el usuario');
 
             $this->obj_tipo_respuesta->setok(true);
-            $this->obj_tipo_respuesta->setdata($usuario);
         } catch (Exception $e) {
-            $this->obj_tipo_respuesta->setok(false);
-            $this->obj_tipo_respuesta->seterror('Error al editar el usuario', false);
+            $mensaje = "";
+
+            switch ($e->getCode()) {
+                case 'HY000':
+                    $mensaje = "Hace Falta un campo";
+                    break;
+                case '23000':
+                    $mensaje = "En el registro ya existe un campo que se esta duplicando en otro registro , recuerde que los datos de los registros no se pueden repetir";
+                    break;
+                default:
+                    $mensaje = $e->getMessage();
+                    break;
+            };
+            $response->seterror($mensaje,$e->getCode());
+            $response->setok(false);
         }
 
         return $this->obj_tipo_respuesta->getdata();
@@ -126,6 +164,7 @@ class UsuarioServicio
 
             //pasamos el estado activo a inactivo
             $usuario->estado = 'I';
+            $usuario->id_titulo_academico = json_encode([]);
             $usuario->save();
             $this->obj_tipo_respuesta->setok(true);
             $this->obj_tipo_respuesta->setmensagge("Usuario eliminado con exito");

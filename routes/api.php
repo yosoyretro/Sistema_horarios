@@ -8,6 +8,7 @@ use App\Http\Controllers\NivelController;
 use App\Http\Controllers\DiasController;
 use App\Http\Controllers\ParaleloController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\RolController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -68,8 +69,11 @@ Route::group(
         Route::get("show_data_dias/",[DiasController::class,'showDias']);
         //USUARIO
         Route::post("create_usuario/",[UsuarioController::class,'createUsuario']);
+        Route::post("edit_usuario/",[UsuarioController::class,'editUser']);
         Route::post("delete_usuario/",[UsuarioController::class,'deleteUsuario']);
         Route::get("show_usuario/",[UsuarioController::class,'showUsuario']);
+        //ROles 
+        Route::get("show_roles/",[RolController::class,'showRol']);
         
     }   
 );

@@ -66,7 +66,6 @@ class ParaleloController extends Controller
     {
         try {
             $response = new TypeResponse();
-
             $validacion_paralelo = $this->validaciones_clase->validarRegistroForParalelo(1, $request->all());
             if (!$validacion_paralelo["ok"]) throw new Exception($validacion_paralelo["msg_error"]);
             if (!$validacion_paralelo["ok"] && !$validacion_paralelo["data"]) throw new Exception($validacion_paralelo["exception"]);

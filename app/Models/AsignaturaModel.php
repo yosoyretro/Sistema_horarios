@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class AsignaturaModel extends Model
 {
     use HasFactory;
-    protected $table = 'asignatura';
-    protected $primaryKey = 'id_asignatura';
-    protected $fillable = ['descripcion','codigo'];
-    const CREATE_AT = 'fecha_creacion';
-    const UPDATE_AT = 'fecha_actualizacion';
+    protected $table = 'materias';
+    protected $primaryKey = 'id_materia';
+    
+    const CREATED_AT = 'fecha_creacion';
+    const UPDATED_AT = 'fecha_actualizacion';
+
+    protected $fillable = ['codigo','descripcion','ip_creacion','estado'];
     
 }

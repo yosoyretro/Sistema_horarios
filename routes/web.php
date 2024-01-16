@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\SgcController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+<<<<<<< HEAD
 
 Route::view('login',[SgcController::class,'login'])->name('login');
 Route::view('inicio',[SgcController::class,'inicio'])->name('inicio');
@@ -24,3 +24,5 @@ Route::view('horarios',[SgcController::class,'horarios'])->name('horarios');
 Route::view('asignatura',[SgcController::class,'asignatura'])->name('asignatura');
 Route::view('roles_permisos',[SgcController::class,'rolespermisos'])->name('roles_permisos');
 Route::post('login-controlador',[SgcController::class,'login_controlador'])->name('login_controlador');
+=======
+>>>>>>> master

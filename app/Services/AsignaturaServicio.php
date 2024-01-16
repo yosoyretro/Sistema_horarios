@@ -17,26 +17,40 @@ class AsignaturaServicio
         $this->obj_tipo_respuesta = new TypeResponse();
     }
 
-    public function CreateAsignatura($asignaturaData)
+    public function CreateAsignatura(array $asignaturaData)
     {
-
-
         $response = new TypeResponse();
         try {
-            //crear nueva asignatura
-            $nuevoAsignatura = $this->obj_asignatura_modelo::create(
-                [
-                    "codigo" => $asignaturaData["codigo"],
-                    "descripcion" => $asignaturaData["descripcion"]
-                ]
-            );
-
+            if(!AsignaturaModel::insert([
+                "codigo"=>$asignaturaData["codigo"],
+                "descripcion"=>strtoupper($asignaturaData["descripcion"]),
+                "ip_creacion"=>"192.168.14.13"
+            ]))throw new Exception("A ocurrido un error al crear la asignatura");
             $response->setok(true);
-            $response->setdata($nuevoAsignatura);
-            $response->setmensagge("Asignatura creada con exito");
+            $response->setmensagge("La asignatura " . strtoupper($asignaturaData["descripcion"]) . " se creo con exito");
+
         } catch (Exception $e) {
+            log::alert("MOTIVO : " . $e->getMessage());
+            log::alert("LINEA : " . $e->getLine());
+            $mensaje = "";
+
+            switch ($e->getCode()) {
+                case 'HY000':
+                    $mensaje = "Hace Falta un campo";
+                    break;
+                case '23000':
+                    $mensaje = "En el registro ya existe un campo que tiene ese mismo mismo datos en otro registro, recordar que los datos no se pueden repetir en ningun registro";
+                    break;
+                default:
+                    $mensaje = $e->getMessage();
+                    break;
+            };
+
+            log::alert("El error esta en el servicio ");
+            log::alert("Mensaje : " . $e->getMessage());
+            log::alert("Linea : " . $e->getLine());
             $response->setok(false);
-            $response->seterror("Error al crear la asignatura", false);
+            $response->seterror($mensaje, false);
         }
         return $response->getdata();
     }
@@ -46,22 +60,35 @@ class AsignaturaServicio
         $response = new TypeResponse();
 
         try {
-
-            $asignatura = AsignaturaModel::where("id_asignatura",$asignaturaData['id_asignatura'])
+            if(!AsignaturaModel::where("id_materia",$asignaturaData['id_asignatura'])
                 ->update(
                     [
                         "codigo" => $asignaturaData['codigo'],
                         "descripcion" => $asignaturaData['descripcion'],
-                        "updated_at" => now()
+                        "fecha_actualizacion" => now()->format('Y-m-d'),
+                        "hora_actualizacion" => now()->format('H:i:s'),
                     ]
-                );
+                ))throw new Exception("A ocurrido un error en el servicio ");
+
             $response->setok(true);
-            $response->setdata($asignatura);
+            $response->setdata(0);
             $response->setmensagge("Asignatura editada con exito");
         } catch (Exception $e) {
-            log::alert("ERROR : "  . $e->getMessage());
+            $mensaje = "";
+            switch ($e->getCode()) {
+                case 'HY000':
+                    $mensaje = "Hace Falta un campo";
+                    break;
+                case '23000':
+                    $mensaje = "En el registro ya existe un campo que tiene ese mismo mismo datos en otro registro, recordar que los datos no se pueden repetir en ningun registro";
+                    break;
+                default:
+                    $mensaje = $e->getMessage();
+                    break;
+            };
+            $response->seterror($mensaje,$e->getCode());
             $response->setok(false);
-            $response->seterror('Error al editar la asignatura ', false);
+            $response->seterror($mensaje,$e->getCode());
         }
         return $response->getdata();
     }
@@ -69,13 +96,15 @@ class AsignaturaServicio
     public function DeleteAsignatura($asignaturaData)
     {
         try {
-            $asignatura = AsignaturaModel::findOrFail($asignaturaData);
-
-            $asignatura->estado = 'I';
-            $asignatura->save();
+            $asignatura = AsignaturaModel::findOrFail($asignaturaData)->update([
+                "codigo" => "E" . random_int(1, 500)." - ". now(),
+                "descripcion" => "E" . random_int(1, 500)." - ". now(),
+                "estado" => "E",
+                "fecha_actualizacion" => now()->format('Y-m-d'),
+                "hora_actualizacion" => now()->format('H:i:s'),
+            ]);
 
             $this->obj_tipo_respuesta->setok(true);
-            $this->obj_tipo_respuesta->setdata($asignatura);
         } catch (Exception $e) {
             $this->obj_tipo_respuesta->setok(false);
             $this->obj_tipo_respuesta->seterror('Error al eliminar la asignatura', false);
@@ -88,7 +117,6 @@ class AsignaturaServicio
         $datos = null;
         $response = new TypeResponse();
         try {
-            log::alert("PASO POR LA FUNCION DE CONSULTAR");
             switch ($data["tipo_consulta"]) {
                 case 1:
                     // Consulta por ID de asignatura
@@ -121,6 +149,10 @@ class AsignaturaServicio
             }
             $this->obj_tipo_respuesta->setdata($datos);
         } catch (Exception $e) {
+            log::alert("A ocurrido un error en obtener la informacion");
+            log::alert("MENSAJE : " . $e->getMessage());
+            log::alert("LINEA : " . $e->getLine());
+
             $response->setok(false);
             $response->setmensagge($e->getMessage(), $e->getLine());
             $response->setok(false);
