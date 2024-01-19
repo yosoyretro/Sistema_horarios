@@ -39,7 +39,7 @@ class ParaleloServicio
         try {
             $paralelo = ParaleloModel::findOrFail($paraleloData['id_paralelo']);
 
-            $paralelo->paralelo = $paraleloData['paralelo'];
+            $paralelo->paralelo = $paraleloData['numero_paralelo'];
 
             $paralelo->save();
 
@@ -76,11 +76,11 @@ class ParaleloServicio
             switch ($data["tipo_consulta"]) {
                 case 1:
                     // Consulta por ID de paralelo
-                    $datos = ParaleloModel::where('id_paralelo', $data["data"])->get();
+                    $datos = ParaleloModel::where('id_paralelo', $data["id_paralelo"])->where("estado", "A")->get();
                     break;
                 case 2:
                     // Consulta por paralelo
-                    $datos = ParaleloModel::where('paralelo', $data["data"])->get();
+                    $datos = ParaleloModel::where('numero_paralelo', $data["numero_paralelo"])->where("estado", "A")->get();
                     break;
                 case 3:
                     $datos = ParaleloModel::where('estado', 'A')->get();
