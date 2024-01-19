@@ -108,7 +108,7 @@ class InstitutoController extends Controller
             $servicio_instituto = $this->servicio_instituto_clase->Consultar(["tipo_consulta"=>4]);
             $response->setdata($servicio_instituto["data"]);
         }catch(Exception $e){
-
+            
         }
         return json_encode($response->getdata());
     }

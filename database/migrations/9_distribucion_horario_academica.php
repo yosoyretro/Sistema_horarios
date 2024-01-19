@@ -17,13 +17,13 @@ return new class extends Migration
             $table->unsignedBigInteger('id_usuario');
             $table->unsignedBigInteger('id_nivel');
             $table->unsignedBigInteger('id_paralelo');
+            $table->unsignedBigInteger('id_periodo_academico');
             $table->unsignedBigInteger('id_materia');
             $table->time('hora_inicio');
             $table->time('hora_termina');
-            $table->unsignedBigInteger('id_periodo_academico');
             $table->enum('dia', ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']);
+            
             $table->foreign('id_educacion_global')->references('id_educacion_global')->on('educacion_global');
-
             $table->foreign('id_usuario')->references('id_usuario')->on('usuario');
             $table->foreign('id_paralelo')->references('id_paralelo')->on('paralelo');
             $table->foreign('id_nivel')->references('id_nivel')->on('nivel');

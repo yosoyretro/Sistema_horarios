@@ -6,6 +6,7 @@ use App\Http\Controllers\InstitutoController;
 use App\Http\Controllers\TituloAcademicoController;
 use App\Http\Controllers\NivelController;
 use App\Http\Controllers\DiasController;
+use App\Http\Controllers\DistribucionHorario;
 use App\Http\Controllers\ParaleloController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\RolController;
@@ -41,7 +42,7 @@ Route::group(
         Route::post("create_instituto/",[InstitutoController::class,'createInstituto']);
         Route::post("update_instituto/",[InstitutoController::class,'UpdateInstituto']);
         Route::post("delete_instituto/",[InstitutoController::class,'deleteInstituto']);
-        Route::get("show_data_insituto/",[InstitutoController::class,'showData']);
+        Route::get("show_data_instituto/",[InstitutoController::class,'showData']);
         //ASIGNATURA
         Route::post("create_asignatura/",[AsignaturaController::class,'createAsignatura']);
         Route::post("update_asignatura/",[AsignaturaController::class,'updateAsignatura']);        
@@ -72,8 +73,9 @@ Route::group(
         Route::post("edit_usuario/",[UsuarioController::class,'editUser']);
         Route::post("delete_usuario/",[UsuarioController::class,'deleteUsuario']);
         Route::get("show_usuario/",[UsuarioController::class,'showUsuario']);
-        //ROles 
+        //Roles 
         Route::get("show_roles/",[RolController::class,'showRol']);
-        
+        //CREAT HORARIO
+        Route::post("create_horario/",[DistribucionHorario::class,'storeHorario']);
     }   
 );

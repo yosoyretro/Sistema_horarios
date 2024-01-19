@@ -86,7 +86,7 @@ class UsuarioServicio
             $clave = bcrypt($userData["cedula"]);
             UsuarioModel::insert([
                 "cedula"=>$userData["cedula"],
-                "nombres" => $userData["nombres"],
+                "nombres" => strtolower($userData["nombres"]),
                 "usuario"=>$userData["usuario"],
                 "clave"=>$clave,
                 "imagen_perfil" => $userData["imagen"]??null,
@@ -124,20 +124,21 @@ class UsuarioServicio
             // se busca el usuario a editar utilizando el modelo UsuarioModel
             if (!UsuarioModel::where("id_usuario",$userData['id_usuario'])->update(  
                 [
-                    "imagen_perfil" => $userData["imagen"]??null,
+                    "imagen_perfil" => $userData["imagen"]??"",
                     "cedula"=>$userData['cedula'],
-                    "nombres"=>strtoupper($userData['nombres']),
+                    "nombres"=>strtolower($userData['nombres']),
                     "usuario"=>$userData['usuario'],
                     "id_rol"=>$userData['id_rol'],
                     "id_titulo_academico"=>json_encode($userData['id_titulo_academico']),
-                    "updated_at"=>now()
+                    "fecha_actualizacion"=>now()
                 ]
             ))throw new Exception('A ocurrido un error al actualizar el usuario');
 
             $this->obj_tipo_respuesta->setok(true);
         } catch (Exception $e) {
             $mensaje = "";
-
+            log::alert("Error en la line => " . $e->getLine());
+            log::alert("SOy el motivo" . $e->getMessage());
             switch ($e->getCode()) {
                 case 'HY000':
                     $mensaje = "Hace Falta un campo";

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Responses\TypeResponse;
 use App\Models\ParaleloModel;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class ParaleloServicio
 {
@@ -19,15 +20,20 @@ class ParaleloServicio
     public function CreateParalelo($paraleloData)
     {
         try {
-            //crear nuevo paralelo
-            $nuevoParalelo = new ParaleloModel();
-            $nuevoParalelo->paralelo = $paraleloData['nemonico'];
-
-            $nuevoParalelo->save();
-
+            ParaleloModel::insert(
+                [
+                    "numero_paralelo"=>$paraleloData->numero_paralelo,
+                    "ip_creacion"=>"127.0.0.1",
+                    "hora_creacion" => now()->format("H:i:s"),
+                    "fecha_creacion" => now()->format("Y-m-d")
+                ]
+            );
             $this->obj_tipo_respuesta->setok(true);
-            $this->obj_tipo_respuesta->setdata($nuevoParalelo);
         } catch (Exception $e) {
+            log::alert("A ocurrido un error en el servicio ");
+            log::alert($e->getLine());
+            log::alert($e->getMessage());
+            
             $this->obj_tipo_respuesta->setok(false);
             $this->obj_tipo_respuesta->seterror("Error al crear el paralelo", false);
         }

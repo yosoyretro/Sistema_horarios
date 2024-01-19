@@ -39,14 +39,9 @@ class ParaleloController extends Controller
     {
         try {
 
+            log::alert(collect($request->all()));
             $response = new TypeResponse();
-            $datos = [
-                'nemonico' => $request->input('nemonico'),
-            ];
-            $validacion_paralelo = $this->validaciones_clase->validarRegistroForParalelo(2, array_merge($datos, ["tipo_validacion_existencia" => true]));
-            if (!$validacion_paralelo["ok"]) throw new Exception($validacion_paralelo["msg_error"]);
-
-            $request_servicio = $this->servicio_paralelo_clase->CreateParalelo($datos);
+            $request_servicio = $this->servicio_paralelo_clase->CreateParalelo($request);
             if (!$request_servicio["ok"]) throw new Exception($request_servicio["msg_error"]);
 
             $response->setmensagge("Paralelo creado con éxito!");
