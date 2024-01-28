@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class UsuarioModel extends Model
 {
-    use HasFactory;
+    use HasFactory,Notifiable,HasApiTokens;
+
     protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
 
@@ -18,7 +21,6 @@ class UsuarioModel extends Model
         'cedula',
         'nombres',
         'usuario',
-        'clave',
         'id_rol',
         'id_titulo_academico'
     ];

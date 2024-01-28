@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Services;
+
 use App\Services\RolServicio;
 use App\Http\Responses\TypeResponse;
+use App\Models\HistoricoModel;
 use App\Models\UsuarioModel;
 use Exception;
 use Illuminate\Database\Eloquent\Casts\Json;
@@ -11,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class UsuarioServicio
 {
+
     protected $obj_usuario_modelo;
     protected $obj_tipo_respuesta;
     public function __construct()
@@ -19,11 +22,11 @@ class UsuarioServicio
         $this->obj_tipo_respuesta = new TypeResponse();
     }
 
-    public function getdatausuario($data)
+    public function getdatausuario(array $data)
     {
         $datos = null;
         try {
-            
+
             switch ($data["tipo_consulta"]) {
                 case 1:
                     //consulta por cedula
@@ -37,34 +40,23 @@ class UsuarioServicio
                     //consulta por usuario
                     $datos = UsuarioModel::where('usuario', $data["usuario"])->get();
                     break;
-                case 4:
-                    //consulta por el estado 
-                    $datos = UsuarioModel::where('estado', 'A')->get();
-                    break;
-                case 5:
-                    //consulta por el id del titulo academico;
-                    $datos = UsuarioModel::join("titulo_academico","usuario.id_usuario","titulo_academico.id_titulo_academico")->where("titulo_academico.id_titulo_academico",$data["id_titulo_academico"])->get();
-                    log::alert("SOY EL DATO");
-                    log::alert(collect($datos));
-                    break;
-
             }
-            
-            $titulo_descripcion = $datos->map(function ($titulos_academico) {
+
+            $datos->map(function ($titulos_academico) {
                 $array = [];
                 $servicio_titulo = new TituloAcademicoServicio();
-                $titulos_academico->id_titulo_academico = json_decode($titulos_academico->id_titulo_academico,true);
-                foreach($titulos_academico->id_titulo_academico as $value){
-                    $response_titulo = $servicio_titulo->consultarTitulo(1,['id_titulo_academico'=>$value]);
-                    array_push($array,$response_titulo["data"]->first());
+                $titulos_academico->id_titulo_academico = json_decode($titulos_academico->id_titulo_academico, true);
+                foreach ($titulos_academico->id_titulo_academico as $value) {
+                    $response_titulo = $servicio_titulo->consultarTitulo(1, ['id_titulo_academico' => $value]);
+                    array_push($array, $response_titulo["data"]->first());
                 }
                 $titulos_academico->id_titulo_academico = $array;
                 return true;
             });
 
-            $rol = $datos->map(function ($rol) {
+            $datos->map(function ($rol) {
                 $servicio_rol = new RolServicio();
-                $servicio_rol = $servicio_rol->Consultar(["tipo_consulta"=>1,"data"=>$rol->id_rol]);
+                $servicio_rol = $servicio_rol->Consultar(["tipo_consulta" => 1, "data" => $rol->id_rol]);
                 $rol->id_rol =  $servicio_rol["data"]->first();
 
                 return true;
@@ -79,23 +71,29 @@ class UsuarioServicio
         return $this->obj_tipo_respuesta->getdata();
     }
 
-    public function createuser(array $userData)
+    public function createuser(array $user_data)
     {
         $response = new TypeResponse();
         try {
-            $clave = bcrypt($userData["cedula"]);
+            $modelo = new UsuarioModel();
+            $campos_requeridos = $modelo->getFillable();
+
+            if ($campos_faltantes = array_diff($campos_requeridos, array_keys($user_data))) {
+                throw new EXception("Estos campos son requeridos : " . implode(" , ", $campos_faltantes));
+            }
+            $clave = bcrypt($user_data["cedula"]);
+            if (!is_numeric($user_data["cedula"])) throw new Exception("El campo de cedula tiene que ser numero");
             UsuarioModel::insert([
-                "cedula"=>$userData["cedula"],
-                "nombres" => strtolower($userData["nombres"]),
-                "usuario"=>$userData["usuario"],
-                "clave"=>$clave,
-                "imagen_perfil" => $userData["imagen"]??null,
-                "id_rol"=>$userData["id_rol"],
-                "id_titulo_academico"=>json_encode($userData["id_titulo_academico"])??[],
-                "ip_creacion"=>"192.168.14.13",
+                "cedula" => $user_data["cedula"],
+                "nombres" => strtoupper($user_data["nombres"]),
+                "usuario" => $user_data["usuario"],
+                "clave" => $clave,
+                "imagen_perfil" => $user_data["imagen"] ?? null,
+                "id_rol" => $user_data["id_rol"],
+                "id_titulo_academico" => json_encode($user_data["id_titulo_academico"]) ?? [],
+                "ip_creacion" => "192.168.14.13",
             ]);
             $response->setmensagge("Usuario grabado correctamente");
-            
         } catch (Exception $e) {
             $mensaje = "";
 
@@ -110,29 +108,30 @@ class UsuarioServicio
                     $mensaje = $e->getMessage();
                     break;
             };
-            $response->seterror($mensaje,$e->getCode());
+            $response->seterror($mensaje, $e->getCode());
             $response->setok(false);
         }
 
         return $response->getdata();
     }
 
-    public function editUser($userData)
+    public function editUser($user_data)
     {
         $response = new TypeResponse();
         try {
             // se busca el usuario a editar utilizando el modelo UsuarioModel
-            if (!UsuarioModel::where("id_usuario",$userData['id_usuario'])->update(  
+            if (!UsuarioModel::where("id_usuario", $user_data['id_usuario'])->update(
                 [
-                    "imagen_perfil" => $userData["imagen"]??"",
-                    "cedula"=>$userData['cedula'],
-                    "nombres"=>strtolower($userData['nombres']),
-                    "usuario"=>$userData['usuario'],
-                    "id_rol"=>$userData['id_rol'],
-                    "id_titulo_academico"=>json_encode($userData['id_titulo_academico']),
-                    "fecha_actualizacion"=>now()
+                    "imagen_perfil" => $user_data["imagen"],
+                    "cedula" => $user_data['cedula'],
+                    "nombres" => strtolower($user_data['nombres']),
+                    "usuario" => $user_data['usuario'],
+                    "id_rol" => $user_data['id_rol'],
+                    "id_titulo_academico" => json_encode($user_data['id_titulo_academico']),
+                    "estado" => $user_data['estado'],
+                    "fecha_actualizacion" => now()
                 ]
-            ))throw new Exception('A ocurrido un error al actualizar el usuario');
+            )) throw new Exception('A ocurrido un error al actualizar el usuario');
 
             $this->obj_tipo_respuesta->setok(true);
         } catch (Exception $e) {
@@ -150,7 +149,7 @@ class UsuarioServicio
                     $mensaje = $e->getMessage();
                     break;
             };
-            $response->seterror($mensaje,$e->getCode());
+            $response->seterror($mensaje, $e->getCode());
             $response->setok(false);
         }
 
@@ -160,21 +159,41 @@ class UsuarioServicio
     public function deleteUser($userId)
     {
         try {
-            //se busca el usuario a eliminar
-            $usuario = UsuarioModel::findOrFail($userId);
 
-            //pasamos el estado activo a inactivo
-            $usuario->estado = 'I';
-            $usuario->id_titulo_academico = json_encode([]);
-            $usuario->save();
+            $modelo = new UsuarioModel();
+            $tabla = $modelo->getTable();
+
+            $usuario = UsuarioModel::findOrFail($userId);
+            HistoricoModel::insert(
+                [
+                    "tabla_proviene" => $tabla,
+                    "datos" => json_encode($usuario),
+                ]
+            );
+            $usuario->delete();
             $this->obj_tipo_respuesta->setok(true);
             $this->obj_tipo_respuesta->setmensagge("Usuario eliminado con exito");
-            $this->obj_tipo_respuesta->setdata(null); // No hay datos para devolver después de eliminar
         } catch (Exception $e) {
+            log::alert("Error " . $e->getMessage());
             $this->obj_tipo_respuesta->setok(false);
             $this->obj_tipo_respuesta->seterror('Error al eliminar el usuario', false);
         }
 
         return $this->obj_tipo_respuesta->getdata();
+    }
+
+    public function createTokenById(int $id_usuario)
+    {
+        $response = new TypeResponse();
+        try {
+            $duracion_minutos = 60;
+            $usuario = UsuarioModel::find($id_usuario);
+            $token = $usuario->createToken('token_acceso', ['expires' => true, 'expires_at' => now()->addMinutes($duracion_minutos)])->plainTextToken;
+            $response->setdata($token);
+        } catch (Exception $e) {
+            $response->setOk(false);
+            $response->seterror($e->getMessage(), $e->getCode());
+        }
+        return $response->getdata();
     }
 }

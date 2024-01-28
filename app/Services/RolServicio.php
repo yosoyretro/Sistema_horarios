@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Responses\TypeResponse;
+use App\Models\HistoricoModel;
 use App\Models\RolModel;
 use Exception;
 
@@ -22,9 +23,7 @@ class RolServicio
             //crear nuevo rol
             $nuevoRol = new RolModel();
             $nuevoRol->descripcion = $rolData['descripcion'];
-
             $nuevoRol->save();
-
             $this->obj_tipo_respuesta->setok(true);
             $this->obj_tipo_respuesta->setdata($nuevoRol);
         } catch (Exception $e) {
@@ -38,11 +37,8 @@ class RolServicio
     {
         try {
             $rol = RolModel::findOrFail($rolData['id_rol']);
-
             $rol->descripcion = $rolData['descripcion'];
-
             $rol->save();
-
             $this->obj_tipo_respuesta->setok(true);
             $this->obj_tipo_respuesta->setdata($rol);
         } catch (Exception $e) {
@@ -52,14 +48,17 @@ class RolServicio
         return $this->obj_tipo_respuesta->getdata();
     }
 
-    public function Delete($rolData)
+    public function Delete($id_rol)
     {
         try {
-            $rol = RolModel::findOrFail($rolData);
+            $obj_modelo = new RolModel();
 
-            $rol->estado = 'I';
-            $rol->save();
-
+            $rol = RolModel::find($id_rol);
+            HistoricoModel::insert([
+                "tabla_proviene"=>$obj_modelo->getTable(),
+                "datos"=>json_encode($rol)
+            ]);
+            $rol->delete();
             $this->obj_tipo_respuesta->setok(true);
             $this->obj_tipo_respuesta->setdata($rol);
         } catch (Exception $e) {

@@ -2,30 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UsuarioModel;
 use App\Http\Responses\TypeResponse;
-use App\service\UsuarioServicio as ServiceUsuarioServicio;
 use App\Services\UsuarioServicio;
-use App\Services\Validaciones;
 use Exception;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class UsuarioController extends Controller
 {
-    private $servicio_usuario,$servicio_validaciones;
+    private $servicio_usuario;
+    
     public function __construct()
     {
         $this->servicio_usuario = new UsuarioServicio();
-        $this->servicio_validaciones = new Validaciones();
     }
 
     public function createUsuario(Request $request)
     {
         $response = new TypeResponse();
         try{
-
             $servicio_usuario = $this->servicio_usuario->createuser($request->toArray());
             if(!$servicio_usuario["ok"])throw new Exception($servicio_usuario["msg_error"]);
             $response->setmensagge($servicio_usuario["msg"]); 
@@ -42,9 +37,7 @@ class UsuarioController extends Controller
     public function showUsuario(){
         $response = new TypeResponse();
         try{
-
             $servicio_usuario = $this->servicio_usuario->getdatausuario(["tipo_consulta" => "4"]);
-            
             if((empty($servicio_usuario["data"][0]))  ){
                 $response->setmensagge("No hay registro de usuario");
                 $response->setdata([]);
