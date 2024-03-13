@@ -29,8 +29,8 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('autenticar_sistema_istg',[AutenticacionController::class,'autenticacion']);
-
-Route::middleware('auth.sanctum')->prefix('istg')->group(
+// middleware('auth.sanctum')->prefix('istg')->group
+Route::prefix('istg')->group(
     function () {
         //INSTITUTO
         Route::post("create_instituto/", [InstitutoController::class, 'createInstituto']);
@@ -67,7 +67,7 @@ Route::middleware('auth.sanctum')->prefix('istg')->group(
         Route::post("edit_usuario/", [UsuarioController::class, 'editUser']);
         Route::post("delete_usuario/", [UsuarioController::class, 'deleteUsuario']);
         Route::get("show_usuario/", [UsuarioController::class, 'showUsuario']);
-        //Roles 
+        //Roles
         Route::get("show_roles/", [RolController::class, 'showRol']);
         //TITUTLOS ACADEMICO
         Route::post("create_titulo_academico/", [TituloAcademicoController::class, 'createTituloAcademico']);

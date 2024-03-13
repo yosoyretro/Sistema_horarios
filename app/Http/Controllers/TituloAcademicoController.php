@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class TituloAcademicoController extends Controller
 {
-    
+
     //VISTA DEL TITULO ACADEMICO
     private $validaciones_clase,$servicio_titulos_academico_clase,$servicio_usuarios;
     public function __construct()
@@ -25,7 +25,7 @@ class TituloAcademicoController extends Controller
         try{
 
             $response = new TypeResponse();
-            $servicio_titulos_academico = $this->servicio_titulos_academico_clase->consultarTitulo(7);
+            $servicio_titulos_academico = $this->servicio_titulos_academico_clase->consultarTitulo(6);
             $response->setdata($servicio_titulos_academico["data"]);
         }catch(Exception $e){
             $response->setok(false);
@@ -35,10 +35,10 @@ class TituloAcademicoController extends Controller
     }
     // Crear TITULO ACADEMICO
     public function createTituloAcademico(Request $request){
-        
+
         try{
             $response = new TypeResponse();
-            $request_servicio = $this->servicio_titulos_academico_clase->CreateTitulo($request->toArray());            
+            $request_servicio = $this->servicio_titulos_academico_clase->CreateTitulo($request->toArray());
             if(!$request_servicio["ok"])throw new Exception($request_servicio["msg_error"]);
             $response->setmensagge("El titulo de ".strtoupper($request->input('descripcion'))." se creo con exito ");
         }catch(Exception $e){
@@ -49,10 +49,10 @@ class TituloAcademicoController extends Controller
         }
 
         return json_decode($response->getdata());
-    }  
+    }
 
     // ACTUALIZAR TITULO ACADEMICO
-    public function updateTituloAcademico(Request $request){    
+    public function updateTituloAcademico(Request $request){
         try{
             $response = new TypeResponse();
 
@@ -65,7 +65,7 @@ class TituloAcademicoController extends Controller
         }
         return json_encode($response->getdata());
     }
-    
+
     // //ELIMINAR TITULO ACADEMICO
     public function deleteTituloAcademico(Request $request)
     {
@@ -78,9 +78,9 @@ class TituloAcademicoController extends Controller
             $info = $response_usuario["data"];
             $info->map(function($dato) use ($request){
                 $info_validador = collect($dato["id_titulo_academico"])->where("id_titulo_academico",$request->input("id_titulo_academico"));
-                
-                if(count($dato["id_titulo_academico"]) == 1 && $info_validador){                  
-                    
+
+                if(count($dato["id_titulo_academico"]) == 1 && $info_validador){
+
                     if(!$request_usuario = $this->servicio_usuario->deleteUser($dato->id_usuario)["ok"])throw new Exception($request_usuario["msg"]);
                 }else if(count($dato["id_titulo_academico"]) > 1 && $info_validador){
                     $arreglo_titulos = [];
@@ -88,7 +88,7 @@ class TituloAcademicoController extends Controller
                         if($request->input("id_titulo_academico") != $value->id_titulo_academico){
                             array_push($arreglo_titulos,$value->id_titulo_academico);
                         }else{
-                            $descripcion = $value->descripcion; 
+                            $descripcion = $value->descripcion;
                         }
                     }
                     $this->servicio_usuario->editUser(["id_usuario"=>$dato->id_usuario,"cedula"=>$dato->cedula,"nombres"=>$dato->nombres,"usuario"=>$dato->usuario,"id_rol"=>$dato->id_rol->id_rol,"id_titulo_academico"=>$arreglo_titulos]);
@@ -107,8 +107,8 @@ class TituloAcademicoController extends Controller
             $response->setok(false);
             $response->setmensagge("A ocurrido un error en eliminar el titulo academico");
             $response->seterror($e->getMessage(),$e->getLine());
-        }   
-        
+        }
+
         return json_encode($response->getdata());
     }
 }

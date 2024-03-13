@@ -42,25 +42,25 @@ class UsuarioServicio
                     break;
             }
 
-            $datos->map(function ($titulos_academico) {
-                $array = [];
-                $servicio_titulo = new TituloAcademicoServicio();
-                $titulos_academico->id_titulo_academico = json_decode($titulos_academico->id_titulo_academico, true);
-                foreach ($titulos_academico->id_titulo_academico as $value) {
-                    $response_titulo = $servicio_titulo->consultarTitulo(1, ['id_titulo_academico' => $value]);
-                    array_push($array, $response_titulo["data"]->first());
-                }
-                $titulos_academico->id_titulo_academico = $array;
-                return true;
-            });
+           // $datos->map(function ($titulos_academico) {
+               // $array = [];
+               // $servicio_titulo = new TituloAcademicoServicio();
+               // $titulos_academico->id_titulo_academico = json_decode($titulos_academico->id_titulo_academico, true);
+               // foreach ($titulos_academico->id_titulo_academico as $value) {
+                 //   $response_titulo = $servicio_titulo->consultarTitulo(1, ['id_titulo_academico' => $value]);
+                   // array_push($array, $response_titulo["data"]->first());
+               // }
+               // $titulos_academico->id_titulo_academico = $array;
+               // return true;
+            // });
 
-            $datos->map(function ($rol) {
-                $servicio_rol = new RolServicio();
-                $servicio_rol = $servicio_rol->Consultar(["tipo_consulta" => 1, "data" => $rol->id_rol]);
-                $rol->id_rol =  $servicio_rol["data"]->first();
+           // $datos->map(function ($rol) {
+              //  $servicio_rol = new RolServicio();
+              //  $servicio_rol = $servicio_rol->Consultar(["tipo_consulta" => 1, "data" => $rol->id_rol]);
+              //  $rol->id_rol =  $servicio_rol["data"]->first();
 
-                return true;
-            });
+              //  return true;
+            // });
 
             $this->obj_tipo_respuesta->setdata($datos);
         } catch (Exception $e) {
