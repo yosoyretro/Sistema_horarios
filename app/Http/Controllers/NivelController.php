@@ -2,107 +2,142 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Responses\TypeResponse;
-use App\Services\Validaciones;
+use App\Models\NivelModel;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Services\NivelServicio;
 
 class NivelController extends Controller
 {
-    private $validaciones_clase, $servicio_nivel_clase;
 
-    public function __construct()
+    public function storeNivelCarrera(Request $request)
     {
-        $this->validaciones_clase = new Validaciones();
-        $this->servicio_nivel_clase = new NivelServicio();
-    }
+        try{
+            $modelo = new NivelModel();
+            $campos_requeridos = $modelo->getFillable();
+            $campos_recibidos = array_keys($request->all());
+            $campos_faltantes = array_diff($campos_requeridos, $campos_recibidos);
+        
+            if (!empty(array_diff($campos_requeridos, $campos_recibidos))) {
+                return response()->json([
+                    "ok" => false,
+                    "message" => "Los siguientes campos son obligatorios: " . implode(', ', $campos_faltantes)
+                ], 400);
+            }
+            
+            $modelo->numero = $request->numero;
+            $modelo->termino = $request->termino;
+            $modelo->ip_creacion = $request->ip();
+            $modelo->ip_actualizacion = $request->ip();
+            $modelo->id_usuario_creador = auth()->id() ?? 1;
+            $modelo->id_usuario_actualizo = auth()->id() ?? 1;
+            $modelo->estado = "A";
+            $modelo->save();
 
-    //VISTA DEL NIVEL
-    public function showNivel(Request $request)
-    {
-        try {
-            $response = new TypeResponse();
-            $servicio_nivel = $this->servicio_nivel_clase->Consultar(["tipo_consulta" => 1]);
-            $response->setdata($servicio_nivel["data"]);
-        } catch (Exception $e) {
-            $response->setok(false);
-            $response->seterror($e->getMessage(), $e->getLine());
+            return Response()->json([
+                "ok" => true,
+                "message" => "Nivel creado con exito"
+            ], 500);
+        }catch(Exception $e){
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Error interno en el servidor"
+            ], 500);
         }
-        return json_encode($response->getdata());
-    }
+    }   
 
-    // Crear NIVEL
-    public function createNivel(Request $request)
+
+    public function showNivel()
     {
-        try {
-            $response = new TypeResponse();
-            $datos = [
-                'numero' => $request->input('numero'),
-                'descripcion' => $request->input('descripcion')
-            ];
-
-            // $validacion_nivel = $this->validaciones_clase->validarRegistroForNivel(2, array_merge($datos, ["tipo_validacion_existencia" => true]));
-            // if (!$validacion_nivel["ok"]) throw new Exception($validacion_nivel["msg_error"]);
-
-            $request_servicio = $this->servicio_nivel_clase->createNivel($datos);
-            if (!$request_servicio["ok"]) throw new Exception($request_servicio["msg_error"]);
-
-            $response->setmensagge("Nivel creado con éxito!");
-        } catch (Exception $e) {
-            log::alert("Funcion de createNivel");
-            log::alert("Linea del error: " . $e->getLine());
-
-            $response->setok(false);
-            $response->seterror($e->getMessage(), $e->getLine());
+        try{
+            $nivel = NivelModel::select("id_nivel","numero","termino","estado")->whereIn("estado",["A","I"])->get();
+            return Response()->json([
+                "ok" => true,
+                "data" => $nivel
+            ],200);
+        }catch(Exception $e){
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
+            
+            return Response()->json([
+                "ok" => false,
+                "message" => "Error interno en el servidor"
+            ],500);
         }
-
-        return json_encode($response->getdata());
     }
 
-    // ACTUALIZAR NIVEL
-    public function updateNivel(Request $request)
+    public function deleteNivel(Request $request,$id)
+    {  
+        try{
+            $asignatura = NivelModel::find($id);
+            if(!$asignatura){
+                return Response()->json([
+                    "ok" => true,
+                    "message" => "El nivel no existe con el id $id"
+                ], 400);    
+            }
+            
+            NivelModel::find($id)->updated([
+                "estado" => "E",
+                "id_usuario_actualizo" => auth()->id() ?? 1,
+                "ip_actualizo" => $request->ip(),
+
+            ]);
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Nivel eliminado con exito"
+            ], 200);
+
+        }catch(Exception $e){
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Error interno en el servidor"
+            ], 500);
+
+        }   
+    }
+
+    public function updateNivel(Request $request,$id)
     {
-        try {
-            $response = new TypeResponse();
+        try{
+            $nivel = NivelModel::find($id);
+            if(!$nivel){
+                return Response()->json([
+                    "ok" => true,
+                    "message" => "El registro no existe con el id $id"
+                ],400);
+            }
+            NivelModel::find($id)->update([
+                "numero" => isset($request->numero)?$request->numero:$nivel->numero,
+                "termino" => isset($request->termino)?$request->termino:$nivel->termino,
+                "id_usuario_actualizo" => auth()->id() ?? 1,
+                "ip_actualizo" => $request->ip(),
+                "estado" => isset($request->estado) ? $request->estado : "A"
+            ]);
+            return Response()->json([
+                "ok" => true,
+                "message" => "Carrera actualizada con exito"
+            ],200);
+        }catch(Exception $e){
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
 
-            $validacion_nivel = $this->validaciones_clase->validarRegistroForNivel(1, $request->all());
-            if (!$validacion_nivel["ok"]) throw new Exception($validacion_nivel["msg_error"]);
-            if (!$validacion_nivel["ok"] && !$validacion_nivel["data"]) throw new Exception($validacion_nivel["exception"]);
-
-            $servicio_nivel = $this->servicio_nivel_clase->UpdateNivel($request->all());
-            if (!$servicio_nivel["ok"]) throw new Exception($servicio_nivel["msg_error"]);
-
-            $response->setmensagge("Nivel actualizado con éxito");
-        } catch (Exception $e) {
-            $response->setok(false);
-            $response->seterror($e->getMessage(), $e->getLine());
+            return Response()->json([
+                "ok" => true,
+                "message" => "Error interno en el servidor"
+            ], 500);
         }
-        return json_encode($response->getdata());
     }
 
-    // ELIMINAR NIVEL
-    public function deleteNivel(Request $request)
-    {
-        try {
-            $response = new TypeResponse();
-
-            //$validacion_nivel = $this->validaciones_clase->validarRegistroForNivel(1, ["id_nivel" => $request->input('id_nivel')]);
-            //if (!$validacion_nivel["ok"]) throw new Exception($validacion_nivel["msg_error"]);
-            //if (!$validacion_nivel["ok"] && !$validacion_nivel["data"]) throw new Exception($validacion_nivel["exception"]);
-
-            $servicio_nivel = $this->servicio_nivel_clase->DeleteNivel($request->input('id_nivel'));
-            if (!$servicio_nivel["ok"]) throw new Exception($servicio_nivel["msg_error"]);
-
-            $response->setmensagge("Registro eliminado con éxito");
-        } catch (Exception $e) {
-            $response->setok(false);
-            $response->setmensagge("A ocurrido un error en eliminar el nivel");
-            $response->seterror($e->getMessage(), $e->getLine());
-        }
-
-        return json_encode($response->getdata());
-    }
 }

@@ -15,13 +15,13 @@ return new class extends Migration
             $table->bigIncrements('id_rol');
             $table->text('descripcion')->unique();
             #CAMPOS DE AUDIFION
-            $table->ipAddress('ip_creacion')->nullable(false);
-            $table->set('estado',['A','E','I'])->default('A');
-            $table->date('fecha_creacion')->default(now()->format('Y-m-d'));
-            $table->time('hora_creacion')->default(now()->format('H:i:s'));
-            $table->date('fecha_actualizacion')->nullable();
-            $table->time('hora_actualizacion')->nullable();
-            $table->ipAddress('ip_actualizacion')->nullable();
+            $table->ipAddress('ip_creacion')->nullable(true);
+            $table->ipAddress('ip_actualizacion');
+            $table->integer("id_usuario_creador");
+            $table->integer("id_usuario_actualizo");
+            $table->date("fecha_creacion");
+            $table->date("fecha_actualizacion");
+            $table->set('estado', ['A', 'E', 'I'])->default('A');
         });
     }
 

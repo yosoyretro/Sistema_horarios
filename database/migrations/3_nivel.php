@@ -14,16 +14,15 @@ return new class extends Migration
         Schema::create('nivel', function (Blueprint $table) {
             $table->bigIncrements('id_nivel');
             $table->text('numero');
-            $table->string('nemonico');
             $table->string('termino');
-            #CAMPOS DE AUDICION
+            #CAMPOS DE AUDITORIA
             $table->ipAddress('ip_creacion')->nullable(true);
-            $table->set('estado',['A','E','I'])->default('A');
-            $table->date('fecha_creacion')->default(now()->format('Y-m-d'));
-            $table->time('hora_creacion')->default(now()->format('H:i:s'));
-            $table->date('fecha_actualizacion')->nullable();
-            $table->time('hora_actualizacion')->nullable();
-            $table->ipAddress('ip_actualizacion')->nullable();
+            $table->ipAddress('ip_actualizacion');
+            $table->integer("id_usuario_creador");
+            $table->integer("id_usuario_actualizo");
+            $table->date("fecha_creacion");
+            $table->date("fecha_actualizacion");
+            $table->set('estado', ['A', 'E', 'I'])->default('A');
         });
 
     }

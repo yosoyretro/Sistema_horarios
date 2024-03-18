@@ -10,11 +10,8 @@ class RolModel extends Model
     use HasFactory;
     protected $table = 'rol';
     protected $primaryKey = 'id_rol';
-
     const CREATED_AT = 'fecha_creacion';
-    const UPDATE_AT = 'fecha_actualizacion';
-    
-
+    const UPDATED_AT = 'fecha_actualizacion';
     protected $fillable = [
         'descripcion'
     ];

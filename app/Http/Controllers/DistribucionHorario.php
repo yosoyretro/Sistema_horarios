@@ -32,7 +32,7 @@ class DistribucionHorario extends Controller
                 ->where("hora_termina","<=",Carbon::parse($values->hora_termina))
                 ->get();
                 if(count($consulta) > 0)throw new Exception("A ocurrido un error al crear este horario al parecer ya tiene una hora usando en el rango de " . $values->hora_inicio . " y " . $values->hora_termina);
-                
+
                 return [
                     "id_usuario" => $request->input("id_usuario"),
                     "id_periodo_academico" => $request->input("id_periodo_electivo"),
@@ -49,7 +49,6 @@ class DistribucionHorario extends Controller
             DB::commit();
             return Response()->json([
                 "ok"=>true,
-                "informacion"=>"",
                 "mensaje"=> "Horario creado con exito."
             ]);
         }catch(Exception $e){

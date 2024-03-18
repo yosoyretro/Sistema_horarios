@@ -29,54 +29,51 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('autenticar_sistema_istg',[AutenticacionController::class,'autenticacion']);
-// middleware('auth.sanctum')->prefix('istg')->group
+//middleware('auth.sanctum')
 Route::prefix('istg')->group(
     function () {
         //INSTITUTO
-        Route::post("create_instituto/", [InstitutoController::class, 'createInstituto']);
-        Route::post("update_instituto/", [InstitutoController::class, 'UpdateInstituto']);
-        Route::post("delete_instituto/", [InstitutoController::class, 'deleteInstituto']);
-        Route::get("show_data_instituto/", [InstitutoController::class, 'showData']);
+        Route::get("show_data_instituto/", [InstitutoController::class, 'showInstituto']);
+        Route::put("update_instituto/", [InstitutoController::class, 'updateInstituto']);
+        Route::post("create_instituto/", [InstitutoController::class, 'storeInstituto']);
+        Route::delete("delete_instituto/", [InstitutoController::class, 'deleteInstituto']);
         //ASIGNATURA
-        Route::post("create_asignatura/", [AsignaturaController::class, 'createAsignatura']);
-        Route::post("update_asignatura/", [AsignaturaController::class, 'updateAsignatura']);
-        Route::post("delete_asignatura/", [AsignaturaController::class, 'deleteAsignatura']);
         Route::get("show_data_asignatura/", [AsignaturaController::class, 'showAsignatura']);
+        Route::put("update_asignatura/{id}", [AsignaturaController::class, 'updateAsignatura']);
+        Route::post("create_asignatura/", [AsignaturaController::class, 'storeAsignatura']);
+        Route::delete("delete_asignatura/{id}", [AsignaturaController::class, 'deleteAsignatura']);
         //CARRERA
-        Route::post("create_carrera/", [CarreraController::class, 'createCarrera']);
-        Route::post("update_carrera/", [CarreraController::class, 'updateCarrera']);
-        Route::post("delete_carrera/", [CarreraController::class, 'deleteCarrera']);
         Route::get("show_carrera/", [CarreraController::class, 'showCarrera']);
+        Route::put("update_carrera/{id}", [CarreraController::class, 'updateCarrera']);
+        Route::post("create_carrera/", [CarreraController::class, 'storeCarrera']);
+        Route::delete("delete_carrera/{id}", [CarreraController::class, 'deleteCarrera']);
         //NIVEL
-        Route::post("create_nivel/", [NivelController::class, 'createNivel']);
-        Route::post("update_nivel/", [NivelController::class, 'updateNivel']);
-        Route::post("delete_nivel/", [NivelController::class, 'deleteNivel']);
         Route::get("show_nivel/", [NivelController::class, 'showNivel']);
+        Route::put("update_nivel/{id}", [NivelController::class, 'updateNivel']);
+        Route::post("create_nivel/", [NivelController::class, 'storeNivelCarrera']);
+        Route::delete("delete_nivel/{id}", [NivelController::class, 'deleteNivel']);
         //PARALELO
-        Route::post("create_paralelo/", [ParaleloController::class, 'createParalelo']);
-        Route::post("update_paralelo/", [ParaleloController::class, 'updateParalelo']);
-        Route::post("delete_paralelo/", [ParaleloController::class, 'deleteParalelo']);
-        Route::get("show_data_paralelo/", [ParaleloController::class, 'showParalelo']);
-        //DIAS
-        Route::post("create_dias/", [DiasController::class, 'createDias']);
-        Route::post("update_dias/", [DiasController::class, 'updateDias']);
-        Route::post("delete_dias/", [DiasController::class, 'deleteDias']);
-        Route::get("show_data_dias/", [DiasController::class, 'showDias']);
+        Route::get("showParalelo/", [ParaleloController::class, 'showParalelo']);
+        Route::put("update_paralelo/{id}", [ParaleloController::class, 'updateParalelo']);
+        Route::post("create_paralelo/", [ParaleloController::class, 'storeParalelo']);
+        Route::delete("delete_paralelo/{id}", [ParaleloController::class, 'deleteParalelo']);
         //USUARIO
-        Route::post("create_usuario/", [UsuarioController::class, 'createUsuario']);
-        Route::post("edit_usuario/", [UsuarioController::class, 'editUser']);
-        Route::post("delete_usuario/", [UsuarioController::class, 'deleteUsuario']);
-        Route::get("show_usuario/", [UsuarioController::class, 'showUsuario']);
-        //Roles
-        Route::get("show_roles/", [RolController::class, 'showRol']);
-        //TITUTLOS ACADEMICO
-        Route::post("create_titulo_academico/", [TituloAcademicoController::class, 'createTituloAcademico']);
-        Route::post("update_titulo_academico/", [TituloAcademicoController::class, 'updateTituloAcademico']);
-        Route::post("delete_titulo_academico/", [TituloAcademicoController::class, 'deleteTituloAcademico']);
-        Route::get("show_data_titulo_academico/", [TituloAcademicoController::class, 'showTituloAcademico']);
+        Route::post("create_usuario/", [UsuarioController::class, 'storeUsuarios']);
+        // Route::post("edit_usuario/", [UsuarioController::class, 'editUser']);
+        Route::delete("delete_usuario/{id}", [UsuarioController::class, 'deleteUsuario']);
+        Route::get("show_usuario/", [UsuarioController::class, 'showUsuarios']);
+        // //Roles 
+        Route::get("show_roles/", [RolController::class, 'getRoles']);
+        Route::post("create_rol/", [RolController::class, 'storeRol']);
+        Route::delete("delete_rol/", [RolController::class, 'deleteRol']);
+        // //TITUTLOS ACADEMICO
+        // Route::post("create_titulo_academico/", [TituloAcademicoController::class, 'createTituloAcademico']);
+        // Route::post("update_titulo_academico/", [TituloAcademicoController::class, 'updateTituloAcademico']);
+        // Route::post("delete_titulo_academico/", [TituloAcademicoController::class, 'deleteTituloAcademico']);
+        // Route::get("show_data_titulo_academico/", [TituloAcademicoController::class, 'showTituloAcademico']);
         Route::group(
             [
-                "prefix" => "v1/horario/",
+                "prefix" => "horario/",
             ],
             function () {
                 Route::post("create_horario/", [DistribucionHorario::class, 'storeHorario']);

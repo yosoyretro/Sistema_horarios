@@ -25,7 +25,6 @@ class AutenticacionSistema
                 "message" => "Se requiere un token para acceder a esta ruta."
             ], 401);
         }
-                
         if (!Auth::guard('sanctum')->check()) {
             return response()->json([
                 "error" => "Token no válido",

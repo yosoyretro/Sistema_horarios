@@ -11,21 +11,17 @@ class UsuarioModel extends Model
 {
     use HasFactory,Notifiable,HasApiTokens;
 
-    protected $table = 'usuario';
+    protected $table = 'usuarios';
     protected $primaryKey = 'id_usuario';
-
-    const CREATED_AT = 'fecha_creacion';
-    const UPDATE_AT = 'fecha_actualizacion';
     
+    const CREATED_AT = 'fecha_creacion';
+    const UPDATED_AT = 'fecha_actualizacion';
+
     protected $fillable = [
         'cedula',
         'nombres',
-        'usuario',
-        'id_rol',
-        'id_titulo_academico'
+        'apellidos',
+        'id_rol'
     ];
     
-    public function rol(){
-        return $this->belongsTo(RolModel::class,'id_rol');
-    }
 }
