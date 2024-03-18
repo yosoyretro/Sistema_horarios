@@ -116,7 +116,7 @@ class UsuarioController extends Controller
     public function showUsuarios()
     {
         try{
-            $usuarios = UsuarioModel::select("cedula","nombres"
+            $usuarios = UsuarioModel::select("id_usuario","cedula","nombres"
             ,"apellidos","usuario",
             "imagen_perfil","rol.id_rol",
             "rol.descripcion")
