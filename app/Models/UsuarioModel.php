@@ -21,7 +21,6 @@ class UsuarioModel extends Model
         'cedula',
         'nombres',
         'apellidos',
-        'usuario',
         'id_rol'
     ];
     

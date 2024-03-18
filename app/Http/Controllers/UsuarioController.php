@@ -27,7 +27,7 @@ class UsuarioController extends Controller
                     "message" => "Los siguientes campos son obligatorios: " . implode(', ', $campos_faltantes)
                 ], 400);
             }
-            
+            $usuario = "";
             $busqueda = UsuarioModel::where("cedula",$request->cedula)->first();
             if($busqueda){
                 if($busqueda->estado == "A"){
@@ -54,6 +54,7 @@ class UsuarioController extends Controller
             $apellidos = explode(" ",trim(strtolower($request->apellidos)));
             
             if(count($nombres) == 2){
+                $usuario = ($nombres[0][0]);
                 $nombres = ucfirst(trim($nombres[0])) . "  " . ucfirst(trim($nombres[1]));
             }else{
                 return Response()->json([
@@ -64,7 +65,9 @@ class UsuarioController extends Controller
 
             if(count($apellidos) == 2){
                 $apellidos = ucfirst(trim($apellidos[0])) . "  " . ucfirst(trim($apellidos[1]));
+                $usuario = $usuario . trim($apellidos[1]);
             }elseif(count($apellidos) == 3){
+                $usuario = $usuario . trim($apellidos[2]);
                 $apellidos = ucfirst(trim($apellidos[0])) . "  " . ucfirst(trim($apellidos[2]));
             }else{
                 return Response()->json([
@@ -82,7 +85,7 @@ class UsuarioController extends Controller
             $modelo->cedula = $request->cedula;
             $modelo->nombres = $nombres;
             $modelo->apellidos = $apellidos;
-            $modelo->usuario = $request->usuario;
+            $modelo->usuario = $usuario;
             $modelo->clave = bcrypt($request->cedula);
             $modelo->id_rol = $request->id_rol;
             $modelo->ip_creacion = $request->ip();
@@ -117,7 +120,7 @@ class UsuarioController extends Controller
             ,"apellidos","usuario",
             "imagen_perfil","rol.id_rol",
             "rol.descripcion")
-            ->leftjoin("rol","usuarios.id_rol","=","rol.id_rol")
+            ->join("rol","usuarios.id_rol","=","rol.id_rol")
             ->get();
             return Response()->json([
                 "ok" => true,
