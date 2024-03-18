@@ -8,13 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class CarreraModel extends Model
 {
     use HasFactory;
-    protected $table = "carrera";
+    protected $table = "carreras";
     protected $primaryKey = "id_carrera";
     
-
-    protected $fillable = [
-        'nombre',
-        'codigo'
-    ];
+    const CREATED_AT = "fecha_creacion";
+    const UPDATED_AT = "fecha_actualizacion";
+    
+    protected $fillable = ['nombre'];
     
 }

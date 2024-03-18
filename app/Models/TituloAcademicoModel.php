@@ -15,6 +15,6 @@ class TituloAcademicoModel extends Model
     const UPDATED_AT = 'fecha_actualizacion';
 
     protected $fillable = [
-        'codigo','nemonico','descripcion','ip_creacion','estado'
+        'descripcion','id_usuario_creador','ip_creacion','estado'
     ];
 }

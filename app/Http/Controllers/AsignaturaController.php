@@ -4,93 +4,135 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Log;
 use App\Http\Responses\TypeResponse;
-use App\Services\AsignaturaServicio;
+use App\Models\AsignaturaModel;
 use Exception;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 
 class AsignaturaController extends Controller
 {
-
-    private $servicio_asignatura;
-    public function __construct()
-    {
-        $this->servicio_asignatura = new AsignaturaServicio();
-        
-    }
-
-    public function CreateAsignatura(Request $request)
-    {
-        $response = new TypeResponse();
-
-        try {
-            $servicioAsignatura = $this->servicio_asignatura->createAsignatura(
-                [
-                    "codigo" => $request->input('codigo'),
-                    "descripcion" => $request->input('descripcion')
-                ]
-            );
-            if (!$servicioAsignatura["ok"]) throw new Exception($servicioAsignatura["msg_error"]);
-            $response->setmensagge($servicioAsignatura["msg"]);
-        } catch (Exception $e) {
-            log::alert("A ocurrido un error en el controlador de create Asignatura");
-            log::alert("Linea : " . $e->getLine());
-            log::alert("Mensaje : " . $e->getMessage());
-            $response->setok(false);
-            $response->seterror($e->getMessage(), $e->getLine());
-        }
-
-        return json_encode($response->getdata());
-    }
-
-    public function updateAsignatura(Request $request)
-    {
-        $response = new TypeResponse();
-        try {
-            
-            $servicio_asignatura = $this->servicio_asignatura->updateAsignatura([
-                "id_asignatura" => $request->input("id_asignatura"),
-                "codigo" => $request->input("codigo"),
-                "descripcion" => $request->input("descripcion"),
-            ]);
-            if(!$servicio_asignatura["ok"])throw new Exception($servicio_asignatura["msg_error"]);
-            $response->setmensagge($servicio_asignatura["msg"]);
-        } catch (Exception $e) {
-            log::alert("A ocurrido un error en la funcion de updateAsignatura");
-            log::alert("Mensaje : " . $e->getMessage());
-            log::alert("Linea : " . $e->getLine());
-            $response->setok(false);
-            $response->seterror($e->getMessage(),$e->getLine());
-        }
-        return json_encode($response->getdata());
-    }
-
-    public function deleteAsignatura(Request $request)
-    {
-        $response = new TypeResponse();
-        try {
-            log::alert("SOy el request de eliminar ");
-            log::alert(collect($request));
-            $servicio_asignatura = $this->servicio_asignatura->deleteAsignatura($request->input("id_asignatura"));
-        } catch (Exception $e) {
-            $response->setok(false);
-            $response->seterror($e->getMessage(), $e->getLine());
-        }
-        return json_encode($response->getdata());
-    }
-
-    public function showAsignatura(Request $request)
-    {
-
-        $response = new TypeResponse();
+    public function storeAsignatura(Request $request)
+    {  
         try{
-            $data = $this->servicio_asignatura->Consultar(["tipo_consulta"=>7]);
-            if(!$data["ok"])throw new Exception($data["msg_error"]);
-            $response->setdata($data["data"]);
+            if (!isset($request->descripcion)) {
+                return Response()->json([
+                    "ok" => true,
+                    "message" => "El campo de descripcion es obligatorio"
+                ], 400);
+            }
+
+            $modelo = new AsignaturaModel();
+            $modelo->descripcion = $request->descripcion;
+            $modelo->ip_creacion = $request->ip();
+            $modelo->ip_actualizacion = $request->ip();
+            $modelo->id_usuario_creador = auth()->id() ?? 1;
+            $modelo->id_usuario_actualizo = auth()->id() ?? 1;
+            $modelo->estado = "A";
+            $modelo->save();
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Asignatura creada con exito"
+            ], 200);
+
         }catch(Exception $e){
-            $response->setok(false);
-            $response->seterror($e->getMessage(),$e->getCode());
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Error interno en el servidor"
+            ], 500);
+
+        }   
+    }
+    
+    public function deleteAsignatura(Request $request,$id)
+    {  
+        try{
+            $asignatura = AsignaturaModel::find($id);
+            if(!$asignatura){
+                return Response()->json([
+                    "ok" => true,
+                    "message" => "La asignatura no existe con el id $id"
+                ], 400);    
+            }
+            
+            AsignaturaModel::find($id)->updated([
+                "estado" => "E",
+                "id_usuario_actualizo" => auth()->id() ?? 1,
+                "ip_actualizo" => $request->ip(),
+            ]);
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Asignatura creada con exito"
+            ], 200);
+
+        }catch(Exception $e){
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Error interno en el servidor"
+            ], 500);
+
+        }   
+    }
+
+    public function updateAsignatura(Request $request,$id)
+    {
+        try{
+            $asignatura = AsignaturaModel::find($id);
+            if(!$asignatura){
+                return Response()->json([
+                    "ok" => true,
+                    "message" => "El registro no existe con el id $id"
+                ],400);
+            }
+
+            AsignaturaModel::find($id)->update([
+                "descripcion" => isset($request->descripcion)?$request->descripcion:$asignatura->descripcion,
+                "id_usuario_actualizo" => auth()->id() ?? 1,
+                "ip_actualizo" => $request->ip(),
+                "estado" => isset($request->estado) ? $request->estado : "A"
+            ]);
+            return Response()->json([
+                "ok" => true,
+                "message" => "Asignatura actualizada con exito"
+            ],200);
+        }catch(Exception $e){
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Error interno en el servidor"
+            ], 500);
         }
-        return json_encode($response->getdata());
-        
+    }
+
+    public function showAsignatura()
+    {
+        try{
+            $asignatura = AsignaturaModel::select("id_materia","descripcion")->whereIn("estado",["A","I"])->get();
+            return Response()->json([
+                "ok" => true,
+                "data" => $asignatura
+            ],200);
+        }catch(Exception $e){
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
+            
+            return Response()->json([
+                "ok" => false,
+                "message" => "Error interno en el servidor"
+            ],500);
+        }
     }
 }

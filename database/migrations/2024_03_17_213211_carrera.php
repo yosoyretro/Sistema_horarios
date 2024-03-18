@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('usuarios',function (Blueprint $table){
-            $table->bigIncrements('id_usuario');
-            $table->string('cedula', 18)->unique();
-            $table->string('nombres');
-            $table->string('apellidos');
-            $table->string('usuario', 150);
-            $table->string('clave');
-            $table->binary('imagen_perfil')->nullable();
-            $table->unsignedBigInteger('id_rol');
-            #CAMPOS DE AUDIFION
+        Schema::create('carreras', function (Blueprint $table) {
+            $table->bigIncrements('id_carrera');
+            $table->string('nombre')->nullable(false)->unique(true);
+            #CAMPOS DE AUDITORIA
             $table->ipAddress('ip_creacion')->nullable(true);
             $table->ipAddress('ip_actualizacion');
             $table->integer("id_usuario_creador");
@@ -28,7 +22,7 @@ return new class extends Migration
             $table->date("fecha_creacion");
             $table->date("fecha_actualizacion");
             $table->set('estado', ['A', 'E', 'I'])->default('A');
-            $table->foreign('id_rol')->references('id_rol')->on('rol');
+            
         });
     }
 
@@ -37,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('usuario');
+        Schema::dropIfExists('carreras');
     }
 };

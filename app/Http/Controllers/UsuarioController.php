@@ -2,80 +2,169 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Responses\TypeResponse;
-use App\Services\UsuarioServicio;
+use App\Models\RolModel;
+use App\Models\UsuarioModel;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class UsuarioController extends Controller
 {
-    private $servicio_usuario;
-    
-    public function __construct()
-    {
-        $this->servicio_usuario = new UsuarioServicio();
-    }
 
-    public function createUsuario(Request $request)
+    public function storeUsuarios(Request $request)
     {
-        $response = new TypeResponse();
-        try{
-            $servicio_usuario = $this->servicio_usuario->createuser($request->toArray());
-            if(!$servicio_usuario["ok"])throw new Exception($servicio_usuario["msg_error"]);
-            $response->setmensagge($servicio_usuario["msg"]); 
-        }catch(Exception $e){
+        try {
+
+            $modelo = new UsuarioModel();
             
-            log::alert($e->getMessage());
-            $response->setok(false);
-            $response->seterror($e->getMessage(),$e->getCode());
-        }
-
-        return json_encode($response->getdata());
-    }
-
-    public function showUsuario(){
-        $response = new TypeResponse();
-        try{
-            $servicio_usuario = $this->servicio_usuario->getdatausuario(["tipo_consulta" => "4"]);
-            if((empty($servicio_usuario["data"][0]))  ){
-                $response->setmensagge("No hay registro de usuario");
-                $response->setdata([]);
+            $campos_requeridos = $modelo->getFillable();
+            $campos_recibidos = array_keys($request->all());
+            $campos_faltantes = array_diff($campos_requeridos, $campos_recibidos);
+            
+            if (!empty(array_diff($campos_requeridos, $campos_recibidos))) {
+                return response()->json([
+                    "ok" => false,
+                    "message" => "Los siguientes campos son obligatorios: " . implode(', ', $campos_faltantes)
+                ], 400);
             }
-	    $response->setdata($servicio_usuario["data"]);
-        }catch(Exception $e){
-            log::alert("SOY EL ERROR ");
-            log::alert($e->getMessage());              
+            
+            $busqueda = UsuarioModel::where("cedula",$request->cedula)->first();
+            if($busqueda){
+                if($busqueda->estado == "A"){
+                    return response()->json([
+                        "ok" => false,
+                        "message" => "El usuario " . $busqueda->nombres . " "  . $busqueda->apellidos . " ya existe con el numero de cedula de " . $request->cedula 
+                    ], 400);
+                }
+                if($busqueda->estado == "I"){
+                    return response()->json([
+                        "ok" => false,
+                        "message" => "El usuario " . $busqueda->nombres . " "  . $busqueda->apellidos . " ya existe con el numero de cedula de " . $request->cedula  . " pero se encuetra inactivo"
+                    ], 400);
+                }
+                if($busqueda->estado == "E"){
+                    return response()->json([
+                        "ok" => false,
+                        "message" => "Este usuario fue eliminado"
+                    ], 400);
+                }
+            }
+
+            $nombres = explode(" ",trim(strtolower($request->nombres)));
+            $apellidos = explode(" ",trim(strtolower($request->apellidos)));
+            
+            if(count($nombres) == 2){
+                $nombres = ucfirst(trim($nombres[0])) . "  " . ucfirst(trim($nombres[1]));
+            }else{
+                return Response()->json([
+                    "ok" => false,
+                    "message" => "Error en limpiar los nombres verifique bien si esta llenando bien los campos"
+                ]);
+            }
+
+            if(count($apellidos) == 2){
+                $apellidos = ucfirst(trim($apellidos[0])) . "  " . ucfirst(trim($apellidos[1]));
+            }elseif(count($apellidos) == 3){
+                $apellidos = ucfirst(trim($apellidos[0])) . "  " . ucfirst(trim($apellidos[2]));
+            }else{
+                return Response()->json([
+                    "ok" => false,
+                    "message" => "Error en limpiar los apellidos verifique bien si esta llenando bien los campos"
+                ]);
+            }
+            $modelo_rol = RolModel::find($request->id_rol);
+            if(!$modelo_rol){
+                return Response()->json([
+                    "ok" => true,
+                    "message" => "El rol no existe con el id  $request->id_rol"
+                ], 400);
+            }
+            $modelo->cedula = $request->cedula;
+            $modelo->nombres = $nombres;
+            $modelo->apellidos = $apellidos;
+            $modelo->usuario = $request->usuario;
+            $modelo->clave = bcrypt($request->cedula);
+            $modelo->id_rol = $request->id_rol;
+            $modelo->ip_creacion = $request->ip();
+            $modelo->ip_actualizacion = $request->ip();
+            $modelo->id_usuario_creador = auth()->id() ?? 1;
+            $modelo->id_usuario_actualizo = auth()->id() ?? 1;
+            $modelo->imagen_perfil = null;
+            $modelo->estado = "A";
+            $modelo->save();
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Usuario creado con exito"
+            ], 200);
+        } catch (Exception $e) {
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Error interno en el servidor"
+            ], 500);
         }
-        return json_encode($response->getdata());
+
     }
 
-    public function deleteUsuario(request $request){
-        $response = new TypeResponse();
+    public function showUsuarios()
+    {
         try{
-            $response_usuario = $this->servicio_usuario->deleteUser($request->input('id_usuario'));
-            if(!$response_usuario["ok"])throw new Exception($response_usuario["msg_error"]);
-            $response->setmensagge($response_usuario["msg"]);
-        }catch(Exception $e){
-            $response->setok(false);
-            $response->seterror($e->getMessage(),$e->getCode());
-        }
-        
-        return json_encode($response->getdata()); 
+            $usuarios = UsuarioModel::select("cedula","nombres"
+            ,"apellidos","usuario",
+            "imagen_perfil","rol.id_rol",
+            "rol.descripcion")
+            ->leftjoin("rol","usuarios.id_rol","=","rol.id_rol")
+            ->get();
+            return Response()->json([
+                "ok" => true,
+                "data" => $usuarios
+            ], 200);
+        }catch (Exception $e) {
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Error interno en el servidor"
+            ], 500);
+        }   
     }
 
-    public function editUser(request $request){
-        $response = new TypeResponse();
+    public function deleteUsuario(Request $request,$id)
+    {
         try{
-            $servicio_usuario = $this->servicio_usuario->editUser($request->all());
-            if(!$servicio_usuario["ok"])throw new Exception($servicio_usuario["msg_error"]);
-            $response->setmensagge($servicio_usuario["msg"]); 
-        }catch(Exception $e){
-            log::alert($e->getMessage());
-            $response->setok(false);
-            $response->seterror($e->getMessage(),$e->getCode());
-        }
+            
+            $usuario = UsuarioModel::find($id);
+            if(!$usuario){
+                return Response()->json([
+                    "ok" => true,
+                    "message" => "El usuario con id  $request->id_rol no existe"
+                ], 400);
+            }
+            $usuario->updated([
+                "estado" => "E",
+                "id_usuario_actualizo" => auth()->id(),
+                "ip_actualizo" => $request->ip(),
+            ]);
 
-        return json_encode($response->getdata());         
+            return Response()->json([
+                "ok" => true,
+                "data" => "Usuario eliminado con exito"
+            ], 200);
+        }catch (Exception $e) {
+            log::error( __FILE__ . " > " . __FUNCTION__);
+            log::error("Mensaje : " . $e->getMessage());
+            log::error("Linea : " . $e->getLine());
+
+            return Response()->json([
+                "ok" => true,
+                "message" => "Error interno en el servidor"
+            ], 500);
+        }   
     }
 }
