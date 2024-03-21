@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id_distribucion');
             $table->unsignedBigInteger('id_educacion_global');
             $table->unsignedBigInteger('id_usuario');
+            $table->unsignedBigInteger('id_carrera');
             $table->unsignedBigInteger('id_nivel');
             $table->unsignedBigInteger('id_paralelo');
             $table->unsignedBigInteger('id_periodo_academico');
@@ -25,6 +26,7 @@ return new class extends Migration
             
             $table->foreign('id_educacion_global')->references('id_educacion_global')->on('educacion_global');
             $table->foreign('id_usuario')->references('id_usuario')->on('usuario');
+            $table->foreign('id_carrera')->references('id_carrera')->on('carreras');
             $table->foreign('id_paralelo')->references('id_paralelo')->on('paralelo');
             $table->foreign('id_nivel')->references('id_nivel')->on('nivel');
             $table->foreign('id_materia')->references('id_materia')->on('materias');
