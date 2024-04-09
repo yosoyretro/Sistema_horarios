@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('carreras', function (Blueprint $table) {
             $table->bigIncrements('id_carrera');
             $table->string('nombre')->nullable(false)->unique(true);
-            #CAMPOS DE AUDITORIA
+            #CAMPOS DE AUDIFION
             $table->ipAddress('ip_creacion')->nullable(true);
             $table->ipAddress('ip_actualizacion');
             $table->integer("id_usuario_creador");
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date("fecha_creacion");
             $table->date("fecha_actualizacion");
             $table->set('estado', ['A', 'E', 'I'])->default('A');
-            
+
         });
     }
 

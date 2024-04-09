@@ -23,9 +23,9 @@ return new class extends Migration
             $table->time('hora_inicio');
             $table->time('hora_termina');
             $table->enum('dia', ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']);
-            
+
             $table->foreign('id_educacion_global')->references('id_educacion_global')->on('educacion_global');
-            $table->foreign('id_usuario')->references('id_usuario')->on('usuario');
+            $table->foreign('id_usuario')->references('id_usuario')->on('usuarios');
             $table->foreign('id_carrera')->references('id_carrera')->on('carreras');
             $table->foreign('id_paralelo')->references('id_paralelo')->on('paralelo');
             $table->foreign('id_nivel')->references('id_nivel')->on('nivel');
