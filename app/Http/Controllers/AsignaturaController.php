@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class AsignaturaController extends Controller
 {
     public function storeAsignatura(Request $request)
-    {  
+    {
         try{
             if (!isset($request->descripcion)) {
                 return Response()->json([
@@ -45,20 +45,20 @@ class AsignaturaController extends Controller
                 "message" => "Error interno en el servidor"
             ], 500);
 
-        }   
+        }
     }
-    
+
     public function deleteAsignatura(Request $request,$id)
-    {  
+    {
         try{
             $asignatura = AsignaturaModel::find($id);
             if(!$asignatura){
                 return Response()->json([
                     "ok" => true,
                     "message" => "La asignatura no existe con el id $id"
-                ], 400);    
+                ], 400);
             }
-            
+
             AsignaturaModel::find($id)->updated([
                 "estado" => "E",
                 "id_usuario_actualizo" => auth()->id() ?? 1,
@@ -80,7 +80,7 @@ class AsignaturaController extends Controller
                 "message" => "Error interno en el servidor"
             ], 500);
 
-        }   
+        }
     }
 
     public function updateAsignatura(Request $request,$id)
@@ -128,7 +128,7 @@ class AsignaturaController extends Controller
             log::error( __FILE__ . " > " . __FUNCTION__);
             log::error("Mensaje : " . $e->getMessage());
             log::error("Linea : " . $e->getLine());
-            
+
             return Response()->json([
                 "ok" => false,
                 "message" => "Error interno en el servidor"
