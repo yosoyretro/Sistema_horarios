@@ -9,6 +9,7 @@ use App\Http\Controllers\NivelController;
 use App\Http\Controllers\DiasController;
 use App\Http\Controllers\DistribucionHorario;
 use App\Http\Controllers\ParaleloController;
+use App\Http\Controllers\PlanificacionAcademica;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\RolController;
 use App\Http\Middleware\AutenticacionSistema;
@@ -77,6 +78,15 @@ Route::prefix('istg')->group(
             ],
             function () {
                 Route::post("create_horario/", [DistribucionHorario::class, 'storeHorario']);
+            }
+        );
+        Route::group(
+            [
+                "prefix" => "Planificaciones/"
+            ],
+            function (){
+                Route::post("createPlanificacionAcademico",[PlanificacionAcademica::class,'store']);
+                Route::get("getPlanificacionAcademicas",[PlanificacionAcademica::class,'getPlanificacionAcademica']);
             }
         );
     }

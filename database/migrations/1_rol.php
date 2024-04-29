@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('rol', function (Blueprint $table) {
             $table->bigIncrements('id_rol');
-            $table->text('descripcion')->unique();
+            $table->text('descripcion');
             #CAMPOS DE AUDIFION
             $table->ipAddress('ip_creacion')->nullable(true);
             $table->ipAddress('ip_actualizacion');

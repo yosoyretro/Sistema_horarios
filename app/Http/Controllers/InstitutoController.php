@@ -105,7 +105,7 @@ class InstitutoController extends Controller
     public function showInstituto(Request $request)
     {
         try {
-            $titulo = InstitutoModel::whereIn("estado", "A");
+            $titulo = InstitutoModel::whereIn("estado", ["A"])->get();
             return Response()->json([
                 "ok" => true,
                 "message" => "Titulos obtenidos con exito",

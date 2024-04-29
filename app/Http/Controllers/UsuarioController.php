@@ -20,7 +20,7 @@ class UsuarioController extends Controller
             $campos_requeridos = $modelo->getFillable();
             $campos_recibidos = array_keys($request->all());
             $campos_faltantes = array_diff($campos_requeridos, $campos_recibidos);
-            
+            log::alert($request);
             if (!empty(array_diff($campos_requeridos, $campos_recibidos))) {
                 return response()->json([
                     "ok" => false,

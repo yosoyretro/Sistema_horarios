@@ -83,7 +83,12 @@ class RolController extends Controller
     public function getRoles()
     {
         try {
-            $rol = RolModel::select("descripcion", "estado")->whereIn("estado", ["A", "I"])->get();
+            $rol = RolModel::select("rol.id_rol","rol.descripcion","rol.estado","usuarios.usuario as usuarios_ultima_gestion","rol.fecha_actualizacion")
+            ->whereIn("rol.estado", ["A", "I"])
+            ->join('usuarios','rol.id_usuario_actualizo','usuarios.id_usuario')
+            ->get();
+            log::alert("Soy el rol ");
+            log::alert($rol);
             return Response()->json([
                 "ok" => true,
                 "data" => $rol

@@ -10,7 +10,7 @@ class NivelModel extends Model
     use HasFactory;
     protected $table = 'nivel';
     protected $primaryKey = 'id_nivel';
-    protected $fillable = ['numero','termino'];
+    protected $fillable = ['numero','nemonico','termino'];
     const CREATED_AT = 'fecha_creacion';
     const UPDATED_AT = 'fecha_actualizacion';
     

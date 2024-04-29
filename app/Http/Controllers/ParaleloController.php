@@ -23,6 +23,7 @@ class ParaleloController extends Controller
             $campos_faltantes = array_diff($campos_requeridos, $campos_recibidos);
         
             if (!empty(array_diff($campos_requeridos, $campos_recibidos))) {
+                log::info("Los siguientes campos son obligatorios: " . implode(', ', $campos_faltantes));
                 return response()->json([
                     "ok" => false,
                     "message" => "Los siguientes campos son obligatorios: " . implode(', ', $campos_faltantes)
@@ -38,7 +39,7 @@ class ParaleloController extends Controller
             $modelo->save();
             return Response()->json([
                 "ok" => true,
-                "message" => "Carrera creada con exito"
+                "message" => "Paralelo creado Exitosamente"
             ], 200);
         }catch(Exception $e){
             log::error( __FILE__ . " > " . __FUNCTION__);
@@ -91,7 +92,11 @@ class ParaleloController extends Controller
     public function showParalelo()
     {
         try{
-            $paralelo = ParaleloModel::select("paralelo","estado")->whereIn("estado",["A","I"])->get();
+            $paralelo = ParaleloModel::select("paralelo.id_paralelo","paralelo.paralelo","paralelo.estado","usuarios.usuario as usuarios_ultima_gestion","paralelo.fecha_actualizacion")
+            ->join('usuarios','paralelo.id_usuario_actualizo','usuarios.id_usuario')       
+            ->whereIn("paralelo.estado",["A","I"])
+            ->orderBy("paralelo.paralelo")
+            ->get();
             return Response()->json([
                 "ok" => true,
                 "data" => $paralelo

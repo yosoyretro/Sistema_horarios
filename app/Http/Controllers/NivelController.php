@@ -26,6 +26,7 @@ class NivelController extends Controller
             }
             
             $modelo->numero = $request->numero;
+            $modelo->nemonico = $request->nemonico;
             $modelo->termino = $request->termino;
             $modelo->ip_creacion = $request->ip();
             $modelo->ip_actualizacion = $request->ip();
@@ -54,7 +55,11 @@ class NivelController extends Controller
     public function showNivel()
     {
         try{
-            $nivel = NivelModel::select("id_nivel","numero","termino","estado")->whereIn("estado",["A","I"])->get();
+            $nivel = NivelModel::select('nivel.id_nivel','nivel.numero','nivel.nemonico','nivel.termino','nivel.estado','usuarios.usuario as usuarios_ultima_gestion','nivel.fecha_actualizacion as fecha_actualizacion')
+            ->join('usuarios','nivel.id_usuario_actualizo','usuarios.id_usuario')
+            ->whereIn("nivel.estado",["A","I"])
+            ->orderBy("nivel.nemonico")
+            ->get();
             return Response()->json([
                 "ok" => true,
                 "data" => $nivel
@@ -119,6 +124,7 @@ class NivelController extends Controller
             }
             NivelModel::find($id)->update([
                 "numero" => isset($request->numero)?$request->numero:$nivel->numero,
+                "nemonico" => isset($request->nemonico)?$request->nemonico:$nivel->nemonico,
                 "termino" => isset($request->termino)?$request->termino:$nivel->termino,
                 "id_usuario_actualizo" => auth()->id() ?? 1,
                 "ip_actualizo" => $request->ip(),

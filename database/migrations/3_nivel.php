@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('nivel', function (Blueprint $table) {
             $table->bigIncrements('id_nivel');
             $table->text('numero');
+            $table->string('nemonico');
             $table->string('termino');
             #CAMPOS DE AUDITORIA
             $table->ipAddress('ip_creacion')->nullable(true);

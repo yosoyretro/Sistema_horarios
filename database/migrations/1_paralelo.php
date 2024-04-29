@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('paralelo', function (Blueprint $table) {
             $table->bigIncrements('id_paralelo');
-            $table->text('numero_paralelo')->unique();
+            $table->text('paralelo');
             #CAMPOS DE AUDIFION
             $table->ipAddress('ip_creacion')->nullable(true);
             $table->ipAddress('ip_actualizacion');

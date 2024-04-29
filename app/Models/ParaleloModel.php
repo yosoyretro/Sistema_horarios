@@ -11,7 +11,7 @@ class ParaleloModel extends Model
     protected $table = 'paralelo';
     protected $primaryKey = 'id_paralelo';
     protected $fillable = ['paralelo'];
-    const CREATE_AT = 'fecha_creacion';
-    const UPDATE_AT = 'fecha_actualizacion';
-    
+    const CREATED_AT = 'fecha_creacion';
+    const UPDATED_AT = 'fecha_actualizacion';
+
 }
