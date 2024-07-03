@@ -10,11 +10,11 @@ class TituloAcademicoModel extends Model
     use HasFactory;
     protected $table = 'titulo_academico';
     protected $primaryKey = 'id_titulo_academico';
+    
+    const CREATED_AT = 'fecha_creacion';
+    const UPDATED_AT = 'fecha_actualizacion';
 
-    protected $fillable = ['codigo', 'descripcion', 'nemonico', 'ip_creacion', 'id_usuario', 'fecha_creacion', 'fecha_actualizacion'];
-
-    public function usuario()
-    {
-        return $this->belongsTo(UsuarioModel::class, 'id_usuario');
-    }
+    protected $fillable = [
+        'descripcion','id_usuario_creador','ip_creacion','estado'
+    ];
 }

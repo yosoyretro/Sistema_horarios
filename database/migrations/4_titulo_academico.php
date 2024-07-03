@@ -18,16 +18,12 @@ return new class extends Migration
             $table->string('descripcion')->nullable(false);
             #CAMPOS DE AUDICION
             $table->ipAddress('ip_creacion')->nullable(false);
-            $table->timestamp('fecha_creacion')->default(now());
-            $table->timestamp('fecha_actualizacion')->nullable();
+            $table->set('estado',['A','E','I'])->default('A');
+            $table->date('fecha_creacion')->default(now()->format('Y-m-d'));
+            $table->time('hora_creacion')->default(now()->format('H:i:s'));
+            $table->date('fecha_actualizacion')->nullable();
+            $table->time('hora_actualizacion')->nullable();
             $table->ipAddress('ip_actualizacion')->nullable();
-            $table->unsignedBigInteger('id_usuario')->nullable();
-
-            // Definir la clave foránea hacia la tabla 'usuarios'
-            $table->foreign('id_usuario')
-                  ->references('id_usuario')
-                  ->on('usuarios')
-                  ->onDelete('cascade'); // Eliminación en cascada si se elimina el usuario
         });
 
     }
