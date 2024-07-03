@@ -13,15 +13,16 @@ class UsuarioModel extends Model
 
     protected $table = 'usuarios';
     protected $primaryKey = 'id_usuario';
-    
-    const CREATED_AT = 'fecha_creacion';
-    const UPDATED_AT = 'fecha_actualizacion';
 
     protected $fillable = [
-        'cedula',
-        'nombres',
-        'apellidos',
-        'id_rol'
+        'cedula', 'nombres', 'apellidos', 'usuario', 'clave',
+        'id_rol', 'ip_creacion', 'ip_actualizacion',
+        'id_usuario_creador', 'id_usuario_actualizo', 'estado'
     ];
-    
+
+    public function titulosAcademicos()
+    {
+        return $this->hasMany(TituloAcademicoModel::class, 'id_usuario');
+    }
+
 }
