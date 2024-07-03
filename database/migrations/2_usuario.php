@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer("id_usuario_actualizo");
             $table->date("fecha_creacion");
             $table->date("fecha_actualizacion");
-            $table->set('estado', ['A', 'E', 'I'])->default('A');
+            $table->enum('estado', ['A', 'E', 'I'])->default('A');
             $table->foreign('id_rol')->references('id_rol')->on('rol');
         });
     }
