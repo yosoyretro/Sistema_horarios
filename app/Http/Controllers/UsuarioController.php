@@ -4,23 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\RolModel;
 use App\Models\UsuarioModel;
+use App\Services\MensajeAlertasServicio;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class UsuarioController extends Controller
 {
+    private $servicio_informe;
 
+    public function __construct()
+    {
+        $this->servicio_informe = new MensajeAlertasServicio();
+    }
     public function storeUsuarios(Request $request)
     {
         try {
-
+            $this->servicio_informe->storeInformativoLogs(__FILE__,__FUNCTION__);
             $modelo = new UsuarioModel();
             
             $campos_requeridos = $modelo->getFillable();
             $campos_recibidos = array_keys($request->all());
             $campos_faltantes = array_diff($campos_requeridos, $campos_recibidos);
-            log::alert($request);
             if (!empty(array_diff($campos_requeridos, $campos_recibidos))) {
                 return response()->json([
                     "ok" => false,
@@ -116,6 +121,7 @@ class UsuarioController extends Controller
     public function showUsuarios()
     {
         try{
+            $this->servicio_informe->storeInformativoLogs(__FILE__,__FUNCTION__);$this->servicio_informe->storeInformativoLogs(__FILE__,__FUNCTION__);
             $usuarios = UsuarioModel::select("id_usuario","cedula","nombres"
             ,"apellidos","usuario",
             "imagen_perfil","rol.id_rol",
@@ -141,7 +147,7 @@ class UsuarioController extends Controller
     public function deleteUsuario(Request $request,$id)
     {
         try{
-            
+            $this->servicio_informe->storeInformativoLogs(__FILE__,__FUNCTION__);
             $usuario = UsuarioModel::find($id);
             if(!$usuario){
                 return Response()->json([

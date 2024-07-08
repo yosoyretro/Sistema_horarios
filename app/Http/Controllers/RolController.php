@@ -4,15 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Responses\TypeResponse;
 use App\Models\RolModel;
+use App\Services\MensajeAlertasServicio;
 use Exception;
 use Illuminate\Http\Request;
 use App\Services\RolServicio;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class RolController extends Controller
 {
+    private $servicio_informe;
+    public function __construct()
+    {
+        $this->servicio_informe = new MensajeAlertasServicio();
+    }
     public function storeRol(Request $request)
     {
+        $this->servicio_informe->storeInformativoLogs(__FILE__,__FUNCTION__);
         try {
 
             $modelo = new RolModel();
@@ -51,7 +59,9 @@ class RolController extends Controller
 
     public function deleteRol(Request $request, $id)
     {
+        
         try {
+            $this->servicio_informe->storeInformativoLogs(__FILE__,__FUNCTION__);
             $asignatura = RolModel::find($id);
             if(!$asignatura){
                 return Response()->json([
@@ -80,15 +90,15 @@ class RolController extends Controller
             ], 500);
         }
     }
-    public function getRoles()
+    
+    public function getRoles(Request $request)
     {
         try {
+            $this->servicio_informe->storeInformativoLogs(__FILE__,__FUNCTION__);       
             $rol = RolModel::select("rol.id_rol","rol.descripcion","rol.estado","usuarios.usuario as usuarios_ultima_gestion","rol.fecha_actualizacion")
             ->whereIn("rol.estado", ["A", "I"])
             ->join('usuarios','rol.id_usuario_actualizo','usuarios.id_usuario')
             ->get();
-            log::alert("Soy el rol ");
-            log::alert($rol);
             return Response()->json([
                 "ok" => true,
                 "data" => $rol

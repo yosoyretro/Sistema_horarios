@@ -1,39 +1,36 @@
 <?php
 
 namespace App\Services;
-use Illuminate\Support\Facades\Log;
-use App\Http\Responses\TypeResponse;
-use App\Models\MensajesModel;
-use Exception;
-class MensajeAlertasServicio{
 
-    private $obj_mensajes_modelo;
-    
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Facades\Log;
+
+class MensajeAlertasServicio
+{
+    private $ip;
+    private $usuario;
+    private $fecha_hora;
     public function __construct()
     {
-        $this->obj_mensajes_modelo = new MensajesModel();    
+        $obj_carbon = new Carbon();//LIBRERIA PARA LAS FECHAS
+        $this->ip = $_SERVER['REMOTE_ADDR'];
+        $this->fecha_hora = $obj_carbon->format("m-d-Y");
     }
-
-    public function consultar($op,$array_asociativo)
+    
+    public function storeInformativoLogs($archivo,$funcion)
     {
-        $response = new TypeResponse();
         try{
-            switch($op){
-                case 1:
-                    //consulta por el codig
-                    $mensaje = $this->obj_mensajes_modelo::where("codigo","LIKE",$array_asociativo["codigo"])->get();
-                    break;       
-            }
-            
-            $response->setdata($mensaje);
+            log::info("+--------------Informativo de usabilidad--------------------+");
+            log::info("FECHA Y HORA : " . $this->fecha_hora);
+            log::info("IP : " . $this->ip);
+            log::info("ARCHIVO : " .  $archivo);
+            log::info("FUNCION : " . $funcion);
+            log::info("+-----------------------------------------------------------+");
+            return true;
         }catch(Exception $e){
-            log::alert("SOY EL ERROR ");
-            log::alert($e->getMessage());
-            log::alert($e->getCode());
-            $response->setok(false);
-            $response->seterror($e->getMessage(),$e->getLine());
+            return false;
         }
-        return $response->getdata();
     }
 }
 

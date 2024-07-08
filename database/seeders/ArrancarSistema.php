@@ -22,7 +22,7 @@ class ArrancarSistema extends Seeder
     public function run(): void
     {
         
-        RolModel::created([
+        RolModel::insert([
             "descripcion" => "Administrador",
             "ip_creacion" => "127.0.0.1",
             "ip_actualizacion" => "127.0.0.1",
@@ -32,21 +32,23 @@ class ArrancarSistema extends Seeder
             "fecha_actualizacion" => Carbon::now(),
             "estado" => "A"
         ]);
-        UsuarioModel::create([
-            "cedula" => "#########",
-            "nombres" => "Admin Admin",
-            "apellidos" => "Administrador Administrador",
-            "usuario" => "Admin",
-            "clave" => bcrypt("_Admin#2023*"),
-            "id_rol" => 1,
-            "ip_creacion" => "127.0.0.1",
-            "ip_actualizacion" => "127.0.0.1",
-            "id_usuario_creador" => 1,
-            "id_usuario_actualizo" => 1,
-            "fecha_creacion" => Carbon::now(),
-            "fecha_actualizacion" => Carbon::now(),
-            "estado" => "A"
-        ]);
+        if(RolModel::find(1)){
+            UsuarioModel::create([
+                "cedula" => "#########",
+                "nombres" => "Admin Admin",
+                "apellidos" => "Administrador Administrador",
+                "usuario" => "Admin",
+                "clave" => bcrypt("_Admin#2023*"),
+                "id_rol" => 1,
+                "ip_creacion" => "127.0.0.1",
+                "ip_actualizacion" => "127.0.0.1",
+                "id_usuario_creador" => 1,
+                "id_usuario_actualizo" => 1,
+                "fecha_creacion" => Carbon::now(),
+                "fecha_actualizacion" => Carbon::now(),
+                "estado" => "A"
+            ]);
+        }
         PeriodoElectivoModel::create([
             "inicia" => Carbon::now(),
             "termina" => Carbon::now(),

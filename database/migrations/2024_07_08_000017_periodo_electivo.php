@@ -12,19 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('periodo_electivo', function (Blueprint $table) {
-            $table->bigIncrements('id_periodo');
+            $table->id('id_periodo'); // Bigint primary key
             $table->date('inicia');
             $table->date('termina');
-            #CAMPOS DE AUDIFION
-            $table->ipAddress('ip_creacion')->nullable(true);
-            $table->ipAddress('ip_actualizacion');
-            $table->integer("id_usuario_creador");
-            $table->integer("id_usuario_actualizo");
-            $table->date("fecha_creacion");
-            $table->date("fecha_actualizacion");
-            $table->set('estado', ['A', 'E', 'I'])->default('A');
+            $table->string('ip_creacion', 45)->nullable();
+            $table->string('ip_actualizacion', 45);
+            $table->integer('id_usuario_creador');
+            $table->integer('id_usuario_actualizo');
+            $table->date('fecha_creacion');
+            $table->date('fecha_actualizacion');
+            $table->enum('estado', ['A', 'E', 'I'])->default('A');
         });
-
     }
 
     /**
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('periodo_electivo');
+        //
     }
 };
