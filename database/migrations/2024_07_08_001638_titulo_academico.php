@@ -14,15 +14,13 @@ return new class extends Migration
     {
         Schema::create('titulo_academico', function (Blueprint $table) {
             $table->id('id_titulo_academico'); // Bigint primary key
-            $table->string('codigo', 255)->unique();
-            $table->string('nemonico', 255)->unique();
             $table->string('descripcion', 255);
             $table->string('ip_creacion', 45);
-            $table->string('ip_actualizacion', 45)->nullable();
+            $table->string('ip_actualizacion', 45)->nullable(true);
             $table->integer('id_usuario_creador');
-            $table->integer('id_usuario_actualizo');
+            $table->integer('id_usuario_actualizo')->nullable(true);
             $table->date('fecha_creacion');
-            $table->date('fecha_actualizacion');
+            $table->date('fecha_actualizacion')->nullable(true);
             $table->enum('estado', ['A', 'E', 'I'])->default('A');
         });
     }
