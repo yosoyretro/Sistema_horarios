@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Responses\TypeResponse;
 use App\Models\RolModel;
 use App\Services\MensajeAlertasServicio;
 use Exception;
 use Illuminate\Http\Request;
-use App\Services\RolServicio;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Request as request_ip;
 use Illuminate\Support\Facades\Log;
 
 class RolController extends Controller
@@ -94,24 +93,22 @@ class RolController extends Controller
     public function getRoles(Request $request)
     {
         try {
-            $this->servicio_informe->storeInformativoLogs(__FILE__,__FUNCTION__);       
+            log::info("Peticion entrante " . __FILE__ ." -> ". __FUNCTION__ . " ip " . request_ip::ip());
             $rol = RolModel::select("rol.id_rol","rol.descripcion","rol.estado","usuarios.usuario as usuarios_ultima_gestion","rol.fecha_actualizacion")
             ->whereIn("rol.estado", ["A", "I"])
             ->join('usuarios','rol.id_usuario_actualizo','usuarios.id_usuario')
             ->get();
-            return Response()->json([
-                "ok" => true,
-                "data" => $rol
-            ], 200);
         } catch (Exception $e) {
-            log::error(__FILE__ . " > " . __FUNCTION__);
-            log::error("Mensaje : " . $e->getMessage());
-            log::error("Linea : " . $e->getLine());
-
+            log::error(__FILE__ . __FUNCTION__ . " MENSAJE => " . $e->getMessage());
             return Response()->json([
                 "ok" => false,
                 "message" => "Error interno en el servidor"
             ], 500);
+        }finally{
+            return Response()->json([
+                "ok" => true,
+                "mensaje" => "Datos obtenidos exitosamente"
+            ], 200);
         }
     }
 }

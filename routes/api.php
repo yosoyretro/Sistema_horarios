@@ -63,15 +63,16 @@ Route::prefix('istg')->group(
         // Route::post("edit_usuario/", [UsuarioController::class, 'editUser']);
         Route::delete("delete_usuario/{id}", [UsuarioController::class, 'deleteUsuario']);
         Route::get("show_usuario/", [UsuarioController::class, 'showUsuarios']);
-        // //Roles
+        // //Roles 
         Route::get("show_roles/", [RolController::class, 'getRoles']);
         Route::post("create_rol/", [RolController::class, 'storeRol']);
         Route::delete("delete_rol/", [RolController::class, 'deleteRol']);
         // //TITUTLOS ACADEMICO
-        Route::post("create_titulo_academico/", [TituloAcademicoController::class, 'createTituloAcademico']);
-        Route::post("update_titulo_academico/", [TituloAcademicoController::class, 'updateTituloAcademico']);
-        Route::post("delete_titulo_academico/", [TituloAcademicoController::class, 'deleteTituloAcademico']);
-        Route::get("show_data_titulo_academico/", [TituloAcademicoController::class, 'showTituloAcademico']);
+        Route::post("create_titulo_academico/", [TituloAcademicoController::class, 'storeTituloAcademico']);
+        Route::put("update_titulo_academico/{id}", [TituloAcademicoController::class, 'updateTituloAcademico']);
+        Route::delete("delete_titulo_academico/{id}", [TituloAcademicoController::class, 'deleteTituloAcademico']);
+        // TITULO ACADEMICO
+        Route::get("show_data_titulo_academico/", [TituloAcademicoController::class, 'getTituloAcademico']);
         Route::group(
             [
                 "prefix" => "horario/",
