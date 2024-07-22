@@ -15,7 +15,7 @@ class TituloAcademicoController extends Controller
     public function getTituloAcademico(Request $request)
     {
         try{
-            
+            log::info("Peticion entrante " . __FILE__ ." -> ". __FUNCTION__ . " ip " . request_ip::ip());
             return Response()->json([
                 "ok" => true,
                 "data" => TituloAcademicoModel::when(isset($request->estado),function ($query) use($request){

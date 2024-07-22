@@ -107,6 +107,7 @@ class RolController extends Controller
         }finally{
             return Response()->json([
                 "ok" => true,
+                "data" => $rol,
                 "mensaje" => "Datos obtenidos exitosamente"
             ], 200);
         }
