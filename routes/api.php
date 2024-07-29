@@ -63,7 +63,7 @@ Route::prefix('istg')->group(
         // Route::post("edit_usuario/", [UsuarioController::class, 'editUser']);
         Route::delete("delete_usuario/{id}", [UsuarioController::class, 'deleteUsuario']);
         Route::get("show_usuario/", [UsuarioController::class, 'showUsuarios']);
-        // //Roles 
+        // //Roles
         Route::get("show_roles/", [RolController::class, 'getRoles']);
         Route::post("create_rol/", [RolController::class, 'storeRol']);
         Route::delete("delete_rol/", [RolController::class, 'deleteRol']);
@@ -79,6 +79,9 @@ Route::prefix('istg')->group(
             ],
             function () {
                 Route::post("create_horario/", [DistribucionHorario::class, 'storeHorario']);
+                Route::get("show_dist_horarios/", [DistribucionHorario::class, 'showDistribucion']);
+                Route::put("update_distribucion/{id}", [DistribucionHorario::class, 'updatedistribucion']);
+                Route::delete("delete_distribucion/{id}", [DistribucionHorario::class, 'deleteDistribucion']);
             }
         );
         Route::group(
