@@ -14,28 +14,29 @@ class DistribucionHorario extends Controller
 {
     //
 
-    private $servicio_informe;
 
     public function storeHorario(Request $request)
     {
         $response = new TypeResponse();
         try {
             DB::beginTransaction();
-            $detalles = $request->input("detalles");
-            $idUsuario = $request->input("id_usuario");
-            $idPeriodoElectivo = $request->input("id_periodo_electivo");
-            $idEducacionGlobal = $request->input("id_educacion_global");
+            $detalles = $request->input("data");
+            $idUsuario = 1;
+            $idPeriodoElectivo = 1;
+            $idEducacionGlobal = 1;
             $insert_data = collect($detalles)->map(function ($values) use ($request, $idUsuario, $idPeriodoElectivo, $idEducacionGlobal){
                 $values = (object)$values;
                 $consulta = ModelsDistribucionHorario::where("id_usuario", $idUsuario)
                 ->where("id_periodo_academico", $idPeriodoElectivo)
                 ->where("id_educacion_global", $idEducacionGlobal)
+                ->where("id_carrera", $values->id_carrera)
                 ->where("id_materia", $values->id_materia)
                 ->where("id_nivel", $values->id_curso)
                 ->where("id_paralelo", $values->id_paralelo)
                 ->where("dia", $values->dia)
-                ->where("hora_inicio", ">=", Carbon::parse($values->hora_inicio))
-                ->where("hora_termina", "<=", Carbon::parse($values->hora_termina))
+                ->where("hora_inicio", $values->hora_inicio)
+                ->where("hora_termina", $values->hora_termina)
+                ->where("estado", "A")
                 ->get();
 
                 if ($consulta->count() > 0) {
@@ -46,15 +47,20 @@ class DistribucionHorario extends Controller
                     "id_usuario" => $idUsuario,
                     "id_periodo_academico" => $idPeriodoElectivo,
                     "id_educacion_global" => $idEducacionGlobal,
+                    "id_carrera" => $values->id_carrera,
                     "id_materia" => $values->id_materia,
                     "id_nivel" => $values->id_curso,
                     "id_paralelo" => $values->id_paralelo,
                     "dia" => $values->dia,
-                    "hora_inicio" => Carbon::parse($values->hora_inicio),
-                    "hora_termina" => Carbon::parse($values->hora_termina),
+                    "hora_inicio" => $values->hora_inicio,
+                    "hora_termina" => $values->hora_termina,
+                    "ip_creacion" => $request->ip(),
+                    "ip_actualizacion"=> $request->ip(),
+                    "id_usuario_creador" => $idUsuario,
+                    "id_usuario_actualizo" => $idUsuario,
                     "fecha_creacion" => now(),
                     "fecha_actualizacion" => now(),
-                    "estado" => 'activo'
+                    "estado" => 'A'
                 ];
             });
 
@@ -83,49 +89,28 @@ class DistribucionHorario extends Controller
     public function showDistribucion(Request $request)
     {
         try {
+            $data = ModelsDistribucionHorario::select(
+                "educacion_global.nombre as educacion_global_nombre",
+                "carreras.nombre as nombre_carrera",
+                "materias.descripcion as materia",
+                "nivel.termino as nivel",
+                "paralelo.paralelo",
+                "distribuciones_horario_academica.dia",
+                "distribuciones_horario_academica.hora_inicio",
+                "distribuciones_horario_academica.hora_termina",
+                "distribuciones_horario_academica.fecha_actualizacion"
+                )
+            ->join("educacion_global", "distribuciones_horario_academica.id_educacion_global", "educacion_global.id_educacion_global")
+            ->join("carreras", "distribuciones_horario_academica.id_carrera", "carreras.id_carrera")
+            ->join("materias", "distribuciones_horario_academica.id_materia", "materias.id_materia")
+            ->join("nivel", "distribuciones_horario_academica.id_nivel", "nivel.id_nivel")
+            ->join("paralelo", "distribuciones_horario_academica.id_paralelo", "paralelo.id_paralelo")
+            ->orderBy("distribuciones_horario_academica.dia")
+            ->get();
 
-            // Obtención de parámetros de búsqueda
-            $idUsuario = $request->input("id_usuario");
-            $idPeriodoElectivo = $request->input("id_periodo_electivo");
-            $idEducacionGlobal = $request->input("id_educacion_global");
-            $idMateria = $request->input("id_materia");
-            $idNivel = $request->input("id_nivel");
-            $idParalelo = $request->input("id_paralelo");
-
-            // Construcción de la consulta
-            $query = ModelsDistribucionHorario::query();
-
-            if ($idUsuario) {
-                $query->where("id_usuario", $idUsuario);
-            }
-
-            if ($idPeriodoElectivo) {
-                $query->where("id_periodo_academico", $idPeriodoElectivo);
-            }
-
-            if ($idEducacionGlobal) {
-                $query->where("id_educacion_global", $idEducacionGlobal);
-            }
-
-            if ($idMateria) {
-                $query->where("id_materia", $idMateria);
-            }
-
-            if ($idNivel) {
-                $query->where("id_nivel", $idNivel);
-            }
-
-            if ($idParalelo) {
-                $query->where("id_paralelo", $idParalelo);
-            }
-
-            // Obtención de los resultados
-            $distribuciones = $query->get();
-
-            // Respuesta JSON con los datos obtenidos
             return response()->json([
                 "ok" => true,
-                "data" => $distribuciones
+                "data" => $data
             ], 200);
         } catch (Exception $e) {
             // Registro de logs de error
